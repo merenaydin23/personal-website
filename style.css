@@ -12,6 +12,47 @@ body {
   color: #eaeaea;
   min-height: 100vh;
   line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* BACKGROUND FLOATING LIGHTS (RENKLER AYNI) */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.22;
+  z-index: -1;
+}
+
+body::before {
+  background: #00c6ff;
+  top: -180px;
+  left: -180px;
+  animation: floatLightOne 28s ease-in-out infinite;
+}
+
+body::after {
+  background: #00ffd5;
+  bottom: -180px;
+  right: -180px;
+  animation: floatLightTwo 32s ease-in-out infinite;
+}
+
+@keyframes floatLightOne {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(140px, 100px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes floatLightTwo {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-120px, -140px); }
+  100% { transform: translate(0, 0); }
 }
 
 /* GENERAL */
@@ -123,29 +164,26 @@ h2 {
   display: flex;
   align-items: center;
   gap: 8px;
-
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-decoration: none;
-
-  color: #ffffff; /* NORMALDE BEYAZ */
+  color: #ffffff;
   position: relative;
-
   transition: color 0.25s ease, transform 0.25s ease;
 }
 
-/* GitHub hover → siyah */
+/* GitHub hover */
 .social-links a:first-child:hover {
   color: #000000;
 }
 
-/* LinkedIn hover → kendi mavisi */
+/* LinkedIn hover */
 .social-links a:last-child:hover {
-  color: #6ca6e0;
+  color: #0a66c2;
 }
 
-/* Alt çizgi */
+/* underline */
 .social-links a::after {
   content: "";
   position: absolute;
@@ -165,7 +203,6 @@ h2 {
   width: 100%;
 }
 
-/* Icon boyutu */
 .social-links i {
   font-size: 19px;
 }
@@ -199,7 +236,7 @@ h2 {
 
 /* MOBILE */
 @media (max-width: 600px) {
-  .hero-name { font-size: 34px; }   /* ❗ DÜZELTİLDİ */
+  .hero-name { font-size: 34px; }
   .hero-subtitle { font-size: 16px; }
   .profile-wrapper { width: 220px; height: 220px; }
   .profile-img { width: 180px; height: 180px; }

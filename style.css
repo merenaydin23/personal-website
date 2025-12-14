@@ -100,44 +100,74 @@ h2 {
   100% { background-position: 0% 50%; }
 }
 
+/* SUBTITLE */
 .hero-subtitle {
   font-size: 21px;
   font-weight: 500;
   margin-top: 10px;
   letter-spacing: 0.4px;
-
-  background: linear-gradient(
-    90deg,
-    #8be9fd,
-    #7dd3fc,
-    #67e8f9,
-    #8be9fd
-  );
-  background-size: 300% auto;
+  background: linear-gradient(90deg, #8be9fd, #7dd3fc, #67e8f9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-  animation: subtitleFlowSoft 10s ease-in-out infinite;
 }
-
-
-
-
 
 /* SOCIAL */
 .social-links {
-  margin-top: 25px;
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+  gap: 42px;
 }
 
 .social-links a {
-  margin: 0 12px;
-  color: #00c6ff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   text-decoration: none;
-  font-weight: 500;
+
+  color: #ffffff; /* NORMALDE BEYAZ */
+  position: relative;
+
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+/* GitHub hover → siyah */
+.social-links a:first-child:hover {
+  color: #000000;
+}
+
+/* LinkedIn hover → kendi mavisi */
+.social-links a:last-child:hover {
+  color: #6ca6e0;
+}
+
+/* Alt çizgi */
+.social-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.25s ease;
 }
 
 .social-links a:hover {
-  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.social-links a:hover::after {
+  width: 100%;
+}
+
+/* Icon boyutu */
+.social-links i {
+  font-size: 19px;
 }
 
 /* CARD */
@@ -169,7 +199,8 @@ h2 {
 
 /* MOBILE */
 @media (max-width: 600px) {
-  .hero-name { font-size: 36px; }
+  .hero-name { font-size: 34px; }   /* ❗ DÜZELTİLDİ */
+  .hero-subtitle { font-size: 16px; }
   .profile-wrapper { width: 220px; height: 220px; }
   .profile-img { width: 180px; height: 180px; }
 }

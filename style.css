@@ -143,7 +143,7 @@ h2 {
 
 /* SUBTITLE */
 .hero-subtitle {
-  font-size: 21px;
+  font-size: 22px;
   font-weight: 500;
   margin-top: 10px;
   letter-spacing: 0.4px;
@@ -152,12 +152,12 @@ h2 {
   -webkit-text-fill-color: transparent;
 }
 
-/* SOCIAL */
+/* SOCIAL LINKS */
 .social-links {
-  margin-top: 28px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
-  gap: 42px;
+  gap: 56px; /* 🔥 ARTIRILDI */
 }
 
 .social-links a {
@@ -180,15 +180,12 @@ h2 {
 
 /* LinkedIn hover */
 .social-links a:nth-child(2):hover {
-  color: #2b5f93
-;
+  color: #2b5f93;
 }
 
-/* Instagram hover */
+/* Instagram hover (soft mor) */
 .social-links a:nth-child(3):hover {
-  color: #b48fca
-
-;
+  color: #b48fca;
 }
 
 /* underline */

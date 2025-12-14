@@ -1,29 +1,17 @@
+/* RESET */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* BODY */
 body {
   font-family: 'Inter', Arial, sans-serif;
-  background: linear-gradient(-45deg, #ffd89b, #87ceeb, #fffacd);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-  color: #333;
+  background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+  color: #eaeaea;
   min-height: 100vh;
   line-height: 1.6;
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
 }
 
 /* GENERAL */
@@ -53,26 +41,67 @@ h2 {
   text-align: center;
 }
 
+/* PROFILE IMAGE WRAPPER (GLOW EFFECT) */
+.profile-wrapper {
+  position: relative;
+  width: 330px;
+  height: 330px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.profile-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    #00c6ff,
+    #0072ff,
+    #00ffd5
+  );
+  filter: blur(30px);
+  opacity: 0.7;
+  animation: pulseGlow 6s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* PROFILE IMAGE */
 .profile-img {
-  width: 350px;
-  height: 350px;
+  width: 310px;
+  height: 310px;
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid #00c6ff;
-  margin-bottom: 25px;
-  animation: float 6s ease-in-out infinite;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 2;
+  transition: transform 0.4s ease;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+.profile-wrapper:hover .profile-img {
+  transform: scale(1.05);
+}
+
+/* GLOW ANIMATION */
+@keyframes pulseGlow {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
   }
   50% {
-    transform: translateY(-20px);
+    transform: scale(1.12);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
   }
 }
 
+/* HERO TEXT */
 .hero h1 {
   font-size: 42px;
   margin-bottom: 10px;
@@ -83,7 +112,7 @@ h2 {
   color: #cfd8dc;
 }
 
-/* SOCIAL */
+/* SOCIAL LINKS */
 .social-links {
   margin-top: 25px;
 }
@@ -100,7 +129,7 @@ h2 {
   color: #ffffff;
 }
 
-/* ABOUT & EXPERIENCE */
+/* CARD SECTIONS */
 .card {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
@@ -166,5 +195,15 @@ h2 {
 
   section {
     margin: 50px auto;
+  }
+
+  .profile-wrapper {
+    width: 220px;
+    height: 220px;
+  }
+
+  .profile-img {
+    width: 180px;
+    height: 180px;
   }
 }

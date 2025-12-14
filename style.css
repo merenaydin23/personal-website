@@ -16,7 +16,7 @@ body {
   overflow-x: hidden;
 }
 
-/* BACKGROUND FLOATING LIGHTS (RENKLER AYNI) */
+/* BACKGROUND FLOATING LIGHTS */
 body::before,
 body::after {
   content: "";
@@ -174,13 +174,21 @@ h2 {
 }
 
 /* GitHub hover */
-.social-links a:first-child:hover {
+.social-links a:nth-child(1):hover {
   color: #000000;
 }
 
 /* LinkedIn hover */
-.social-links a:last-child:hover {
-  color: #0a66c2;
+.social-links a:nth-child(2):hover {
+  color: #2b5f93
+;
+}
+
+/* Instagram hover */
+.social-links a:nth-child(3):hover {
+  color: #b48fca
+
+;
 }
 
 /* underline */

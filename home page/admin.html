@@ -21,7 +21,7 @@
           <i class="fas fa-lock"></i>
         </div>
         <h2>Admin Girişi</h2>
-        <form id="login-form" class="login-form">
+        <form id="login-form" class="login-form" onsubmit="handleLogin(event); return false;">
           <div class="input-group">
             <i class="fas fa-key input-icon"></i>
             <input
@@ -33,7 +33,7 @@
               autocomplete="off"
             />
           </div>
-          <button type="submit" class="login-btn">
+          <button type="submit" class="login-btn" onclick="handleLogin(event); return false;">
             <i class="fas fa-sign-in-alt"></i> Giriş Yap
           </button>
           <div id="login-message" class="form-message"></div>
@@ -122,6 +122,10 @@
       </main>
     </div>
 
+    <script>
+      // Admin şifresi - global erişim için
+      window.ADMIN_PASSWORD = "admin123";
+    </script>
     <script src="admin.js"></script>
   </body>
 </html>

@@ -5,6 +5,69 @@ const ADMIN_PASSWORD = "admin123"; // Bu şifreyi değiştirin!
 // Newsletter kayıtları localStorage'dan okunacak
 const STORAGE_KEY = "newsletter_subscribers";
 
+// Global login handler - HTML'den direkt çağrılabilir
+function handleLogin(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  
+  console.log("🔐 handleLogin çağrıldı");
+  
+  const passwordInput = document.getElementById("admin-password");
+  const messageDiv = document.getElementById("login-message");
+  
+  if (!passwordInput) {
+    console.error("❌ Password input bulunamadı!");
+    alert("HATA: Şifre alanı bulunamadı!");
+    return false;
+  }
+  
+  const password = passwordInput.value.trim();
+  console.log("🔐 Girilen şifre:", password);
+  console.log("🔐 Beklenen şifre:", ADMIN_PASSWORD);
+  console.log("🔐 Eşit mi?", password === ADMIN_PASSWORD);
+  
+  if (password === ADMIN_PASSWORD) {
+    console.log("✅ Şifre doğru, giriş yapılıyor");
+    localStorage.setItem("adminLoggedIn", "true");
+    
+    // Login ekranını gizle, admin panelini göster
+    const loginScreen = document.getElementById("login-screen");
+    const adminPanel = document.getElementById("admin-panel");
+    
+    if (loginScreen) loginScreen.style.display = "none";
+    if (adminPanel) adminPanel.style.display = "block";
+    
+    // Verileri yükle
+    setTimeout(() => {
+      console.log("⏰ Veriler yükleniyor...");
+      if (typeof loadData === "function") {
+        loadData();
+      } else {
+        console.error("❌ loadData fonksiyonu bulunamadı!");
+      }
+    }, 500);
+    
+    passwordInput.value = "";
+    return false;
+  } else {
+    console.log("❌ Yanlış şifre!");
+    if (messageDiv) {
+      messageDiv.textContent = "❌ Yanlış şifre! Lütfen tekrar deneyin.";
+      messageDiv.className = "form-message error";
+      messageDiv.style.display = "block";
+      setTimeout(() => {
+        messageDiv.style.display = "none";
+        messageDiv.className = "form-message";
+      }, 3000);
+    }
+    passwordInput.value = "";
+    passwordInput.focus();
+    return false;
+  }
+}
+
 // DOM Elements - Sayfa yüklendikten sonra al
 let loginScreen, adminPanel, loginForm, adminPasswordInput, loginMessage;
 let logoutBtn, refreshBtn, exportBtn, dataTableBody, totalCount, todayCount;

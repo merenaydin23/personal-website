@@ -110,6 +110,7 @@ h2 {
   margin-bottom: 6px;
   background: linear-gradient(90deg, #00c6ff, #00ffd5);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -118,6 +119,7 @@ h2 {
   font-size: 20px;
   background: linear-gradient(90deg, #8be9fd, #7dd3fc);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -145,7 +147,8 @@ h2 {
 
 .social-link i {
   font-size: 20px;
-  transition: color 0.35s ease, background 0.35s ease, -webkit-background-clip 0.35s ease, -webkit-text-fill-color 0.35s ease;
+  transition: color 0.35s ease, background 0.35s ease,
+    -webkit-background-clip 0.35s ease, -webkit-text-fill-color 0.35s ease;
 }
 
 /* Hover: only movement + underline */
@@ -202,7 +205,8 @@ h2 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  transition: background 0.35s ease, -webkit-background-clip 0.35s ease, -webkit-text-fill-color 0.35s ease;
+  transition: background 0.35s ease, -webkit-background-clip 0.35s ease,
+    -webkit-text-fill-color 0.35s ease;
 }
 
 .social-instagram.clicked i {
@@ -210,7 +214,8 @@ h2 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  transition: background 0.35s ease, -webkit-background-clip 0.35s ease, -webkit-text-fill-color 0.35s ease;
+  transition: background 0.35s ease, -webkit-background-clip 0.35s ease,
+    -webkit-text-fill-color 0.35s ease;
 }
 
 /* CARD */
@@ -229,124 +234,8 @@ h2 {
   font-size: 17px;
 }
 
-/* SUBSCRIBE */
-.subscribe-toggle {
-  position: fixed;
-  right: 24px;
-  bottom: 30px;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  font-size: 22px;
-  background: linear-gradient(135deg, #00c6ff, #00ffd5);
-  transition: transform 0.2s ease;
-}
-
-.subscribe-toggle:hover {
-  transform: scale(1.05);
-}
-
-/* SUBSCRIBE BOX */
-.subscribe-box {
-  position: fixed;
-  right: 24px;
-  bottom: 100px;
-  width: 300px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  backdrop-filter: blur(16px);
-  opacity: 0;
-  transform: translateY(20px) scale(0.95);
-  pointer-events: none;
-  transition: all 0.4s ease;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-}
-
-/* Fixed active state for subscribe box */
-.subscribe-widget.active .subscribe-box {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-.subscribe-box h3 {
-  font-size: 20px;
-  margin-bottom: 8px;
-  color: #fff;
-}
-
-.subscribe-box p {
-  font-size: 14px;
-  margin-bottom: 16px;
-  color: #ddd;
-}
-
-/* Added subscribe input styling */
-.subscribe-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
-  font-size: 14px;
-  margin-bottom: 12px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.subscribe-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.subscribe-input:focus {
-  border-color: #00c6ff;
-}
-
-/* Added subscribe button styling */
-.subscribe-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #00c6ff, #00ffd5);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.subscribe-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4);
-}
-
-.subscribe-button:active {
-  transform: translateY(0);
-}
-
-/* Added subscribe success message styling */
-.subscribe-success {
-  display: none;
-  margin-top: 12px;
-  color: #00ffd5;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  transition: color 0.3s ease;
-}
-
 /* MOBILE */
 @media (max-width: 900px) {
-  .subscribe-box,
-  .subscribe-toggle {
-    display: none;
-  }
-
   .social-links {
     gap: 32px;
   }

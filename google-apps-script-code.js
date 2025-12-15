@@ -3,8 +3,21 @@ function doPost(e) {
     // Google Sheets'i aç
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
-    // Gelen veriyi parse et
-    const data = JSON.parse(e.postData.contents);
+    // Gelen veriyi parse et (hem JSON hem form data desteği)
+    let data;
+    if (e.postData && e.postData.contents) {
+      // JSON formatında geliyorsa
+      data = JSON.parse(e.postData.contents);
+    } else if (e.parameter) {
+      // Form data formatında geliyorsa
+      data = {
+        email: e.parameter.email,
+        timestamp: e.parameter.timestamp || new Date().toISOString(),
+      };
+    } else {
+      throw new Error("No data received");
+    }
+
     const email = data.email;
     const timestamp = new Date(data.timestamp);
 

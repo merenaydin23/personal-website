@@ -58,7 +58,8 @@ const formMessage = document.getElementById("form-message");
 
 // ⚠️ ÖNEMLİ: Google Apps Script Web App URL'inizi buraya ekleyin
 // Google Sheets için Apps Script oluşturduktan sonra Web App URL'ini buraya yapıştırın
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1WssvKfRaCNOJHJH7Jp1UDamgYkYXzTW7tc_3gYI2gvKVjgY0R0okYBwSY9hLlnFu/exec";
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwPTDos3jCiAk3_S4taASg_6uPBg1ChFSjrDQd0uHRNfnv_GSWhGAswbwcQoIsudci7/exec";
 
 if (newsletterForm) {
   newsletterForm.addEventListener("submit", async (e) => {
@@ -80,25 +81,31 @@ if (newsletterForm) {
 
     try {
       // Send data to Google Sheets via Apps Script
+      const payload = {
+        email: email,
+        timestamp: new Date().toISOString(),
+      };
+
+      // Google Apps Script için özel fetch yöntemi
       const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors", // CORS için no-cors kullanıyoruz
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: email,
-          timestamp: new Date().toISOString(),
-        }),
+        body: JSON.stringify(payload),
       });
 
-      // no-cors mode'da response göremiyoruz, bu yüzden her zaman başarılı sayıyoruz
-      // Gerçek uygulamada Apps Script'te hata kontrolü yapılmalı
+      // no-cors mode'da response göremiyoruz ama istek gönderilir
+      // Başarılı sayıyoruz (gerçek kontrol Google Sheets'te yapılmalı)
       showMessage(
         "✅ Kayıt başarılı! Güncellemelerden haberdar olacaksınız.",
         "success"
       );
       emailInput.value = "";
+
+      // Console'da kontrol için
+      console.log("Newsletter kaydı gönderildi:", email);
     } catch (error) {
       console.error("Error:", error);
       showMessage(

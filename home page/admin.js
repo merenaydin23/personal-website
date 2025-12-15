@@ -28,11 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("adminLoggedIn") === "true") {
     console.log("✅ Zaten giriş yapılmış, admin paneli gösteriliyor");
     showAdminPanel();
-    // Sayfa yüklendiğinde verileri yükle
+    // Sayfa yüklendiğinde verileri yükle - daha uzun bekle
     setTimeout(() => {
       console.log("⏰ Veriler yükleniyor...");
+      console.log("🔍 DOM elementleri kontrol ediliyor...");
+      console.log("dataTableBody:", document.getElementById("data-table-body"));
+      console.log("totalCount:", document.getElementById("total-count"));
+      console.log("todayCount:", document.getElementById("today-count"));
       loadData();
-    }, 500);
+    }, 1000);
   } else {
     console.log("🔒 Giriş yapılmamış, login ekranı gösteriliyor");
   }
@@ -55,8 +59,12 @@ function setupEventListeners() {
         // Giriş yaptıktan sonra verileri yükle
         setTimeout(() => {
           console.log("⏰ Giriş sonrası veriler yükleniyor...");
+          console.log("🔍 DOM elementleri kontrol ediliyor...");
+          console.log("dataTableBody:", document.getElementById("data-table-body"));
+          console.log("totalCount:", document.getElementById("total-count"));
+          console.log("todayCount:", document.getElementById("today-count"));
           loadData();
-        }, 500);
+        }, 1000);
         adminPasswordInput.value = "";
       } else {
         showMessage(
@@ -151,17 +159,29 @@ function loadData() {
       const rawData = localStorage.getItem(STORAGE_KEY);
       console.log("🔍 STORAGE_KEY:", STORAGE_KEY);
       console.log("📦 localStorage'dan okunan ham veri:", rawData);
-      
+
       // Tüm localStorage anahtarlarını göster
-      console.log("📊 Tüm localStorage anahtarları:", Object.keys(localStorage));
-      
+      console.log(
+        "📊 Tüm localStorage anahtarları:",
+        Object.keys(localStorage)
+      );
+
       // Her anahtarı kontrol et
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        console.log(`🔑 Key[${i}]: ${key} = ${localStorage.getItem(key)?.substring(0, 100)}...`);
+        console.log(
+          `🔑 Key[${i}]: ${key} = ${localStorage
+            .getItem(key)
+            ?.substring(0, 100)}...`
+        );
       }
 
-      if (!rawData || rawData === "null" || rawData === "undefined" || rawData === "") {
+      if (
+        !rawData ||
+        rawData === "null" ||
+        rawData === "undefined" ||
+        rawData === ""
+      ) {
         console.log("⚠️ Veri bulunamadı veya boş, boş array kullanılıyor");
         displayData([]);
         return;
@@ -171,9 +191,23 @@ function loadData() {
       console.log("✅ Parse edilmiş veri:", data);
       console.log("📈 Veri sayısı:", data.length);
       console.log("📋 Veri içeriği:", JSON.stringify(data, null, 2));
+      console.log("📋 İlk kayıt:", data[0]);
 
       if (data && Array.isArray(data) && data.length > 0) {
-        console.log("✅ Veriler bulundu, tabloya yazılıyor...");
+        console.log(`✅ ${data.length} adet veri bulundu, displayData çağrılıyor...`);
+        // DOM elementlerini tekrar kontrol et
+        if (!dataTableBody) {
+          dataTableBody = document.getElementById("data-table-body");
+          console.log("🔄 dataTableBody yeniden alındı:", dataTableBody);
+        }
+        if (!totalCount) {
+          totalCount = document.getElementById("total-count");
+          console.log("🔄 totalCount yeniden alındı:", totalCount);
+        }
+        if (!todayCount) {
+          todayCount = document.getElementById("today-count");
+          console.log("🔄 todayCount yeniden alındı:", todayCount);
+        }
         displayData(data);
       } else {
         console.log("⚠️ Veri array değil veya boş");
@@ -199,10 +233,21 @@ function loadData() {
 
 // Display Data in Table
 function displayData(data) {
-  console.log("🎨 displayData çağrıldı, veri:", data);
+  console.log("🎨 displayData çağrıldı");
+  console.log("📊 Gelen veri:", data);
+  console.log("📊 Veri tipi:", typeof data);
+  console.log("📊 Array mi?", Array.isArray(data));
+  console.log("📊 Veri uzunluğu:", data?.length);
+
+  // DOM elementlerini tekrar kontrol et
+  if (!dataTableBody) {
+    dataTableBody = document.getElementById("data-table-body");
+    console.log("🔄 dataTableBody yeniden alındı:", dataTableBody);
+  }
 
   if (!dataTableBody) {
-    console.error("dataTableBody bulunamadı!");
+    console.error("❌ dataTableBody hala bulunamadı!");
+    alert("HATA: Tablo elementi bulunamadı! Sayfayı yenileyin.");
     return;
   }
 
@@ -210,13 +255,22 @@ function displayData(data) {
     console.log("📭 Veri yok, boş mesaj gösteriliyor");
     dataTableBody.innerHTML =
       '<tr><td colspan="4" class="empty-row">Henüz kayıt bulunmuyor.</td></tr>';
-    if (totalCount) totalCount.textContent = "0";
-    if (todayCount) todayCount.textContent = "0";
+    if (totalCount) {
+      totalCount.textContent = "0";
+      console.log("✅ totalCount güncellendi: 0");
+    }
+    if (todayCount) {
+      todayCount.textContent = "0";
+      console.log("✅ todayCount güncellendi: 0");
+    }
     return;
   }
 
+  console.log(`✅ ${data.length} kayıt bulundu, tabloya yazılıyor...`);
+
   // Reverse to show newest first
   const reversedData = [...data].reverse();
+  console.log("🔄 Ters çevrilmiş veri:", reversedData);
 
   let html = "";
   const today = new Date().toLocaleDateString("tr-TR", {
@@ -224,6 +278,7 @@ function displayData(data) {
     month: "2-digit",
     year: "numeric",
   });
+  console.log("📅 Bugünün tarihi:", today);
 
   reversedData.forEach((row, index) => {
     const rowNumber = reversedData.length - index;
@@ -237,12 +292,27 @@ function displayData(data) {
     `;
   });
 
+  console.log("📝 Oluşturulan HTML:", html.substring(0, 200) + "...");
   dataTableBody.innerHTML = html;
+  console.log("✅ Tablo güncellendi!");
 
   // Update stats
-  totalCount.textContent = data.length;
+  if (totalCount) {
+    totalCount.textContent = data.length;
+    console.log(`✅ totalCount güncellendi: ${data.length}`);
+  } else {
+    console.error("❌ totalCount bulunamadı!");
+  }
+
   const todayRecords = data.filter((row) => row.date === today).length;
-  todayCount.textContent = todayRecords;
+  if (todayCount) {
+    todayCount.textContent = todayRecords;
+    console.log(`✅ todayCount güncellendi: ${todayRecords}`);
+  } else {
+    console.error("❌ todayCount bulunamadı!");
+  }
+
+  console.log("✅ displayData tamamlandı!");
 }
 
 // Export to CSV

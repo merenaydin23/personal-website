@@ -98,19 +98,22 @@ function setupEventListeners() {
     testBtn.addEventListener("click", () => {
       console.log("🧪 TEST BUTONU TIKLANDI");
       console.log("STORAGE_KEY:", STORAGE_KEY);
-      console.log("localStorage.getItem(STORAGE_KEY):", localStorage.getItem(STORAGE_KEY));
+      console.log(
+        "localStorage.getItem(STORAGE_KEY):",
+        localStorage.getItem(STORAGE_KEY)
+      );
       console.log("Tüm localStorage:", { ...localStorage });
-      
+
       const testData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
       console.log("Parse edilmiş test verisi:", testData);
       console.log("Veri tipi:", typeof testData);
       console.log("Array mi?", Array.isArray(testData));
       console.log("Uzunluk:", testData.length);
-      
+
       if (testData.length > 0) {
         console.log("İlk kayıt:", testData[0]);
       }
-      
+
       // Manuel olarak yükle
       loadData();
     });
@@ -134,51 +137,70 @@ function showLoginScreen() {
 // Load Data from localStorage
 function loadData() {
   if (!dataTableBody) {
-    console.error("dataTableBody bulunamadı!");
+    console.error("❌ dataTableBody bulunamadı!");
     return;
   }
 
   dataTableBody.innerHTML =
     '<tr><td colspan="4" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Veriler yükleniyor...</td></tr>';
 
-  try {
-    // localStorage'dan verileri oku
-    const rawData = localStorage.getItem(STORAGE_KEY);
-    console.log("🔍 STORAGE_KEY:", STORAGE_KEY);
-    console.log("📦 localStorage'dan okunan veri:", rawData);
-    console.log("📊 Tüm localStorage:", localStorage);
+  // Kısa bir gecikme ile DOM'un hazır olduğundan emin ol
+  setTimeout(() => {
+    try {
+      // localStorage'dan verileri oku
+      const rawData = localStorage.getItem(STORAGE_KEY);
+      console.log("🔍 STORAGE_KEY:", STORAGE_KEY);
+      console.log("📦 localStorage'dan okunan ham veri:", rawData);
+      
+      // Tüm localStorage anahtarlarını göster
+      console.log("📊 Tüm localStorage anahtarları:", Object.keys(localStorage));
+      
+      // Her anahtarı kontrol et
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        console.log(`🔑 Key[${i}]: ${key} = ${localStorage.getItem(key)?.substring(0, 100)}...`);
+      }
 
-    if (!rawData || rawData === "null" || rawData === "undefined") {
-      console.log("⚠️ Veri bulunamadı, boş array kullanılıyor");
-      displayData([]);
-      return;
+      if (!rawData || rawData === "null" || rawData === "undefined" || rawData === "") {
+        console.log("⚠️ Veri bulunamadı veya boş, boş array kullanılıyor");
+        displayData([]);
+        return;
+      }
+
+      const data = JSON.parse(rawData);
+      console.log("✅ Parse edilmiş veri:", data);
+      console.log("📈 Veri sayısı:", data.length);
+      console.log("📋 Veri içeriği:", JSON.stringify(data, null, 2));
+
+      if (data && Array.isArray(data) && data.length > 0) {
+        console.log("✅ Veriler bulundu, tabloya yazılıyor...");
+        displayData(data);
+      } else {
+        console.log("⚠️ Veri array değil veya boş");
+        displayData([]);
+      }
+    } catch (error) {
+      console.error("❌ Error loading data:", error);
+      console.error("Error stack:", error.stack);
+      if (dataTableBody) {
+        dataTableBody.innerHTML = `
+          <tr>
+            <td colspan="4" class="error-row">
+              <i class="fas fa-exclamation-triangle"></i> Veriler yüklenirken hata oluştu.
+              <br><small>${error.message}</small>
+              <br><small>Console'u kontrol edin (F12)</small>
+            </td>
+          </tr>
+        `;
+      }
     }
-
-    const data = JSON.parse(rawData);
-    console.log("✅ Parse edilmiş veri:", data);
-    console.log("📈 Veri sayısı:", data.length);
-    console.log("📋 Veri içeriği:", JSON.stringify(data, null, 2));
-
-    displayData(data);
-  } catch (error) {
-    console.error("❌ Error loading data:", error);
-    console.error("Error stack:", error.stack);
-    dataTableBody.innerHTML = `
-      <tr>
-        <td colspan="4" class="error-row">
-          <i class="fas fa-exclamation-triangle"></i> Veriler yüklenirken hata oluştu.
-          <br><small>${error.message}</small>
-          <br><small>Console'u kontrol edin (F12)</small>
-        </td>
-      </tr>
-    `;
-  }
+  }, 200);
 }
 
 // Display Data in Table
 function displayData(data) {
   console.log("🎨 displayData çağrıldı, veri:", data);
-  
+
   if (!dataTableBody) {
     console.error("dataTableBody bulunamadı!");
     return;

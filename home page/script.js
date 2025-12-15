@@ -114,9 +114,14 @@ if (newsletterForm) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
 
       // Debug: localStorage'ı kontrol et
-      console.log("Newsletter kaydı eklendi:", email);
-      console.log("Toplam kayıt sayısı:", existingData.length);
-      console.log("localStorage verisi:", localStorage.getItem(STORAGE_KEY));
+      console.log("✅ Newsletter kaydı eklendi:", email);
+      console.log("📊 Toplam kayıt sayısı:", existingData.length);
+      console.log("💾 localStorage'a kaydedilen veri:", localStorage.getItem(STORAGE_KEY));
+      console.log("🔑 STORAGE_KEY:", STORAGE_KEY);
+      console.log("📋 Tüm kayıtlar:", existingData);
+      
+      // Kullanıcıya bilgi ver
+      alert(`✅ Kayıt başarılı!\n\nE-posta: ${email}\nToplam kayıt: ${existingData.length}\n\nAdmin panelinde görmek için admin.html sayfasına gidin.`);
 
       // Başarı mesajı
       showMessage(

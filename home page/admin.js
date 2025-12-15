@@ -26,11 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Check if already logged in
   if (localStorage.getItem("adminLoggedIn") === "true") {
+    console.log("✅ Zaten giriş yapılmış, admin paneli gösteriliyor");
     showAdminPanel();
     // Sayfa yüklendiğinde verileri yükle
     setTimeout(() => {
+      console.log("⏰ Veriler yükleniyor...");
       loadData();
-    }, 100);
+    }, 500);
+  } else {
+    console.log("🔒 Giriş yapılmamış, login ekranı gösteriliyor");
   }
 
   // Event listeners
@@ -45,12 +49,14 @@ function setupEventListeners() {
       const password = adminPasswordInput.value.trim();
 
       if (password === ADMIN_PASSWORD) {
+        console.log("✅ Şifre doğru, giriş yapılıyor");
         localStorage.setItem("adminLoggedIn", "true");
         showAdminPanel();
         // Giriş yaptıktan sonra verileri yükle
         setTimeout(() => {
+          console.log("⏰ Giriş sonrası veriler yükleniyor...");
           loadData();
-        }, 100);
+        }, 500);
         adminPasswordInput.value = "";
       } else {
         showMessage(
@@ -85,8 +91,31 @@ function setupEventListeners() {
       exportToCSV();
     });
   }
-}
 
+  // Test Button
+  const testBtn = document.getElementById("test-btn");
+  if (testBtn) {
+    testBtn.addEventListener("click", () => {
+      console.log("🧪 TEST BUTONU TIKLANDI");
+      console.log("STORAGE_KEY:", STORAGE_KEY);
+      console.log("localStorage.getItem(STORAGE_KEY):", localStorage.getItem(STORAGE_KEY));
+      console.log("Tüm localStorage:", { ...localStorage });
+      
+      const testData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      console.log("Parse edilmiş test verisi:", testData);
+      console.log("Veri tipi:", typeof testData);
+      console.log("Array mi?", Array.isArray(testData));
+      console.log("Uzunluk:", testData.length);
+      
+      if (testData.length > 0) {
+        console.log("İlk kayıt:", testData[0]);
+      }
+      
+      // Manuel olarak yükle
+      loadData();
+    });
+  }
+}
 
 // Show Admin Panel
 function showAdminPanel() {
@@ -104,26 +133,42 @@ function showLoginScreen() {
 
 // Load Data from localStorage
 function loadData() {
+  if (!dataTableBody) {
+    console.error("dataTableBody bulunamadı!");
+    return;
+  }
+
   dataTableBody.innerHTML =
     '<tr><td colspan="4" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Veriler yükleniyor...</td></tr>';
 
   try {
     // localStorage'dan verileri oku
     const rawData = localStorage.getItem(STORAGE_KEY);
-    console.log("localStorage'dan okunan veri:", rawData);
-    
-    const data = JSON.parse(rawData || "[]");
-    console.log("Parse edilmiş veri:", data);
-    console.log("Veri sayısı:", data.length);
-    
+    console.log("🔍 STORAGE_KEY:", STORAGE_KEY);
+    console.log("📦 localStorage'dan okunan veri:", rawData);
+    console.log("📊 Tüm localStorage:", localStorage);
+
+    if (!rawData || rawData === "null" || rawData === "undefined") {
+      console.log("⚠️ Veri bulunamadı, boş array kullanılıyor");
+      displayData([]);
+      return;
+    }
+
+    const data = JSON.parse(rawData);
+    console.log("✅ Parse edilmiş veri:", data);
+    console.log("📈 Veri sayısı:", data.length);
+    console.log("📋 Veri içeriği:", JSON.stringify(data, null, 2));
+
     displayData(data);
   } catch (error) {
-    console.error("Error loading data:", error);
+    console.error("❌ Error loading data:", error);
+    console.error("Error stack:", error.stack);
     dataTableBody.innerHTML = `
       <tr>
         <td colspan="4" class="error-row">
           <i class="fas fa-exclamation-triangle"></i> Veriler yüklenirken hata oluştu.
           <br><small>${error.message}</small>
+          <br><small>Console'u kontrol edin (F12)</small>
         </td>
       </tr>
     `;
@@ -132,11 +177,19 @@ function loadData() {
 
 // Display Data in Table
 function displayData(data) {
-  if (!data || !data.length) {
+  console.log("🎨 displayData çağrıldı, veri:", data);
+  
+  if (!dataTableBody) {
+    console.error("dataTableBody bulunamadı!");
+    return;
+  }
+
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    console.log("📭 Veri yok, boş mesaj gösteriliyor");
     dataTableBody.innerHTML =
       '<tr><td colspan="4" class="empty-row">Henüz kayıt bulunmuyor.</td></tr>';
-    totalCount.textContent = "0";
-    todayCount.textContent = "0";
+    if (totalCount) totalCount.textContent = "0";
+    if (todayCount) todayCount.textContent = "0";
     return;
   }
 

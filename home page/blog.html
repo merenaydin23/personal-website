@@ -28,97 +28,164 @@
     </nav>
 
     <!-- ================= HERO ================= -->
-    <section class="hero">
-      <h1 class="hero-name">Blog & Uygulamalar</h1>
+    <section class="hero blog-hero">
+      <h1 class="hero-name">📝 Blog & Uygulamalar</h1>
       <p class="hero-subtitle">
-        Güncel Teknolojiler, Blog Yazıları ve Pratik Uygulamalar
+        Güncel teknolojileri deneyip öğrendiklerimi paylaştığım yazılar ve
+        fikirlerimi ürüne dönüştürdüğüm pratik uygulamalar.
       </p>
+      <div class="hero-buttons">
+        <button class="hero-btn blog-btn" onclick="switchTab('blog')">
+          <i class="fas fa-newspaper"></i> Blog Yazılarını Gör
+        </button>
+        <button class="hero-btn apps-btn" onclick="switchTab('apps')">
+          <i class="fas fa-rocket"></i> Uygulamaları Keşfet
+        </button>
+      </div>
     </section>
 
-    <!-- ================= BLOG POSTS ================= -->
-    <section id="blog-posts">
-      <h2>📝 Blog Yazıları</h2>
+    <!-- ================= TABS ================= -->
+    <section class="tabs-section">
+      <div class="tabs-container">
+        <button
+          class="tab-btn active"
+          data-tab="blog"
+          onclick="switchTab('blog')"
+        >
+          <i class="fas fa-newspaper"></i> 📝 Blog
+        </button>
+        <button
+          class="tab-btn"
+          data-tab="apps"
+          onclick="switchTab('apps')"
+        >
+          <i class="fas fa-rocket"></i> 🚀 Uygulamalar
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= BLOG TAB ================= -->
+    <section id="blog-tab" class="tab-content active">
+      <!-- Blog Filters -->
+      <div class="blog-filters">
+        <button class="filter-btn active" data-filter="all">Tümü</button>
+        <button class="filter-btn" data-filter="tech">Güncel Teknolojiler</button>
+        <button class="filter-btn" data-filter="learning">Öğrenme Notları</button>
+        <button class="filter-btn" data-filter="solution">Problem → Çözüm</button>
+        <button class="filter-btn" data-filter="radar">Tech Radar</button>
+      </div>
+
+      <!-- Blog Grid -->
       <div class="blog-grid">
-        <!-- Blog Post Card 1 -->
-        <article class="blog-card">
-          <div class="blog-icon">
-            <i class="fas fa-newspaper"></i>
+        <!-- Blog Card 1 -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">Yapay Zeka ve Gelecek</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 12 Mart 2025
+            </div>
           </div>
-          <div class="blog-date"><i class="far fa-calendar"></i> Yakında</div>
-          <h3 class="blog-title">Yapay Zeka ve Gelecek</h3>
           <p class="blog-description">
             Modern yapay zeka teknolojilerinin gelişimi ve yazılım dünyasına
             etkileri hakkında detaylı bir inceleme.
           </p>
           <div class="blog-tags">
-            <span class="tag">AI</span>
-            <span class="tag">Machine Learning</span>
-            <span class="tag">Teknoloji</span>
+            <span class="tag">#AI</span>
+            <span class="tag">#Web</span>
+            <span class="tag">#Python</span>
           </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
         </article>
 
-        <!-- Blog Post Card 2 -->
-        <article class="blog-card">
-          <div class="blog-icon">
-            <i class="fas fa-code"></i>
+        <!-- Blog Card 2 -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">React 19 ve Yeni Özellikler</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 10 Mart 2025
+            </div>
           </div>
-          <div class="blog-date"><i class="far fa-calendar"></i> Yakında</div>
-          <h3 class="blog-title">React 19 ve Yeni Özellikler</h3>
           <p class="blog-description">
             React'in en son sürümündeki yenilikler, performans iyileştirmeleri
             ve geliştirici deneyimi üzerine bir analiz.
           </p>
           <div class="blog-tags">
-            <span class="tag">React</span>
-            <span class="tag">Frontend</span>
-            <span class="tag">Web Development</span>
+            <span class="tag">#React</span>
+            <span class="tag">#Frontend</span>
+            <span class="tag">#JavaScript</span>
           </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
         </article>
 
-        <!-- Blog Post Card 3 -->
-        <article class="blog-card">
-          <div class="blog-icon">
-            <i class="fas fa-server"></i>
+        <!-- Blog Card 3 -->
+        <article class="blog-card" data-category="learning">
+          <div class="blog-header">
+            <h3 class="blog-title">Cloud Computing ve DevOps</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 8 Mart 2025
+            </div>
           </div>
-          <div class="blog-date"><i class="far fa-calendar"></i> Yakında</div>
-          <h3 class="blog-title">Cloud Computing ve DevOps</h3>
           <p class="blog-description">
             Bulut teknolojileri, containerization ve modern DevOps uygulamaları
             hakkında pratik bilgiler ve deneyimler.
           </p>
           <div class="blog-tags">
-            <span class="tag">Cloud</span>
-            <span class="tag">DevOps</span>
-            <span class="tag">Docker</span>
+            <span class="tag">#Cloud</span>
+            <span class="tag">#DevOps</span>
+            <span class="tag">#Docker</span>
           </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
         </article>
 
-        <!-- Blog Post Card 4 -->
-        <article class="blog-card">
-          <div class="blog-icon">
-            <i class="fas fa-mobile-alt"></i>
+        <!-- Blog Card 4 -->
+        <article class="blog-card" data-category="solution">
+          <div class="blog-header">
+            <h3 class="blog-title">Mobil Uygulama Geliştirme Trendleri</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 5 Mart 2025
+            </div>
           </div>
-          <div class="blog-date"><i class="far fa-calendar"></i> Yakında</div>
-          <h3 class="blog-title">Mobil Uygulama Geliştirme Trendleri</h3>
           <p class="blog-description">
-            2024'ün mobil uygulama geliştirme trendleri, cross-platform çözümler
-            ve kullanıcı deneyimi odaklı yaklaşımlar.
+            2024'ün mobil uygulama geliştirme trendleri, cross-platform
+            çözümler ve kullanıcı deneyimi odaklı yaklaşımlar.
           </p>
           <div class="blog-tags">
-            <span class="tag">Mobile</span>
-            <span class="tag">React Native</span>
-            <span class="tag">Flutter</span>
+            <span class="tag">#Mobile</span>
+            <span class="tag">#React Native</span>
+            <span class="tag">#Flutter</span>
           </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
         </article>
       </div>
     </section>
 
-    <!-- ================= APPLICATIONS ================= -->
-    <section id="applications">
-      <h2>🚀 Uygulamalar</h2>
+    <!-- ================= APPS TAB ================= -->
+    <section id="apps-tab" class="tab-content">
+      <!-- App Categories -->
+      <div class="app-categories">
+        <button class="category-btn active" data-category="all">Tümü</button>
+        <button class="category-btn" data-category="stable">🟢 Stable Apps</button>
+        <button class="category-btn" data-category="experimental">
+          🔧 Experiments
+        </button>
+        <button class="category-btn" data-category="tools">🛠️ Mini Tools</button>
+      </div>
+
+      <!-- Apps Grid -->
       <div class="apps-grid">
         <!-- App Card 1 -->
-        <div class="app-card">
+        <div class="app-card" data-category="stable">
+          <div class="app-status">
+            <span class="status-badge live">🟢 Live</span>
+          </div>
           <div class="app-icon">
             <i class="fas fa-tools"></i>
           </div>
@@ -127,17 +194,21 @@
             Günlük geliştirme sürecinde kullanabileceğiniz pratik araçlar ve
             yardımcı uygulamalar koleksiyonu.
           </p>
-          <div class="app-tech">
-            <span class="tech-tag">Tools</span>
-            <span class="tech-tag">Utilities</span>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
           </div>
-          <a href="#" class="app-link" target="_blank">
-            <i class="fas fa-external-link-alt"></i> İncele
-          </a>
         </div>
 
         <!-- App Card 2 -->
-        <div class="app-card">
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
           <div class="app-icon">
             <i class="fas fa-palette"></i>
           </div>
@@ -146,17 +217,21 @@
             Modern web ve mobil tasarım için kullanışlı renk paletleri, gradient
             oluşturucular ve tasarım kaynakları.
           </p>
-          <div class="app-tech">
-            <span class="tech-tag">Design</span>
-            <span class="tech-tag">UI/UX</span>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
           </div>
-          <a href="#" class="app-link" target="_blank">
-            <i class="fas fa-external-link-alt"></i> İncele
-          </a>
         </div>
 
         <!-- App Card 3 -->
-        <div class="app-card">
+        <div class="app-card" data-category="stable">
+          <div class="app-status">
+            <span class="status-badge live">🟢 Live</span>
+          </div>
           <div class="app-icon">
             <i class="fas fa-chart-line"></i>
           </div>
@@ -165,17 +240,21 @@
             Veri görselleştirme ve analiz için kullanabileceğiniz interaktif
             uygulamalar ve dashboard örnekleri.
           </p>
-          <div class="app-tech">
-            <span class="tech-tag">Data</span>
-            <span class="tech-tag">Analytics</span>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
           </div>
-          <a href="#" class="app-link" target="_blank">
-            <i class="fas fa-external-link-alt"></i> İncele
-          </a>
         </div>
 
         <!-- App Card 4 -->
-        <div class="app-card">
+        <div class="app-card" data-category="tools">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
           <div class="app-icon">
             <i class="fas fa-keyboard"></i>
           </div>
@@ -184,17 +263,21 @@
             Yaygın programlama görevleri için hazır kod parçacıkları ve yeniden
             kullanılabilir bileşenler koleksiyonu.
           </p>
-          <div class="app-tech">
-            <span class="tech-tag">Code</span>
-            <span class="tech-tag">Snippets</span>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
           </div>
-          <a href="#" class="app-link" target="_blank">
-            <i class="fas fa-external-link-alt"></i> İncele
-          </a>
         </div>
 
         <!-- App Card 5 -->
-        <div class="app-card">
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
           <div class="app-icon">
             <i class="fas fa-gamepad"></i>
           </div>
@@ -203,17 +286,21 @@
             Çeşitli teknolojilerin canlı örnekleri ve interaktif
             demonstrasyonlar. Deneyerek öğrenin!
           </p>
-          <div class="app-tech">
-            <span class="tech-tag">Demo</span>
-            <span class="tech-tag">Interactive</span>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
           </div>
-          <a href="#" class="app-link" target="_blank">
-            <i class="fas fa-external-link-alt"></i> İncele
-          </a>
         </div>
 
         <!-- App Card 6 -->
-        <div class="app-card">
+        <div class="app-card" data-category="stable">
+          <div class="app-status">
+            <span class="status-badge live">🟢 Live</span>
+          </div>
           <div class="app-icon">
             <i class="fas fa-book"></i>
           </div>
@@ -222,18 +309,34 @@
             Programlama öğrenmek ve geliştirmek için özenle seçilmiş kaynaklar,
             tutorial'lar ve eğitim materyalleri.
           </p>
-          <div class="app-tech">
-            <span class="tech-tag">Learning</span>
-            <span class="tech-tag">Resources</span>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
           </div>
-          <a href="#" class="app-link" target="_blank">
-            <i class="fas fa-external-link-alt"></i> İncele
-          </a>
         </div>
+      </div>
+    </section>
+
+    <!-- ================= WHAT I'M WORKING ON ================= -->
+    <section class="working-on">
+      <div class="working-on-card">
+        <h2>
+          <i class="fas fa-lightbulb"></i> What I'm Working On Now
+        </h2>
+        <p>
+          Currently exploring AI-powered text summarization and data generation
+          tools. Building practical solutions for academic research and content
+          creation workflows.
+        </p>
       </div>
     </section>
 
     <!-- ================= SCRIPT ================= -->
     <script src="script.js"></script>
+    <script src="blog.js"></script>
   </body>
 </html>

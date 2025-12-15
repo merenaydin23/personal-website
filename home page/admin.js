@@ -70,20 +70,48 @@ window.addEventListener("load", () => {
 });
 
 function setupEventListeners() {
-  // Login Form Handler
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
+  // Login Form Handler - DOM elementlerini tekrar al
+  initDOM();
+  
+  // Login formunu bul ve event ekle
+  const form = document.getElementById("login-form");
+  const passwordInput = document.getElementById("admin-password");
+  const messageDiv = document.getElementById("login-message");
+  
+  console.log("🔧 Login form elementi:", form);
+  console.log("🔧 Password input elementi:", passwordInput);
+  
+  if (form) {
+    // Önceki event listener'ları temizle
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+    
+    // Yeni form'a event ekle
+    newForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const password = adminPasswordInput.value.trim();
+      e.stopPropagation();
+      
+      const passwordInput = document.getElementById("admin-password");
+      const messageDiv = document.getElementById("login-message");
+      const password = passwordInput ? passwordInput.value.trim() : "";
+      
+      console.log("🔐 Şifre kontrol ediliyor...");
+      console.log("🔐 Girilen şifre:", password);
+      console.log("🔐 Beklenen şifre:", ADMIN_PASSWORD);
+      console.log("🔐 Eşit mi?", password === ADMIN_PASSWORD);
 
       if (password === ADMIN_PASSWORD) {
         console.log("✅ Şifre doğru, giriş yapılıyor");
         localStorage.setItem("adminLoggedIn", "true");
+        
+        // DOM'u tekrar al
+        initDOM();
         showAdminPanel();
+        
         // Giriş yaptıktan sonra verileri yükle
         setTimeout(() => {
           console.log("⏰ Giriş sonrası veriler yükleniyor...");
-          initDOM(); // DOM'u tekrar al
+          initDOM();
           loadData();
         }, 500);
         
@@ -92,17 +120,29 @@ function setupEventListeners() {
           initDOM();
           loadData();
         }, 1500);
-        adminPasswordInput.value = "";
+        
+        if (passwordInput) passwordInput.value = "";
       } else {
-        showMessage(
-          loginMessage,
-          "❌ Yanlış şifre! Lütfen tekrar deneyin.",
-          "error"
-        );
-        adminPasswordInput.value = "";
-        adminPasswordInput.focus();
+        console.log("❌ Yanlış şifre!");
+        if (messageDiv) {
+          messageDiv.textContent = "❌ Yanlış şifre! Lütfen tekrar deneyin.";
+          messageDiv.className = "form-message error";
+          messageDiv.style.display = "block";
+          setTimeout(() => {
+            messageDiv.style.display = "none";
+            messageDiv.className = "form-message";
+          }, 3000);
+        }
+        if (passwordInput) {
+          passwordInput.value = "";
+          passwordInput.focus();
+        }
       }
     });
+    
+    console.log("✅ Login form event listener eklendi");
+  } else {
+    console.error("❌ Login form bulunamadı!");
   }
 
   // Logout Handler

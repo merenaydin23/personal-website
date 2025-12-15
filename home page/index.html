@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muhammed Eren Aydin | Personal Website</title>
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="profile-wrapper">
+      <img src="profile.jpg" alt="Profile Photo" class="profile-img" />
+    </div>
+
+    <h1 class="hero-name">Muhammed Eren Aydin</h1>
+
+    <p class="hero-subtitle">
+      Software Developer · Learning and Exploring Technologies
+    </p>
+
+    <div class="social-links">
+      <!-- Added social-link and social-github classes -->
+      <a href="https://github.com/merenaydin23" target="_blank" class="social-link social-github">
+        <i class="fab fa-github"></i> GitHub
+      </a>
+      <!-- Added social-link and social-linkedin classes -->
+      <a href="https://www.linkedin.com/in/muhammederen23/" target="_blank" class="social-link social-linkedin">
+        <i class="fab fa-linkedin"></i> LinkedIn
+      </a>
+      <!-- Added social-link and social-instagram classes -->
+      <a href="https://www.instagram.com/erenaydinn23" target="_blank" class="social-link social-instagram">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about">
+    <h2>About Me</h2>
+
+    <div class="card">
+      <p>👋 Hello, I am <strong>Muhammed Eren Aydin</strong>, born on September 29, 2005 in Elazig.</p>
+
+      <p>💻 I am a third-year Software Engineering student at Firat University, focusing on web development, artificial intelligence, and modern software technologies.</p>
+
+      <p>🚀 Through this website, I share my projects, learning journey, and experiences as I continue to grow in software development.</p>
+
+      <p>📬 You can subscribe via email to stay updated when I publish new projects or articles.</p>
+
+      <p>✨ This site will remain an active part of my learning and production journey.</p>
+    </div>
+  </section>
+
+  <!-- ================= SUBSCRIBE BOX ================= -->
+  <div class="subscribe-widget" id="subscribeWidget">
+    <button class="subscribe-toggle" onclick="toggleSubscribe()">
+      <i class="fa-solid fa-envelope"></i>
+    </button>
+
+    <div class="subscribe-box">
+      <h3>Stay Updated</h3>
+      <p>Get notified about new projects and technologies.</p>
+
+      <!-- Added subscribe-input class -->
+      <input type="email" placeholder="Enter your email address" class="subscribe-input" />
+      <!-- Added subscribe-button class -->
+      <button onclick="subscribe()" class="subscribe-button">Subscribe</button>
+
+      <span class="subscribe-success" id="subscribeSuccess">
+        ✓ You are subscribed
+      </span>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPT ================= -->
+  <script src="script.js"></script>
+
+</body>
+</html>

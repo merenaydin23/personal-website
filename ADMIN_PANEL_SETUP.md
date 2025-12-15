@@ -24,9 +24,11 @@
 
 1. `admin.js` dosyasını açın
 2. Şu satırı bulun:
+
 ```javascript
 const ADMIN_PASSWORD = "admin123";
 ```
+
 3. Şifreyi istediğiniz güçlü bir şifre ile değiştirin
 4. **ÖNEMLİ:** Şifreyi güvenli tutun ve kimseyle paylaşmayın!
 
@@ -56,16 +58,19 @@ Admin paneli Google Sheets'ten verileri otomatik olarak çeker. Eğer veriler g�
 ## 🐛 Sorun Giderme
 
 ### Veriler görünmüyor
+
 - Google Apps Script'te `doGet` fonksiyonunu kontrol edin
 - Web App URL'sinin doğru olduğundan emin olun
 - Browser Console'da hataları kontrol edin
 
 ### Şifre çalışmıyor
+
 - `admin.js` dosyasındaki şifreyi kontrol edin
 - Şifrede boşluk olmadığından emin olun
 - Browser cache'ini temizleyin
 
 ### CSV indirme çalışmıyor
+
 - Browser'ın pop-up blocker'ını kontrol edin
 - Verilerin yüklendiğinden emin olun
 

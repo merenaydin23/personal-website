@@ -54,10 +54,10 @@ function doGet(e) {
     if (e.parameter.action === "getData") {
       const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
       const data = sheet.getDataRange().getValues();
-      
+
       // İlk satırı (başlıkları) atla
       const rows = data.slice(1);
-      
+
       // Verileri JSON formatına çevir
       const result = rows.map((row, index) => {
         return {
@@ -67,15 +67,18 @@ function doGet(e) {
           time: row[2] || "",
         };
       });
-      
+
       return ContentService.createTextOutput(
         JSON.stringify(result)
       ).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     // Varsayılan yanıt
     return ContentService.createTextOutput(
-      JSON.stringify({ message: "Newsletter API is running", action: "Use ?action=getData to get data" })
+      JSON.stringify({
+        message: "Newsletter API is running",
+        action: "Use ?action=getData to get data",
+      })
     ).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
     return ContentService.createTextOutput(

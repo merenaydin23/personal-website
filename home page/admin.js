@@ -2,10 +2,8 @@
 // ⚠️ ÖNEMLİ: Şifreyi değiştirin!
 const ADMIN_PASSWORD = "admin123"; // Bu şifreyi değiştirin!
 
-// Google Sheets API URL (read-only için)
-// Google Apps Script'te doGet fonksiyonu ile verileri JSON olarak döndürmelisiniz
-const GOOGLE_SHEETS_API_URL =
-  "https://script.google.com/macros/s/AKfycbwPTDos3jCiAk3_S4taASg_6uPBg1ChFSjrDQd0uHRNfnv_GSWhGAswbwcQoIsudci7/exec";
+// Newsletter kayıtları localStorage'dan okunacak
+const STORAGE_KEY = "newsletter_subscribers";
 
 // DOM Elements
 const loginScreen = document.getElementById("login-screen");
@@ -37,7 +35,11 @@ loginForm.addEventListener("submit", (e) => {
     loadData();
     adminPasswordInput.value = "";
   } else {
-    showMessage(loginMessage, "❌ Yanlış şifre! Lütfen tekrar deneyin.", "error");
+    showMessage(
+      loginMessage,
+      "❌ Yanlış şifre! Lütfen tekrar deneyin.",
+      "error"
+    );
     adminPasswordInput.value = "";
     adminPasswordInput.focus();
   }
@@ -73,24 +75,14 @@ function showLoginScreen() {
     '<tr><td colspan="4" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Veriler yükleniyor...</td></tr>';
 }
 
-// Load Data from Google Sheets
-async function loadData() {
+// Load Data from localStorage
+function loadData() {
   dataTableBody.innerHTML =
     '<tr><td colspan="4" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Veriler yükleniyor...</td></tr>';
 
   try {
-    // Google Apps Script'ten veri çekme
-    // Not: Google Apps Script'te doGet fonksiyonunu güncellemeniz gerekecek
-    const response = await fetch(GOOGLE_SHEETS_API_URL + "?action=getData", {
-      method: "GET",
-      mode: "cors",
-    });
-
-    if (!response.ok) {
-      throw new Error("Veri alınamadı");
-    }
-
-    const data = await response.json();
+    // localStorage'dan verileri oku
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     displayData(data);
   } catch (error) {
     console.error("Error loading data:", error);
@@ -98,7 +90,6 @@ async function loadData() {
       <tr>
         <td colspan="4" class="error-row">
           <i class="fas fa-exclamation-triangle"></i> Veriler yüklenirken hata oluştu.
-          <br><small>Google Apps Script'te doGet fonksiyonunu kontrol edin.</small>
         </td>
       </tr>
     `;
@@ -119,7 +110,11 @@ function displayData(data) {
   const reversedData = [...data].reverse();
 
   let html = "";
-  let today = new Date().toLocaleDateString("tr-TR");
+  const today = new Date().toLocaleDateString("tr-TR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
   reversedData.forEach((row, index) => {
     const rowNumber = reversedData.length - index;
@@ -162,7 +157,10 @@ function exportToCSV() {
   const link = document.createElement("a");
   const url = URL.createObjectURL(blob);
   link.setAttribute("href", url);
-  link.setAttribute("download", `newsletter-kayitlari-${new Date().toISOString().split("T")[0]}.csv`);
+  link.setAttribute(
+    "download",
+    `newsletter-kayitlari-${new Date().toISOString().split("T")[0]}.csv`
+  );
   link.style.visibility = "hidden";
   document.body.appendChild(link);
   link.click();

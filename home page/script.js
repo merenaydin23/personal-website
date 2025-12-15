@@ -56,13 +56,11 @@ const newsletterForm = document.getElementById("newsletter-form");
 const emailInput = document.getElementById("email-input");
 const formMessage = document.getElementById("form-message");
 
-// ⚠️ ÖNEMLİ: Google Apps Script Web App URL'inizi buraya ekleyin
-// Google Sheets için Apps Script oluşturduktan sonra Web App URL'ini buraya yapıştırın
-const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwPTDos3jCiAk3_S4taASg_6uPBg1ChFSjrDQd0uHRNfnv_GSWhGAswbwcQoIsudci7/exec";
+// Newsletter kayıtlarını localStorage'da sakla
+const STORAGE_KEY = "newsletter_subscribers";
 
 if (newsletterForm) {
-  newsletterForm.addEventListener("submit", async (e) => {
+  newsletterForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const email = emailInput.value.trim();
@@ -74,38 +72,55 @@ if (newsletterForm) {
       return;
     }
 
+    // Mevcut kayıtları kontrol et
+    const existingData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const emailExists = existingData.some((item) => item.email === email);
+
+    if (emailExists) {
+      showMessage("Bu e-posta adresi zaten kayıtlı!", "error");
+      emailInput.value = "";
+      return;
+    }
+
     // Disable button during submission
     submitBtn.disabled = true;
     submitBtn.innerHTML =
       '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
 
     try {
-      // Send data to Google Sheets via Apps Script
-      const payload = {
-        email: email,
-        timestamp: new Date().toISOString(),
-      };
-
-      // Google Apps Script için özel fetch yöntemi
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+      // Yeni kayıt oluştur
+      const now = new Date();
+      const date = now.toLocaleDateString("tr-TR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+      const time = now.toLocaleTimeString("tr-TR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
       });
 
-      // no-cors mode'da response göremiyoruz ama istek gönderilir
-      // Başarılı sayıyoruz (gerçek kontrol Google Sheets'te yapılmalı)
+      const newRecord = {
+        id: Date.now(),
+        email: email,
+        date: date,
+        time: time,
+        timestamp: now.toISOString(),
+      };
+
+      // Kayıtları localStorage'a ekle
+      existingData.push(newRecord);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
+
+      // Başarı mesajı
       showMessage(
         "✅ Kayıt başarılı! Güncellemelerden haberdar olacaksınız.",
         "success"
       );
       emailInput.value = "";
 
-      // Console'da kontrol için
-      console.log("Newsletter kaydı gönderildi:", email);
+      console.log("Newsletter kaydı eklendi:", email);
     } catch (error) {
       console.error("Error:", error);
       showMessage(

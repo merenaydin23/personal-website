@@ -60,7 +60,10 @@ function setupEventListeners() {
         setTimeout(() => {
           console.log("⏰ Giriş sonrası veriler yükleniyor...");
           console.log("🔍 DOM elementleri kontrol ediliyor...");
-          console.log("dataTableBody:", document.getElementById("data-table-body"));
+          console.log(
+            "dataTableBody:",
+            document.getElementById("data-table-body")
+          );
           console.log("totalCount:", document.getElementById("total-count"));
           console.log("todayCount:", document.getElementById("today-count"));
           loadData();
@@ -194,7 +197,9 @@ function loadData() {
       console.log("📋 İlk kayıt:", data[0]);
 
       if (data && Array.isArray(data) && data.length > 0) {
-        console.log(`✅ ${data.length} adet veri bulundu, displayData çağrılıyor...`);
+        console.log(
+          `✅ ${data.length} adet veri bulundu, displayData çağrılıyor...`
+        );
         // DOM elementlerini tekrar kontrol et
         if (!dataTableBody) {
           dataTableBody = document.getElementById("data-table-body");

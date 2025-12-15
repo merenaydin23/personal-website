@@ -58,8 +58,7 @@ const formMessage = document.getElementById("form-message");
 
 // ⚠️ ÖNEMLİ: Google Apps Script Web App URL'inizi buraya ekleyin
 // Google Sheets için Apps Script oluşturduktan sonra Web App URL'ini buraya yapıştırın
-const GOOGLE_SCRIPT_URL =
-  "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1WssvKfRaCNOJHJH7Jp1UDamgYkYXzTW7tc_3gYI2gvKVjgY0R0okYBwSY9hLlnFu/exec";
 
 if (newsletterForm) {
   newsletterForm.addEventListener("submit", async (e) => {
@@ -76,7 +75,8 @@ if (newsletterForm) {
 
     // Disable button during submission
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+    submitBtn.innerHTML =
+      '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
 
     try {
       // Send data to Google Sheets via Apps Script

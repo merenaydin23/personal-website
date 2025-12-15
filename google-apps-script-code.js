@@ -49,7 +49,37 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput(
-    "Newsletter API is running"
-  ).setMimeType(ContentService.MimeType.TEXT);
+  try {
+    // Admin panelinden veri okuma isteği
+    if (e.parameter.action === "getData") {
+      const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+      const data = sheet.getDataRange().getValues();
+      
+      // İlk satırı (başlıkları) atla
+      const rows = data.slice(1);
+      
+      // Verileri JSON formatına çevir
+      const result = rows.map((row, index) => {
+        return {
+          id: index + 1,
+          email: row[0] || "",
+          date: row[1] || "",
+          time: row[2] || "",
+        };
+      });
+      
+      return ContentService.createTextOutput(
+        JSON.stringify(result)
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Varsayılan yanıt
+    return ContentService.createTextOutput(
+      JSON.stringify({ message: "Newsletter API is running", action: "Use ?action=getData to get data" })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ error: error.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
 }

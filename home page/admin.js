@@ -270,6 +270,8 @@ function loadData() {
     }
   } catch (error) {
     console.error("❌ Error loading data:", error);
+    console.error("Error stack:", error.stack);
+    initDOM(); // DOM'u tekrar al
     if (dataTableBody) {
       dataTableBody.innerHTML = `
         <tr>

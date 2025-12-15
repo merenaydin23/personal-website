@@ -348,6 +348,9 @@ h2 {
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 .project-card:hover {
@@ -391,6 +394,7 @@ h2 {
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 24px;
+  flex-grow: 0;
 }
 
 .tech-tag {
@@ -423,6 +427,8 @@ h2 {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+  margin-top: auto;
+  width: fit-content;
 }
 
 .project-link:hover {

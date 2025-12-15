@@ -8,7 +8,7 @@
 /* BODY */
 body {
   font-family: "Inter", Arial, sans-serif;
-  background: linear-gradient(120deg, #928888, #203a43, #2c5364);
+  background: linear-gradient(120deg, #0a0a0a, #1a1a2e, #16213e);
   color: #eaeaea;
   min-height: 100vh;
   line-height: 1.7;
@@ -25,18 +25,18 @@ body::after {
   height: 520px;
   border-radius: 50%;
   filter: blur(140px);
-  opacity: 0.22;
+  opacity: 0.15;
   z-index: -1;
 }
 
 body::before {
-  background: #00c6ff;
+  background: #0066cc;
   top: -180px;
   left: -180px;
 }
 
 body::after {
-  background: #00ffd5;
+  background: #0099aa;
   bottom: -180px;
   right: -180px;
 }
@@ -230,10 +230,11 @@ h2 {
   max-width: 860px;
   margin: 8px auto 0;
   padding: 48px 56px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.4);
   border-radius: 24px;
   backdrop-filter: blur(14px);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .card p {
@@ -285,7 +286,7 @@ h2 {
 .email-input {
   width: 100%;
   padding: 16px 20px 16px 50px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.4);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   color: #eaeaea;
@@ -296,8 +297,8 @@ h2 {
 
 .email-input:focus {
   border-color: #00c6ff;
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 20px rgba(0, 198, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 20px rgba(0, 198, 255, 0.3);
 }
 
 .email-input::placeholder {
@@ -368,13 +369,13 @@ h2 {
   z-index: 1000;
   display: flex;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(20px);
   padding: 8px;
   border-radius: 60px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav-link {
@@ -413,9 +414,9 @@ h2 {
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 198, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 198, 255, 0.3);
   color: #ffffff;
 }
 
@@ -467,13 +468,13 @@ h2 {
 }
 
 .project-card {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(14px);
   border-radius: 24px;
   padding: 32px;
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.7);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -583,13 +584,13 @@ h2 {
 }
 
 .blog-card {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(14px);
   border-radius: 24px;
   padding: 32px;
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.7);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
 }
 
@@ -674,13 +675,13 @@ h2 {
 }
 
 .app-card {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(14px);
   border-radius: 24px;
   padding: 32px;
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.7);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .app-card:hover {

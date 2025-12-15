@@ -113,14 +113,17 @@ if (newsletterForm) {
       existingData.push(newRecord);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
 
+      // Debug: localStorage'ı kontrol et
+      console.log("Newsletter kaydı eklendi:", email);
+      console.log("Toplam kayıt sayısı:", existingData.length);
+      console.log("localStorage verisi:", localStorage.getItem(STORAGE_KEY));
+
       // Başarı mesajı
       showMessage(
         "✅ Kayıt başarılı! Güncellemelerden haberdar olacaksınız.",
         "success"
       );
       emailInput.value = "";
-
-      console.log("Newsletter kaydı eklendi:", email);
     } catch (error) {
       console.error("Error:", error);
       showMessage(

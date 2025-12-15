@@ -5,61 +5,88 @@ const ADMIN_PASSWORD = "admin123"; // Bu şifreyi değiştirin!
 // Newsletter kayıtları localStorage'dan okunacak
 const STORAGE_KEY = "newsletter_subscribers";
 
-// DOM Elements
-const loginScreen = document.getElementById("login-screen");
-const adminPanel = document.getElementById("admin-panel");
-const loginForm = document.getElementById("login-form");
-const adminPasswordInput = document.getElementById("admin-password");
-const loginMessage = document.getElementById("login-message");
-const logoutBtn = document.getElementById("logout-btn");
-const refreshBtn = document.getElementById("refresh-btn");
-const exportBtn = document.getElementById("export-btn");
-const dataTableBody = document.getElementById("data-table-body");
-const totalCount = document.getElementById("total-count");
-const todayCount = document.getElementById("today-count");
+// DOM Elements - Sayfa yüklendikten sonra al
+let loginScreen, adminPanel, loginForm, adminPasswordInput, loginMessage;
+let logoutBtn, refreshBtn, exportBtn, dataTableBody, totalCount, todayCount;
 
-// Check if already logged in
-if (localStorage.getItem("adminLoggedIn") === "true") {
-  showAdminPanel();
-  loadData();
+// Sayfa yüklendiğinde çalış
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM Elements
+  loginScreen = document.getElementById("login-screen");
+  adminPanel = document.getElementById("admin-panel");
+  loginForm = document.getElementById("login-form");
+  adminPasswordInput = document.getElementById("admin-password");
+  loginMessage = document.getElementById("login-message");
+  logoutBtn = document.getElementById("logout-btn");
+  refreshBtn = document.getElementById("refresh-btn");
+  exportBtn = document.getElementById("export-btn");
+  dataTableBody = document.getElementById("data-table-body");
+  totalCount = document.getElementById("total-count");
+  todayCount = document.getElementById("today-count");
+
+  // Check if already logged in
+  if (localStorage.getItem("adminLoggedIn") === "true") {
+    showAdminPanel();
+    // Sayfa yüklendiğinde verileri yükle
+    setTimeout(() => {
+      loadData();
+    }, 100);
+  }
+
+  // Event listeners
+  setupEventListeners();
+});
+
+function setupEventListeners() {
+  // Login Form Handler
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const password = adminPasswordInput.value.trim();
+
+      if (password === ADMIN_PASSWORD) {
+        localStorage.setItem("adminLoggedIn", "true");
+        showAdminPanel();
+        // Giriş yaptıktan sonra verileri yükle
+        setTimeout(() => {
+          loadData();
+        }, 100);
+        adminPasswordInput.value = "";
+      } else {
+        showMessage(
+          loginMessage,
+          "❌ Yanlış şifre! Lütfen tekrar deneyin.",
+          "error"
+        );
+        adminPasswordInput.value = "";
+        adminPasswordInput.focus();
+      }
+    });
+  }
+
+  // Logout Handler
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("adminLoggedIn");
+      showLoginScreen();
+    });
+  }
+
+  // Refresh Button
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      loadData();
+    });
+  }
+
+  // Export Button
+  if (exportBtn) {
+    exportBtn.addEventListener("click", () => {
+      exportToCSV();
+    });
+  }
 }
 
-// Login Form Handler
-loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const password = adminPasswordInput.value.trim();
-
-  if (password === ADMIN_PASSWORD) {
-    localStorage.setItem("adminLoggedIn", "true");
-    showAdminPanel();
-    loadData();
-    adminPasswordInput.value = "";
-  } else {
-    showMessage(
-      loginMessage,
-      "❌ Yanlış şifre! Lütfen tekrar deneyin.",
-      "error"
-    );
-    adminPasswordInput.value = "";
-    adminPasswordInput.focus();
-  }
-});
-
-// Logout Handler
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("adminLoggedIn");
-  showLoginScreen();
-});
-
-// Refresh Button
-refreshBtn.addEventListener("click", () => {
-  loadData();
-});
-
-// Export Button
-exportBtn.addEventListener("click", () => {
-  exportToCSV();
-});
 
 // Show Admin Panel
 function showAdminPanel() {
@@ -82,7 +109,13 @@ function loadData() {
 
   try {
     // localStorage'dan verileri oku
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const rawData = localStorage.getItem(STORAGE_KEY);
+    console.log("localStorage'dan okunan veri:", rawData);
+    
+    const data = JSON.parse(rawData || "[]");
+    console.log("Parse edilmiş veri:", data);
+    console.log("Veri sayısı:", data.length);
+    
     displayData(data);
   } catch (error) {
     console.error("Error loading data:", error);
@@ -90,6 +123,7 @@ function loadData() {
       <tr>
         <td colspan="4" class="error-row">
           <i class="fas fa-exclamation-triangle"></i> Veriler yüklenirken hata oluştu.
+          <br><small>${error.message}</small>
         </td>
       </tr>
     `;

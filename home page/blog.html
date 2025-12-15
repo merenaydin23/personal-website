@@ -54,11 +54,7 @@
         >
           <i class="fas fa-newspaper"></i> 📝 Blog
         </button>
-        <button
-          class="tab-btn"
-          data-tab="apps"
-          onclick="switchTab('apps')"
-        >
+        <button class="tab-btn" data-tab="apps" onclick="switchTab('apps')">
           <i class="fas fa-rocket"></i> 🚀 Uygulamalar
         </button>
       </div>
@@ -69,29 +65,83 @@
       <!-- Blog Filters -->
       <div class="blog-filters">
         <button class="filter-btn active" data-filter="all">Tümü</button>
-        <button class="filter-btn" data-filter="tech">Güncel Teknolojiler</button>
-        <button class="filter-btn" data-filter="learning">Öğrenme Notları</button>
-        <button class="filter-btn" data-filter="solution">Problem → Çözüm</button>
+        <button class="filter-btn" data-filter="tech">
+          Güncel Teknolojiler
+        </button>
+        <button class="filter-btn" data-filter="learning">
+          Öğrenme Notları
+        </button>
+        <button class="filter-btn" data-filter="solution">
+          Problem → Çözüm
+        </button>
         <button class="filter-btn" data-filter="radar">Tech Radar</button>
       </div>
 
       <!-- Blog Grid -->
       <div class="blog-grid">
-        <!-- Blog Card 1 -->
+        <!-- PROJE 1 - 17.12.2025 -->
         <article class="blog-card" data-category="tech">
           <div class="blog-header">
-            <h3 class="blog-title">Yapay Zeka ve Gelecek</h3>
+            <h3 class="blog-title">🤖 AI ile Otomatik Etiketleme (NLP)</h3>
             <div class="blog-date">
-              <i class="far fa-calendar"></i> 12 Mart 2025
+              <i class="far fa-calendar"></i> 17 Aralık 2025
             </div>
           </div>
           <p class="blog-description">
-            Modern yapay zeka teknolojilerinin gelişimi ve yazılım dünyasına
-            etkileri hakkında detaylı bir inceleme.
+            Bir metni yapay zekâya vererek otomatik etiketler (tags) üretmek.
+            Cohere/OpenAI/Gemini API kullanarak metin analizi ve etiket doğruluğu
+            üzerine deneyimler.
           </p>
           <div class="blog-tags">
             <span class="tag">#AI</span>
-            <span class="tag">#Web</span>
+            <span class="tag">#NLP</span>
+            <span class="tag">#Python</span>
+            <span class="tag">#API</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- PROJE 2 - 31.12.2025 -->
+        <article class="blog-card" data-category="learning">
+          <div class="blog-header">
+            <h3 class="blog-title">🔍 Prompt Karşılaştırma Deneyi</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 31 Aralık 2025
+            </div>
+          </div>
+          <p class="blog-description">
+            Aynı sorunun farklı prompt'larla nasıl farklı sonuçlar ürettiğini
+            görmek. Küçük prompt değişikliklerinin etkisi ve hangi prompt'un
+            daha net sonuç verdiği üzerine gözlemler.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#AI</span>
+            <span class="tag">#Prompt Engineering</span>
+            <span class="tag">#Learning</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- PROJE 3 - 14.01.2026 -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">📊 AI ile Sentetik Veri Üretimi</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 14 Ocak 2026
+            </div>
+          </div>
+          <p class="blog-description">
+            AI kullanarak sahte ama mantıklı metin veri setleri üretmek. Sentetik
+            verinin ne zaman işe yaradığı ve gerçek veriye alternatif olup
+            olamayacağı üzerine düşünceler.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#AI</span>
+            <span class="tag">#Data Generation</span>
             <span class="tag">#Python</span>
           </div>
           <a href="#" class="blog-read-more">
@@ -99,66 +149,159 @@
           </a>
         </article>
 
-        <!-- Blog Card 2 -->
+        <!-- PROJE 4 - 28.01.2026 -->
         <article class="blog-card" data-category="tech">
           <div class="blog-header">
-            <h3 class="blog-title">React 19 ve Yeni Özellikler</h3>
+            <h3 class="blog-title">🔗 Embedding ile Benzer İçerik Bulma</h3>
             <div class="blog-date">
-              <i class="far fa-calendar"></i> 10 Mart 2025
+              <i class="far fa-calendar"></i> 28 Ocak 2026
             </div>
           </div>
           <p class="blog-description">
-            React'in en son sürümündeki yenilikler, performans iyileştirmeleri
-            ve geliştirici deneyimi üzerine bir analiz.
+            Metinler arası anlamsal benzerlik hesaplamak. Keyword arama vs
+            anlamsal arama karşılaştırması ve embedding tabanlı benzerlik
+            hesaplama deneyimleri.
           </p>
           <div class="blog-tags">
-            <span class="tag">#React</span>
-            <span class="tag">#Frontend</span>
-            <span class="tag">#JavaScript</span>
+            <span class="tag">#AI</span>
+            <span class="tag">#Embedding</span>
+            <span class="tag">#Semantic Search</span>
           </div>
           <a href="#" class="blog-read-more">
             Devamını Oku <i class="fas fa-arrow-right"></i>
           </a>
         </article>
 
-        <!-- Blog Card 3 -->
-        <article class="blog-card" data-category="learning">
+        <!-- PROJE 5 - 11.02.2026 -->
+        <article class="blog-card" data-category="tech">
           <div class="blog-header">
-            <h3 class="blog-title">Cloud Computing ve DevOps</h3>
+            <h3 class="blog-title">📝 AI ile Metin Sınıflandırma</h3>
             <div class="blog-date">
-              <i class="far fa-calendar"></i> 8 Mart 2025
+              <i class="far fa-calendar"></i> 11 Şubat 2026
             </div>
           </div>
           <p class="blog-description">
-            Bulut teknolojileri, containerization ve modern DevOps uygulamaları
-            hakkında pratik bilgiler ve deneyimler.
+            Metinleri türüne göre ayırmak (blog, haber, akademik vb.).
+            Sınıflandırma doğruluğu, hangi içeriklerde zorlandığı ve
+            kategorilerin genişletilmesi üzerine notlar.
           </p>
           <div class="blog-tags">
-            <span class="tag">#Cloud</span>
-            <span class="tag">#DevOps</span>
-            <span class="tag">#Docker</span>
+            <span class="tag">#AI</span>
+            <span class="tag">#Classification</span>
+            <span class="tag">#NLP</span>
           </div>
           <a href="#" class="blog-read-more">
             Devamını Oku <i class="fas fa-arrow-right"></i>
           </a>
         </article>
 
-        <!-- Blog Card 4 -->
+        <!-- PROJE 6 - 25.02.2026 -->
         <article class="blog-card" data-category="solution">
           <div class="blog-header">
-            <h3 class="blog-title">Mobil Uygulama Geliştirme Trendleri</h3>
+            <h3 class="blog-title">🕷️ Web Scraping + AI Destekli Temizleme</h3>
             <div class="blog-date">
-              <i class="far fa-calendar"></i> 5 Mart 2025
+              <i class="far fa-calendar"></i> 25 Şubat 2026
             </div>
           </div>
           <p class="blog-description">
-            2024'ün mobil uygulama geliştirme trendleri, cross-platform
-            çözümler ve kullanıcı deneyimi odaklı yaklaşımlar.
+            Web'den alınan ham veriyi AI ile okunabilir hale getirmek. Ham veri
+            sorunları, AI temizlikteki başarı oranı ve otomatik analiz
+            eklenmesi üzerine deneyimler.
           </p>
           <div class="blog-tags">
-            <span class="tag">#Mobile</span>
-            <span class="tag">#React Native</span>
-            <span class="tag">#Flutter</span>
+            <span class="tag">#Web Scraping</span>
+            <span class="tag">#AI</span>
+            <span class="tag">#Data Cleaning</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- PROJE 7 - 11.03.2026 -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">📄 PDF Üzerinden Soru–Cevap (Mini RAG)</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 11 Mart 2026
+            </div>
+          </div>
+          <p class="blog-description">
+            PDF dokümanlardan bilgi çıkararak soru cevaplamak. RAG nedir, ne
+            zaman işe yarar ve çoklu PDF desteği eklenmesi üzerine gözlemler.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#RAG</span>
+            <span class="tag">#AI</span>
+            <span class="tag">#PDF</span>
+            <span class="tag">#Embedding</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- PROJE 8 - 25.03.2026 -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">🖼️ Görüntüden Metin (Image Captioning)</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 25 Mart 2026
+            </div>
+          </div>
+          <p class="blog-description">
+            Görsellerden açıklama üretmek. Vision API kullanarak görsel analizi
+            ve çoklu görsel desteği eklenmesi üzerine deneyimler.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#AI</span>
+            <span class="tag">#Vision</span>
+            <span class="tag">#Image Processing</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- PROJE 9 - 08.04.2026 -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">🎤 Speech-to-Text (Ses → Metin)</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 8 Nisan 2026
+            </div>
+          </div>
+          <p class="blog-description">
+            Ses dosyalarını yazıya çevirmek. Speech API kullanarak ses işleme ve
+            metin dönüştürme deneyimleri.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#AI</span>
+            <span class="tag">#Speech</span>
+            <span class="tag">#Audio Processing</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- PROJE 10 - 22.04.2026 -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">🔎 Embedding Tabanlı Arama (Mini RAG)</h3>
+            <div class="blog-date">
+              <i class="far fa-calendar"></i> 22 Nisan 2026
+            </div>
+          </div>
+          <p class="blog-description">
+            Anlamsal arama + cevap üretme sistemi kurmak. Embedding tabanlı
+            arama ve RAG sisteminin tamamlanması üzerine final gözlemler.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#RAG</span>
+            <span class="tag">#AI</span>
+            <span class="tag">#Embedding</span>
+            <span class="tag">#Semantic Search</span>
           </div>
           <a href="#" class="blog-read-more">
             Devamını Oku <i class="fas fa-arrow-right"></i>
@@ -172,50 +315,31 @@
       <!-- App Categories -->
       <div class="app-categories">
         <button class="category-btn active" data-category="all">Tümü</button>
-        <button class="category-btn" data-category="stable">🟢 Stable Apps</button>
+        <button class="category-btn" data-category="stable">
+          🟢 Stable Apps
+        </button>
         <button class="category-btn" data-category="experimental">
           🔧 Experiments
         </button>
-        <button class="category-btn" data-category="tools">🛠️ Mini Tools</button>
+        <button class="category-btn" data-category="tools">
+          🛠️ Mini Tools
+        </button>
       </div>
 
       <!-- Apps Grid -->
       <div class="apps-grid">
-        <!-- App Card 1 -->
-        <div class="app-card" data-category="stable">
-          <div class="app-status">
-            <span class="status-badge live">🟢 Live</span>
-          </div>
-          <div class="app-icon">
-            <i class="fas fa-tools"></i>
-          </div>
-          <h3 class="app-title">Geliştirici Araçları</h3>
-          <p class="app-description">
-            Günlük geliştirme sürecinde kullanabileceğiniz pratik araçlar ve
-            yardımcı uygulamalar koleksiyonu.
-          </p>
-          <div class="app-links">
-            <a href="#" class="app-link live-link" target="_blank">
-              <i class="fas fa-external-link-alt"></i> Canlı Gör
-            </a>
-            <a href="#" class="app-link github-link" target="_blank">
-              <i class="fab fa-github"></i> GitHub
-            </a>
-          </div>
-        </div>
-
-        <!-- App Card 2 -->
+        <!-- PROJE 1 - AI ile Otomatik Etiketleme -->
         <div class="app-card" data-category="experimental">
           <div class="app-status">
             <span class="status-badge experimental">🔧 Deneysel</span>
           </div>
           <div class="app-icon">
-            <i class="fas fa-palette"></i>
+            <i class="fas fa-tags"></i>
           </div>
-          <h3 class="app-title">Tasarım Araçları</h3>
+          <h3 class="app-title">AI ile Otomatik Etiketleme</h3>
           <p class="app-description">
-            Modern web ve mobil tasarım için kullanışlı renk paletleri, gradient
-            oluşturucular ve tasarım kaynakları.
+            Metin girdisi alarak AI API ile otomatik etiketler üretme. Cohere,
+            OpenAI veya Gemini kullanarak NLP tabanlı etiketleme sistemi.
           </p>
           <div class="app-links">
             <a href="#" class="app-link live-link" target="_blank">
@@ -227,41 +351,18 @@
           </div>
         </div>
 
-        <!-- App Card 3 -->
-        <div class="app-card" data-category="stable">
-          <div class="app-status">
-            <span class="status-badge live">🟢 Live</span>
-          </div>
-          <div class="app-icon">
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <h3 class="app-title">Veri Analizi Araçları</h3>
-          <p class="app-description">
-            Veri görselleştirme ve analiz için kullanabileceğiniz interaktif
-            uygulamalar ve dashboard örnekleri.
-          </p>
-          <div class="app-links">
-            <a href="#" class="app-link live-link" target="_blank">
-              <i class="fas fa-external-link-alt"></i> Canlı Gör
-            </a>
-            <a href="#" class="app-link github-link" target="_blank">
-              <i class="fab fa-github"></i> GitHub
-            </a>
-          </div>
-        </div>
-
-        <!-- App Card 4 -->
+        <!-- PROJE 2 - Prompt Karşılaştırma -->
         <div class="app-card" data-category="tools">
           <div class="app-status">
             <span class="status-badge experimental">🔧 Deneysel</span>
           </div>
           <div class="app-icon">
-            <i class="fas fa-keyboard"></i>
+            <i class="fas fa-code-compare"></i>
           </div>
-          <h3 class="app-title">Kod Örnekleri ve Snippets</h3>
+          <h3 class="app-title">Prompt Karşılaştırma Deneyi</h3>
           <p class="app-description">
-            Yaygın programlama görevleri için hazır kod parçacıkları ve yeniden
-            kullanılabilir bileşenler koleksiyonu.
+            Aynı soruyu farklı prompt'larla test edip sonuçları yan yana
+            karşılaştırma. Prompt şablonları ve otomatik prompt üretimi.
           </p>
           <div class="app-links">
             <a href="#" class="app-link live-link" target="_blank">
@@ -273,18 +374,18 @@
           </div>
         </div>
 
-        <!-- App Card 5 -->
+        <!-- PROJE 3 - Sentetik Veri Üretimi -->
         <div class="app-card" data-category="experimental">
           <div class="app-status">
             <span class="status-badge experimental">🔧 Deneysel</span>
           </div>
           <div class="app-icon">
-            <i class="fas fa-gamepad"></i>
+            <i class="fas fa-database"></i>
           </div>
-          <h3 class="app-title">İnteraktif Demo'lar</h3>
+          <h3 class="app-title">AI ile Sentetik Veri Üretimi</h3>
           <p class="app-description">
-            Çeşitli teknolojilerin canlı örnekleri ve interaktif
-            demonstrasyonlar. Deneyerek öğrenin!
+            Belirli bir konu için sahte ama mantıklı metin veri setleri üretme.
+            Otomatik dosya kaydetme (txt/csv) ve veri çeşitliliği.
           </p>
           <div class="app-links">
             <a href="#" class="app-link live-link" target="_blank">
@@ -296,18 +397,156 @@
           </div>
         </div>
 
-        <!-- App Card 6 -->
-        <div class="app-card" data-category="stable">
+        <!-- PROJE 4 - Embedding ile Benzer İçerik -->
+        <div class="app-card" data-category="experimental">
           <div class="app-status">
-            <span class="status-badge live">🟢 Live</span>
+            <span class="status-badge experimental">🔧 Deneysel</span>
           </div>
           <div class="app-icon">
-            <i class="fas fa-book"></i>
+            <i class="fas fa-search"></i>
           </div>
-          <h3 class="app-title">Öğrenme Kaynakları</h3>
+          <h3 class="app-title">Embedding ile Benzer İçerik Bulma</h3>
           <p class="app-description">
-            Programlama öğrenmek ve geliştirmek için özenle seçilmiş kaynaklar,
-            tutorial'lar ve eğitim materyalleri.
+            Metinleri embedding'e çevirip cosine similarity ile en benzer olanı
+            bulma. Anlamsal arama ve performans karşılaştırması.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- PROJE 5 - Metin Sınıflandırma -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <h3 class="app-title">AI ile Metin Sınıflandırma</h3>
+          <p class="app-description">
+            Metinleri türüne göre ayırma (blog, haber, akademik vb.). AI Text
+            Classification ile otomatik etiketleme ve kategori genişletme.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- PROJE 6 - Web Scraping + AI Temizleme -->
+        <div class="app-card" data-category="tools">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-spider"></i>
+          </div>
+          <h3 class="app-title">Web Scraping + AI Destekli Temizleme</h3>
+          <p class="app-description">
+            BeautifulSoup/Requests ile web sayfası içeriğini çekip AI ile
+            okunabilir hale getirme. Otomatik analiz ve ham veri temizleme.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- PROJE 7 - PDF Soru-Cevap (RAG) -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-file-pdf"></i>
+          </div>
+          <h3 class="app-title">PDF Üzerinden Soru–Cevap (Mini RAG)</h3>
+          <p class="app-description">
+            PDF text extraction + Embedding + AI ile dokümanlardan bilgi çıkarıp
+            soru cevaplama. Çoklu PDF desteği ve RAG sistemi.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- PROJE 8 - Image Captioning -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-image"></i>
+          </div>
+          <h3 class="app-title">Görüntüden Metin (Image Captioning)</h3>
+          <p class="app-description">
+            Vision API kullanarak görsellerden açıklama üretme. Çoklu görsel
+            desteği ve görsel analiz deneyimleri.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- PROJE 9 - Speech-to-Text -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-microphone"></i>
+          </div>
+          <h3 class="app-title">Speech-to-Text (Ses → Metin)</h3>
+          <p class="app-description">
+            Speech API kullanarak ses dosyalarını yazıya çevirme. Ses işleme ve
+            metin dönüştürme uygulaması.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- PROJE 10 - Embedding Tabanlı Arama -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🔧 Deneysel</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-search-plus"></i>
+          </div>
+          <h3 class="app-title">Embedding Tabanlı Arama (Mini RAG)</h3>
+          <p class="app-description">
+            Anlamsal arama + cevap üretme sistemi. Embedding tabanlı arama ve
+            RAG sisteminin tamamlanması.
           </p>
           <div class="app-links">
             <a href="#" class="app-link live-link" target="_blank">
@@ -324,13 +563,19 @@
     <!-- ================= WHAT I'M WORKING ON ================= -->
     <section class="working-on">
       <div class="working-on-card">
-        <h2>
-          <i class="fas fa-lightbulb"></i> What I'm Working On Now
-        </h2>
+        <h2><i class="fas fa-lightbulb"></i> What I'm Working On Now</h2>
         <p>
-          Currently exploring AI-powered text summarization and data generation
-          tools. Building practical solutions for academic research and content
-          creation workflows.
+          <strong>🗺️ AI Mini Proje Yol Haritası</strong> - 2 haftada 1 proje
+          olmak üzere toplam 10 AI deneyi üzerinde çalışıyorum. Yeni ve güncel
+          yapay zekâ teknolojilerini hazır AI servisleri (API'ler) kullanarak
+          deneyimliyorum, küçük ölçekli uygulamalar geliştiriyorum ve her
+          deneyimi blog yazısıyla belgeliyorum. Bu çalışmalar proof-of-concept
+          (mini demo) niteliğinde ve "Denedim – sonuçlar – sıradaki adımlar"
+          yaklaşımıyla ele alınıyor.
+        </p>
+        <p style="margin-top: 16px; font-size: 14px; color: #b0b0b0;">
+          <i class="far fa-calendar"></i> Başlangıç: 17 Aralık 2025 | Frekans: 2
+          haftada 1 proje | Toplam: 10 proje
         </p>
       </div>
     </section>

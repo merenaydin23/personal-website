@@ -49,13 +49,15 @@ section {
   /* Added initial state for scroll animation */
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
 }
 
 /* Hero section should be visible immediately */
 section.hero {
   opacity: 1;
   transform: translateY(0);
+  transition: none;
 }
 
 h2 {
@@ -136,12 +138,14 @@ h2 {
   align-items: center;
   gap: 10px;
   position: relative;
-  transition: color 0.4s ease, transform 0.25s ease;
+  transition: color 0.35s ease, transform 0.2s ease;
+  cursor: pointer;
+  user-select: none;
 }
 
 .social-link i {
   font-size: 20px;
-  transition: inherit;
+  transition: color 0.35s ease, background 0.35s ease, -webkit-background-clip 0.35s ease, -webkit-text-fill-color 0.35s ease;
 }
 
 /* Hover: only movement + underline */
@@ -158,30 +162,38 @@ h2 {
   width: 0%;
   height: 2px;
   background: currentColor;
-  transition: width 0.25s ease;
+  transition: width 0.3s ease;
 }
 
-.social-link:hover::after,
+.social-link:hover::after {
+  width: 100%;
+}
+
 .social-link.clicked::after {
   width: 100%;
+  transition: width 0.2s ease;
 }
 
 /* Click color effects - GitHub turns black */
 .social-github.clicked {
   color: #000000;
+  transition: color 0.35s ease;
 }
 
 .social-github.clicked i {
   color: #000000;
+  transition: color 0.35s ease;
 }
 
 /* Click color effects - LinkedIn turns blue */
 .social-linkedin.clicked {
   color: #0077b5;
+  transition: color 0.35s ease;
 }
 
 .social-linkedin.clicked i {
   color: #0077b5;
+  transition: color 0.35s ease;
 }
 
 /* Click color effects - Instagram gradient */
@@ -189,12 +201,16 @@ h2 {
   background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: background 0.35s ease, -webkit-background-clip 0.35s ease, -webkit-text-fill-color 0.35s ease;
 }
 
 .social-instagram.clicked i {
   background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: background 0.35s ease, -webkit-background-clip 0.35s ease, -webkit-text-fill-color 0.35s ease;
 }
 
 /* CARD */
@@ -321,6 +337,7 @@ h2 {
   font-size: 14px;
   font-weight: 600;
   text-align: center;
+  transition: color 0.3s ease;
 }
 
 /* MOBILE */

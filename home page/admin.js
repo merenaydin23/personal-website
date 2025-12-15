@@ -9,9 +9,8 @@ const STORAGE_KEY = "newsletter_subscribers";
 let loginScreen, adminPanel, loginForm, adminPasswordInput, loginMessage;
 let logoutBtn, refreshBtn, exportBtn, dataTableBody, totalCount, todayCount;
 
-// Sayfa yüklendiğinde çalış
-document.addEventListener("DOMContentLoaded", () => {
-  // DOM Elements
+// DOM elementlerini al - her zaman güncel
+function initDOM() {
   loginScreen = document.getElementById("login-screen");
   adminPanel = document.getElementById("admin-panel");
   loginForm = document.getElementById("login-form");
@@ -23,26 +22,51 @@ document.addEventListener("DOMContentLoaded", () => {
   dataTableBody = document.getElementById("data-table-body");
   totalCount = document.getElementById("total-count");
   todayCount = document.getElementById("today-count");
+  
+  console.log("🔧 DOM elementleri yüklendi:");
+  console.log("dataTableBody:", dataTableBody);
+  console.log("totalCount:", totalCount);
+  console.log("todayCount:", todayCount);
+}
 
+// Sayfa yüklendiğinde çalış
+function initAdmin() {
+  initDOM();
+  
   // Check if already logged in
   if (localStorage.getItem("adminLoggedIn") === "true") {
     console.log("✅ Zaten giriş yapılmış, admin paneli gösteriliyor");
     showAdminPanel();
-    // Sayfa yüklendiğinde verileri yükle - daha uzun bekle
+    // Verileri yükle - birkaç kez dene
     setTimeout(() => {
-      console.log("⏰ Veriler yükleniyor...");
-      console.log("🔍 DOM elementleri kontrol ediliyor...");
-      console.log("dataTableBody:", document.getElementById("data-table-body"));
-      console.log("totalCount:", document.getElementById("total-count"));
-      console.log("todayCount:", document.getElementById("today-count"));
+      console.log("⏰ İlk deneme - Veriler yükleniyor...");
       loadData();
-    }, 1000);
+    }, 500);
+    
+    setTimeout(() => {
+      console.log("⏰ İkinci deneme - Veriler yükleniyor...");
+      initDOM();
+      loadData();
+    }, 1500);
   } else {
     console.log("🔒 Giriş yapılmamış, login ekranı gösteriliyor");
   }
 
   // Event listeners
   setupEventListeners();
+}
+
+// Hem DOMContentLoaded hem window.onload için
+document.addEventListener("DOMContentLoaded", initAdmin);
+window.addEventListener("load", () => {
+  console.log("🔄 window.onload tetiklendi");
+  initDOM();
+  if (localStorage.getItem("adminLoggedIn") === "true") {
+    setTimeout(() => {
+      console.log("⏰ window.onload - Veriler yükleniyor...");
+      loadData();
+    }, 300);
+  }
 });
 
 function setupEventListeners() {
@@ -59,15 +83,15 @@ function setupEventListeners() {
         // Giriş yaptıktan sonra verileri yükle
         setTimeout(() => {
           console.log("⏰ Giriş sonrası veriler yükleniyor...");
-          console.log("🔍 DOM elementleri kontrol ediliyor...");
-          console.log(
-            "dataTableBody:",
-            document.getElementById("data-table-body")
-          );
-          console.log("totalCount:", document.getElementById("total-count"));
-          console.log("todayCount:", document.getElementById("today-count"));
+          initDOM(); // DOM'u tekrar al
           loadData();
-        }, 1000);
+        }, 500);
+        
+        setTimeout(() => {
+          console.log("⏰ Giriş sonrası ikinci deneme...");
+          initDOM();
+          loadData();
+        }, 1500);
         adminPasswordInput.value = "";
       } else {
         showMessage(
@@ -147,19 +171,30 @@ function showLoginScreen() {
 
 // Load Data from localStorage
 function loadData() {
+  // DOM elementlerini tekrar al
+  initDOM();
+  
   if (!dataTableBody) {
-    console.error("❌ dataTableBody bulunamadı!");
+    console.error("❌ dataTableBody bulunamadı! Tekrar deneniyor...");
+    setTimeout(() => {
+      initDOM();
+      if (dataTableBody) {
+        loadData();
+      } else {
+        alert("HATA: Tablo elementi bulunamadı! Sayfayı yenileyin (F5)");
+      }
+    }, 500);
     return;
   }
 
+  console.log("✅ dataTableBody bulundu, veriler yükleniyor...");
   dataTableBody.innerHTML =
     '<tr><td colspan="4" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Veriler yükleniyor...</td></tr>';
 
-  // Kısa bir gecikme ile DOM'un hazır olduğundan emin ol
-  setTimeout(() => {
-    try {
-      // localStorage'dan verileri oku
-      const rawData = localStorage.getItem(STORAGE_KEY);
+  // Hemen yükle, gecikme yok
+  try {
+    // localStorage'dan verileri oku
+    const rawData = localStorage.getItem(STORAGE_KEY);
       console.log("🔍 STORAGE_KEY:", STORAGE_KEY);
       console.log("📦 localStorage'dan okunan ham veri:", rawData);
 
@@ -233,7 +268,20 @@ function loadData() {
         `;
       }
     }
-  }, 200);
+  } catch (error) {
+    console.error("❌ Error loading data:", error);
+    if (dataTableBody) {
+      dataTableBody.innerHTML = `
+        <tr>
+          <td colspan="4" class="error-row">
+            <i class="fas fa-exclamation-triangle"></i> Veriler yüklenirken hata oluştu.
+            <br><small>${error.message}</small>
+            <br><small>Console'u kontrol edin (F12)</small>
+          </td>
+        </tr>
+      `;
+    }
+  }
 }
 
 // Display Data in Table
@@ -244,7 +292,9 @@ function displayData(data) {
   console.log("📊 Array mi?", Array.isArray(data));
   console.log("📊 Veri uzunluğu:", data?.length);
 
-  // DOM elementlerini tekrar kontrol et
+  // DOM elementlerini tekrar al - HER SEFERINDE
+  initDOM();
+  
   if (!dataTableBody) {
     dataTableBody = document.getElementById("data-table-body");
     console.log("🔄 dataTableBody yeniden alındı:", dataTableBody);
@@ -252,9 +302,11 @@ function displayData(data) {
 
   if (!dataTableBody) {
     console.error("❌ dataTableBody hala bulunamadı!");
-    alert("HATA: Tablo elementi bulunamadı! Sayfayı yenileyin.");
+    alert("HATA: Tablo elementi bulunamadı! Sayfayı yenileyin (F5).");
     return;
   }
+  
+  console.log("✅ dataTableBody hazır, veriler yazılıyor...");
 
   if (!data || !Array.isArray(data) || data.length === 0) {
     console.log("📭 Veri yok, boş mesaj gösteriliyor");

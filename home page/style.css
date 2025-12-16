@@ -150,6 +150,10 @@ h2 {
   transition: color 0.35s ease, transform 0.2s ease;
   cursor: pointer;
   user-select: none;
+  padding: 12px 20px;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
 }
 
 .social-link i {
@@ -392,6 +396,9 @@ h2 {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
 }
 
 .nav-link::before {
@@ -557,6 +564,9 @@ h2 {
   transition: all 0.3s ease;
   margin-top: auto;
   width: fit-content;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
 }
 
 .project-link:hover {
@@ -596,6 +606,9 @@ h2 {
   align-items: center;
   gap: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(0, 198, 255, 0.2);
+  touch-action: manipulation;
 }
 
 .blog-btn {
@@ -650,6 +663,9 @@ h2 {
   gap: 8px;
   position: relative;
   bottom: -2px;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
 }
 
 .tab-btn:hover {
@@ -694,6 +710,9 @@ h2 {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
 }
 
 .filter-btn:hover {
@@ -979,6 +998,9 @@ h2 {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
 }
 
 .category-btn:hover {
@@ -1016,6 +1038,9 @@ h2 {
   flex: 1;
   justify-content: center;
   min-width: 120px;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
 }
 
 .app-link:hover {
@@ -1054,6 +1079,9 @@ h2 {
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   width: fit-content;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  touch-action: manipulation;
 }
 
 .app-link:hover {
@@ -1156,6 +1184,176 @@ h2 {
 
   .app-link {
     width: 100%;
+  }
+
+  /* Profile resmi mobilde küçült */
+  .profile-wrapper {
+    width: 250px;
+    height: 250px;
+  }
+
+  .profile-img {
+    width: 230px;
+    height: 230px;
+  }
+
+  /* Hero başlık ve alt başlık mobilde küçült */
+  .hero-name {
+    font-size: 36px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+
+  section {
+    margin: 30px auto;
+    padding: 0 15px;
+  }
+
+  .hero {
+    padding: 30px 15px;
+    min-height: 40vh;
+  }
+}
+
+/* Küçük mobil cihazlar (480px ve altı) */
+@media (max-width: 480px) {
+  .profile-wrapper {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 20px;
+  }
+
+  .profile-img {
+    width: 180px;
+    height: 180px;
+    border-width: 3px;
+  }
+
+  .hero-name {
+    font-size: 28px;
+    margin-bottom: 4px;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+
+  .main-nav {
+    top: 8px;
+    right: 8px;
+    left: 8px;
+    padding: 4px;
+    gap: 2px;
+  }
+
+  .nav-link {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .nav-link i {
+    font-size: 14px;
+  }
+
+  .social-links {
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .social-link {
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  .project-card,
+  .blog-card,
+  .app-card {
+    padding: 20px;
+  }
+
+  .project-title,
+  .blog-card h3,
+  .app-card h3 {
+    font-size: 18px;
+  }
+
+  .project-description,
+  .blog-card p,
+  .app-card p {
+    font-size: 14px;
+  }
+
+  section {
+    margin: 20px auto;
+    padding: 0 10px;
+  }
+
+  .hero {
+    padding: 20px 10px;
+    min-height: 35vh;
+  }
+
+  .working-on-card {
+    padding: 24px;
+  }
+
+  .working-on-card h2 {
+    font-size: 22px;
+  }
+
+  .working-on-card p {
+    font-size: 14px;
+  }
+}
+
+/* Çok küçük ekranlar (320px ve altı) */
+@media (max-width: 320px) {
+  .profile-wrapper {
+    width: 160px;
+    height: 160px;
+  }
+
+  .profile-img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .hero-name {
+    font-size: 24px;
+  }
+
+  .hero-subtitle {
+    font-size: 12px;
+  }
+
+  .main-nav {
+    top: 5px;
+    right: 5px;
+    left: 5px;
+    padding: 3px;
+  }
+
+  .nav-link {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .social-link {
+    font-size: 12px;
+    padding: 8px 12px;
   }
 }
 

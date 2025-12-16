@@ -136,6 +136,9 @@ body::after {
   justify-content: center;
   gap: 10px;
   box-shadow: 0 4px 20px rgba(0, 198, 255, 0.3);
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(0, 198, 255, 0.2);
+  touch-action: manipulation;
 }
 
 .login-btn:hover {
@@ -292,6 +295,9 @@ body::after {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px; /* Touch-friendly minimum size */
+  -webkit-tap-highlight-color: rgba(0, 198, 255, 0.2);
+  touch-action: manipulation;
 }
 
 .refresh-btn:hover,
@@ -308,6 +314,27 @@ body::after {
   padding: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 198, 255, 0.3) transparent;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0, 198, 255, 0.3);
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 198, 255, 0.5);
 }
 
 .data-table {
@@ -363,6 +390,14 @@ body::after {
     gap: 16px;
   }
 
+  .admin-nav {
+    padding: 15px 20px;
+  }
+
+  .admin-nav h1 {
+    font-size: 20px;
+  }
+
   .stats-cards {
     grid-template-columns: 1fr;
   }
@@ -371,16 +406,146 @@ body::after {
     flex-direction: column;
   }
 
+  .refresh-btn,
+  .export-btn,
+  .test-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-wrapper {
+    padding: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .data-table {
-    font-size: 14px;
+    font-size: 12px;
+    min-width: 600px;
   }
 
   .data-table th,
   .data-table td {
-    padding: 12px 8px;
+    padding: 10px 6px;
   }
 
   .login-card {
     padding: 32px 24px;
+    margin: 20px;
+  }
+
+  .login-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+
+  .login-card h2 {
+    font-size: 24px;
+  }
+
+  .admin-content {
+    padding: 20px 15px;
+  }
+
+  .admin-section h2 {
+    font-size: 22px;
+  }
+}
+
+/* Küçük mobil cihazlar (480px ve altı) */
+@media (max-width: 480px) {
+  .admin-nav {
+    padding: 12px 15px;
+  }
+
+  .admin-nav h1 {
+    font-size: 18px;
+  }
+
+  .logout-btn {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .stat-info h3 {
+    font-size: 24px;
+  }
+
+  .stat-info p {
+    font-size: 12px;
+  }
+
+  .login-card {
+    padding: 24px 20px;
+    margin: 15px;
+  }
+
+  .login-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .login-card h2 {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .admin-input {
+    padding: 14px 18px 14px 45px;
+    font-size: 14px;
+  }
+
+  .login-btn {
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+
+  .data-table {
+    font-size: 11px;
+    min-width: 500px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 8px 4px;
+  }
+
+  .admin-content {
+    padding: 15px 10px;
+  }
+
+  .admin-section h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Çok küçük ekranlar (320px ve altı) */
+@media (max-width: 320px) {
+  .login-card {
+    padding: 20px 16px;
+    margin: 10px;
+  }
+
+  .admin-nav h1 {
+    font-size: 16px;
+  }
+
+  .data-table {
+    font-size: 10px;
+    min-width: 450px;
   }
 }

@@ -282,6 +282,7 @@ body::after {
 
 .refresh-btn,
 .export-btn,
+.clear-btn,
 .test-btn {
   padding: 12px 24px;
   background: rgba(0, 198, 255, 0.2);
@@ -304,6 +305,11 @@ body::after {
 .export-btn:hover,
 .test-btn:hover {
   background: rgba(0, 198, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.clear-btn:hover {
+  background: rgba(255, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
@@ -408,6 +414,7 @@ body::after {
 
   .refresh-btn,
   .export-btn,
+  .clear-btn,
   .test-btn {
     width: 100%;
     justify-content: center;

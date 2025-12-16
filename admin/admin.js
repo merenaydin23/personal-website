@@ -21,7 +21,7 @@ function debugLog(...args) {
 
 // DOM Elements cache
 let loginScreen, adminPanel, loginForm, passwordInput, messageDiv;
-let logoutBtn, refreshBtn, exportBtn, testBtn;
+let logoutBtn, refreshBtn, exportBtn, clearBtn, testBtn;
 let dataTableBody, totalCount, todayCount;
 
 // DOM elementlerini al
@@ -34,6 +34,7 @@ function initDOM() {
   logoutBtn = document.getElementById("logout-btn");
   refreshBtn = document.getElementById("refresh-btn");
   exportBtn = document.getElementById("export-btn");
+  clearBtn = document.getElementById("clear-btn");
   testBtn = document.getElementById("test-btn");
   dataTableBody = document.getElementById("data-table-body");
   totalCount = document.getElementById("total-count");
@@ -146,6 +147,20 @@ function setupEventListeners() {
   // Export
   if (exportBtn) {
     exportBtn.addEventListener("click", exportToCSV);
+  }
+
+  // Clear Data Button
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      const confirmClear = confirm(
+        "⚠️ UYARI: Tüm test verileri silinecek!\n\nCanlıya alınca gerçek mail sistemi çalışacak. Devam etmek istiyor musunuz?"
+      );
+      if (confirmClear) {
+        localStorage.removeItem(STORAGE_KEY);
+        loadData();
+        alert("✅ Test verileri temizlendi!");
+      }
+    });
   }
 
   // Test Button (sadece debug modunda)

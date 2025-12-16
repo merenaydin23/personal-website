@@ -5,19 +5,19 @@
 const EMAIL_CONFIG = {
   // EmailJS Public Key
   publicKey: "", // EmailJS hesabınızdan alın (Public Key)
-  
+
   // EmailJS Service ID
   serviceId: "", // EmailJS servis ID'niz
-  
+
   // EmailJS Template ID
   templateId: "", // Hoş geldiniz maili için template ID
-  
+
   // Gönderen email (EmailJS'te ayarladığınız email)
   fromEmail: "", // Örnek: noreply@muhammederenaydin.com
-  
+
   // Gönderen isim
   fromName: "Muhammed Eren Aydın",
-  
+
   // Site URL
   siteUrl: "https://muhammederenaydin.com", // Canlıya alınca domain'inizi yazın
 };

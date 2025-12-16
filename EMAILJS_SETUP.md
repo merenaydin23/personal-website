@@ -26,11 +26,13 @@ Bu rehber, newsletter kayıtlarında otomatik hoş geldiniz maili göndermek iç
 ### Template İçeriği:
 
 **Subject (Konu):**
+
 ```
 Hoş geldiniz! 👋 - MuhammedErenAydin.com
 ```
 
 **Content (İçerik):**
+
 ```
 Hoş geldiniz! 👋
 
@@ -48,6 +50,7 @@ Saygılarımla,
 ```
 
 **Template Variables (Değişkenler):**
+
 - `{{to_name}}` - Kullanıcı adı (email'den otomatik çıkarılır)
 - `{{to_email}}` - Kullanıcı email'i
 - `{{from_name}}` - Gönderen isim (Muhammed Eren Aydın)

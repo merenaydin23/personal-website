@@ -117,7 +117,14 @@ if (newsletterForm) {
       console.log("✅ Newsletter kaydı eklendi:", email);
       console.log("📊 Toplam kayıt sayısı:", existingData.length);
 
-      // Sessizce kaydet - mesaj gösterme (canlıya alınca gerçek mail sistemi çalışacak)
+      // Hoş geldiniz maili gönder
+      sendWelcomeEmail(email);
+
+      // Başarı mesajı göster
+      showMessage(
+        "✅ Başarıyla kayıt oldunuz! Hoş geldiniz mesajı e-posta adresinize gönderildi.",
+        "success"
+      );
       emailInput.value = "";
     } catch (error) {
       console.error("Error:", error);
@@ -130,6 +137,48 @@ if (newsletterForm) {
       submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kayıt Ol';
     }
   });
+}
+
+// Hoş geldiniz maili gönder
+async function sendWelcomeEmail(userEmail) {
+  // EmailJS config kontrolü
+  if (
+    !EMAIL_CONFIG.publicKey ||
+    !EMAIL_CONFIG.serviceId ||
+    !EMAIL_CONFIG.templateId
+  ) {
+    console.warn(
+      "⚠️ EmailJS yapılandırması eksik! email-config.js dosyasını kontrol edin."
+    );
+    return;
+  }
+
+  // EmailJS'i başlat
+  if (typeof emailjs !== "undefined") {
+    emailjs.init(EMAIL_CONFIG.publicKey);
+
+    // Mail içeriği (Template'te kullanılacak değişkenler)
+    const templateParams = {
+      to_email: userEmail,
+      to_name: userEmail.split("@")[0], // Email'den isim çıkar
+      from_name: EMAIL_CONFIG.fromName,
+      site_url: EMAIL_CONFIG.siteUrl,
+    };
+
+    try {
+      const response = await emailjs.send(
+        EMAIL_CONFIG.serviceId,
+        EMAIL_CONFIG.templateId,
+        templateParams
+      );
+      console.log("✅ Hoş geldiniz maili gönderildi:", response);
+    } catch (error) {
+      console.error("❌ Mail gönderme hatası:", error);
+      // Mail gönderilemese bile kayıt başarılı, kullanıcıya hata gösterme
+    }
+  } else {
+    console.warn("⚠️ EmailJS yüklenmedi!");
+  }
 }
 
 function showMessage(message, type) {

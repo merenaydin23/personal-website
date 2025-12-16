@@ -3,13 +3,13 @@
 
 const CONFIG = {
   // Ortam: 'development' veya 'production'
-  environment: "development", // Canlıya alırken 'production' yapın
+  environment: "production", // Canlıya alırken 'production' yapın
 
   // Google Sheets Web App URL (Production'da değiştirin)
   googleSheetsWebAppUrl: "", // Production'da buraya Web App URL'inizi yazın
 
   // Admin şifresi (Production'da mutlaka değiştirin!)
-  adminPassword: "admin123", // ⚠️ CANLIYA ALMADAN ÖNCE DEĞİŞTİRİN!
+  adminPassword: "2386387.gS", // ⚠️ CANLIYA ALMADAN ÖNCE DEĞİŞTİRİN!
 
   // localStorage key
   storageKey: "newsletter_subscribers",
@@ -44,4 +44,3 @@ if (CONFIG.environment === "production") {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = CONFIG;
 }
-

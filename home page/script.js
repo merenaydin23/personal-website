@@ -113,10 +113,6 @@ if (newsletterForm) {
       existingData.push(newRecord);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
 
-      // Debug: localStorage'ı kontrol et (sadece console'da)
-      console.log("✅ Newsletter kaydı eklendi:", email);
-      console.log("📊 Toplam kayıt sayısı:", existingData.length);
-
       // Hoş geldiniz maili gönder
       sendWelcomeEmail(email);
 
@@ -180,16 +176,11 @@ async function sendWelcomeEmail(userEmail) {
       site_url: EMAIL_CONFIG.siteUrl,
     };
 
-    console.log("📧 Mail gönderiliyor...", templateParams);
-
     const response = await emailjs.send(
       EMAIL_CONFIG.serviceId,
       EMAIL_CONFIG.templateId,
       templateParams
     );
-
-    console.log("✅ Hoş geldiniz maili gönderildi:", response);
-    console.log("📬 Mail durumu:", response.status, response.text);
   } catch (error) {
     console.error("❌ Mail gönderme hatası:", error);
     console.error("Hata detayları:", {

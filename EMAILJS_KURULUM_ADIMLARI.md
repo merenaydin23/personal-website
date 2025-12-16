@@ -41,11 +41,13 @@ Newsletter'a kayıt olan herkese otomatik olarak hoş geldiniz maili gönderece�
 3. **Template Name:** "Hoş Geldiniz Maili" yazın
 
 ### 3.1. Subject (Konu) Bölümü:
+
 ```
-Hoş geldiniz! 👋 - MuhammedErenAydin.com
+Hoş geldiniz! 👋 - muhammederenaydin.com
 ```
 
 ### 3.2. Content (İçerik) Bölümü:
+
 Aşağıdaki metni tamamen kopyalayıp yapıştırın:
 
 ```
@@ -53,7 +55,7 @@ Hoş geldiniz! 👋
 
 {{to_name}},
 
-MuhammedErenAydin.com'a katıldığınız için çok mutluyum.
+muhammederenaydin.com'a katıldığınız için çok mutluyum.
 Aramıza hoş geldiniz!
 
 Bu platformda; yazılım geliştirme, yapay zekâ ve güncel teknolojileri birlikte keşfedecek, yeni çıkan araçları deneyecek ve gerçek projeler üzerinden öğrenme sürecini paylaşacağız.
@@ -67,9 +69,10 @@ Saygılarımla,
 ```
 
 ### 3.3. Template'i Kaydedin:
+
 - **"Save"** butonuna tıklayın
 - **Template ID**'yi kopyalayın (örnek: `template_xyz789`)
-   - Bu ID'yi bir yere not edin!
+  - Bu ID'yi bir yere not edin!
 
 ✅ **Template hazır!**
 
@@ -93,22 +96,23 @@ Saygılarımla,
 
 ```javascript
 const EMAIL_CONFIG = {
-  publicKey: "BURAYA_PUBLIC_KEY_YAZIN",        // Adım 4'ten aldığınız
-  serviceId: "BURAYA_SERVICE_ID_YAZIN",        // Adım 2'den aldığınız
-  templateId: "BURAYA_TEMPLATE_ID_YAZIN",      // Adım 3'ten aldığınız
-  fromEmail: "noreply@muhammederenaydin.com",  // EmailJS'te bağladığınız email
+  publicKey: "BURAYA_PUBLIC_KEY_YAZIN", // Adım 4'ten aldığınız
+  serviceId: "BURAYA_SERVICE_ID_YAZIN", // Adım 2'den aldığınız
+  templateId: "BURAYA_TEMPLATE_ID_YAZIN", // Adım 3'ten aldığınız
+  fromEmail: "muhammederenaydin7@gmail.com", // EmailJS'te bağladığınız email
   fromName: "Muhammed Eren Aydın",
-  siteUrl: "https://muhammederenaydin.com",    // Canlı domain'iniz
+  siteUrl: "https://muhammederenaydin.com", // Canlı domain'iniz
 };
 ```
 
 **Örnek:**
+
 ```javascript
 const EMAIL_CONFIG = {
   publicKey: "abcdefghijklmnop",
   serviceId: "service_abc123",
   templateId: "template_xyz789",
-  fromEmail: "noreply@muhammederenaydin.com",
+  fromEmail: "muhammederenaydin7@gmail.com",
   fromName: "Muhammed Eren Aydın",
   siteUrl: "https://muhammederenaydin.com",
 };
@@ -136,10 +140,12 @@ const EMAIL_CONFIG = {
 ### ❌ Mail gelmiyor
 
 1. **Browser Console'u açın (F12)**
+
    - Hata mesajı var mı kontrol edin
    - "EmailJS yapılandırması eksik" uyarısı görüyorsanız config dosyasını kontrol edin
 
 2. **EmailJS Dashboard'u kontrol edin**
+
    - **"Logs"** sekmesine gidin
    - Mail gönderim loglarını kontrol edin
    - Hata varsa ne olduğunu görebilirsiniz
@@ -174,6 +180,7 @@ const EMAIL_CONFIG = {
 Artık her newsletter kaydında otomatik olarak hoş geldiniz maili gönderilecek!
 
 **Önemli Notlar:**
+
 - ⚠️ Config dosyasındaki bilgileri GitHub'a commit etmeyin (güvenlik için)
 - 🔒 Public Key'i güvenli tutun
 - 📊 Aylık mail limitinizi takip edin

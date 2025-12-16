@@ -2,31 +2,39 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/home%20page/index.html"
+      "destination": "/home page/index.html"
     },
     {
       "source": "/projects",
-      "destination": "/home%20page/projects.html"
+      "destination": "/home page/projects.html"
     },
     {
       "source": "/blog",
-      "destination": "/home%20page/blog.html"
+      "destination": "/home page/blog.html"
     },
     {
       "source": "/admin",
       "destination": "/admin/index.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/home page/(.*)",
-      "dest": "/home%20page/$1"
     },
     {
-      "src": "/(.*\\.(css|js|jpg|png|gif|svg|ico|woff|woff2|ttf|eot))",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
+      "source": "/style.css",
+      "destination": "/home page/style.css"
+    },
+    {
+      "source": "/script.js",
+      "destination": "/home page/script.js"
+    },
+    {
+      "source": "/email-config.js",
+      "destination": "/home page/email-config.js"
+    },
+    {
+      "source": "/profile.jpg",
+      "destination": "/home page/profile.jpg"
+    },
+    {
+      "source": "/blog.js",
+      "destination": "/home page/blog.js"
     }
   ],
   "headers": [

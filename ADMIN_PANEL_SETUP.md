@@ -7,10 +7,27 @@
 - 📈 İstatistikler (Toplam kayıt, bugünkü kayıt)
 - 🔄 Verileri yenileme
 - 📥 CSV formatında indirme
+- 🛡️ Production/Development ortam desteği
+- 📁 Ayrı klasör yapısı (canlıya alma için optimize edilmiş)
+
+## 📁 Dosya Yapısı
+
+Admin paneli artık `admin/` klasöründe ayrı tutulmaktadır:
+
+```
+admin/
+├── index.html      # Admin panel ana sayfası
+├── admin.css       # Admin panel stilleri
+├── admin.js        # Admin panel JavaScript kodu
+├── config.js       # Yapılandırma dosyası (şifre, ortam ayarları)
+├── README.md       # Detaylı dokümantasyon
+├── .htaccess       # Apache güvenlik ayarları
+└── robots.txt      # Arama motoru gizleme
+```
 
 ## 🔧 Kurulum Adımları
 
-### 1. Google Apps Script'i Güncelleme
+### 1. Google Apps Script'i Güncelleme (Eğer kullanıyorsanız)
 
 1. Google Sheets'te **Uzantılar** > **Apps Script** seçeneğine gidin
 2. Mevcut `doGet` fonksiyonunu silin
@@ -19,33 +36,58 @@
 5. **Dağıt** > **Dağıtımı yönet** > Mevcut dağıtımı düzenleyin
 6. **Sürüm** numarasını artırın (örn: 1 → 2)
 7. **Dağıt** butonuna tıklayın
+8. Web App URL'ini kopyalayın ve `admin/config.js` dosyasına ekleyin
 
-### 2. Admin Şifresini Değiştirme
+### 2. Admin Şifresini Değiştirme ⚠️ ÖNEMLİ!
 
-1. `admin.js` dosyasını açın
+1. `admin/config.js` dosyasını açın
 2. Şu satırı bulun:
 
 ```javascript
-const ADMIN_PASSWORD = "admin123";
+adminPassword: 'admin123', // ⚠️ CANLIYA ALMADAN ÖNCE DEĞİŞTİRİN!
 ```
 
 3. Şifreyi istediğiniz güçlü bir şifre ile değiştirin
 4. **ÖNEMLİ:** Şifreyi güvenli tutun ve kimseyle paylaşmayın!
 
-### 3. Admin Paneline Erişim
+**Güvenlik İpuçları:**
 
-1. Web sitenizin URL'sine `/admin.html` ekleyin
-   - Örnek: `https://yourwebsite.com/admin.html`
-   - Veya: `https://yourwebsite.com/home page/admin.html`
+- En az 12 karakter kullanın
+- Büyük harf, küçük harf, rakam ve özel karakter karışımı
+- Kişisel bilgiler kullanmayın
+
+### 3. Ortam Ayarlarını Yapılandırma
+
+`admin/config.js` dosyasında:
+
+```javascript
+environment: 'development', // Canlıya alırken 'production' yapın
+debug: true,               // Production'da false olmalı
+```
+
+**Canlıya almadan önce:**
+
+- `environment: 'production'` yapın
+- `debug: false` yapın
+- `googleSheetsWebAppUrl` (eğer kullanıyorsanız) ekleyin
+
+### 4. Admin Paneline Erişim
+
+1. Web sitenizin URL'sine `/admin/` ekleyin
+   - Örnek: `https://yourwebsite.com/admin/`
+   - Veya: `https://yourwebsite.com/admin/index.html`
 2. Admin şifresini girin
 3. Newsletter kayıtlarını görüntüleyin
 
 ## 🔒 Güvenlik Notları
 
 - ⚠️ **Şifreyi mutlaka değiştirin!** Varsayılan şifre: `admin123`
-- 🔐 Güçlü bir şifre kullanın (en az 8 karakter, harf, rakam, özel karakter)
+- 🔐 Güçlü bir şifre kullanın (en az 12 karakter, harf, rakam, özel karakter)
 - 🚫 Admin paneli URL'sini herkese açık paylaşmayın
 - 📝 Şifreyi güvenli bir yerde saklayın
+- 🔒 Production'da debug modunu kapatın (`config.js` içinde `debug: false`)
+- 🌐 HTTPS kullanın (şifrelerin şifrelenmiş bağlantı üzerinden gönderilmesi)
+- 🛡️ `.htaccess` dosyası ile ekstra koruma ekleyebilirsiniz (opsiyonel)
 
 ## 📊 Veri Görüntüleme
 
@@ -65,9 +107,10 @@ Admin paneli Google Sheets'ten verileri otomatik olarak çeker. Eğer veriler g�
 
 ### Şifre çalışmıyor
 
-- `admin.js` dosyasındaki şifreyi kontrol edin
+- `admin/config.js` dosyasındaki şifreyi kontrol edin
 - Şifrede boşluk olmadığından emin olun
 - Browser cache'ini temizleyin
+- localStorage'ı temizleyin: `localStorage.clear()`
 
 ### CSV indirme çalışmıyor
 
@@ -79,3 +122,16 @@ Admin paneli Google Sheets'ten verileri otomatik olarak çeker. Eğer veriler g�
 - Admin paneli localStorage kullanarak oturum yönetimi yapar
 - Çıkış yapmak için "Çıkış" butonuna tıklayın
 - Veriler gerçek zamanlı değildir, "Yenile" butonuna tıklayarak güncelleyin
+- Admin paneli artık `admin/` klasöründe ayrı tutulmaktadır
+- Detaylı dokümantasyon için `admin/README.md` dosyasına bakın
+
+## 🚀 Canlıya Alma Öncesi Kontrol Listesi
+
+- [ ] `admin/config.js` dosyasında şifreyi değiştirdim
+- [ ] `environment: 'production'` yaptım
+- [ ] `debug: false` yaptım
+- [ ] Google Sheets Web App URL'ini ekledim (eğer kullanıyorsam)
+- [ ] `.htaccess` dosyasını kontrol ettim
+- [ ] `robots.txt` dosyasını kontrol ettim
+- [ ] HTTPS kullanıyorum
+- [ ] Admin URL'ini güvenli tutuyorum

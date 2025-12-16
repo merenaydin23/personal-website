@@ -7,10 +7,10 @@ const EMAIL_CONFIG = {
   publicKey: "OuZgLsn6Uj_OYNfld", // EmailJS hesabınızdan alın (Public Key) - Account > API Keys
 
   // EmailJS Service ID
-  serviceId: "service_nx0lu7k", // EmailJS servis ID'niz
+  serviceId: "service_837jusb", // EmailJS servis ID'niz
 
   // EmailJS Template ID
-  templateId: "template_btcxmxs", // Hoş geldiniz maili için template ID
+  templateId: "template_42zi0mn", // Hoş geldiniz maili için template ID
 
   // Gönderen email (EmailJS'te ayarladığınız email)
   fromEmail: "muhammederenaydin7@gmail.com", // EmailJS'te bağladığınız email

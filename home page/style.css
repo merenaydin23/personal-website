@@ -122,12 +122,25 @@ h2 {
 
 /* SUBTITLE */
 .hero-subtitle {
-  font-size: 20px;
-  background: linear-gradient(90deg, #a8e6ff, #7dd3fc);
+  font-size: 22px;
+  background: linear-gradient(90deg, #a8e6ff, #7dd3fc, #00c6ff, #00ffd5);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-top: 10px;
+  animation: gradient-shift 3s ease infinite;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
 }
 
 /* SOCIAL */
@@ -1203,7 +1216,7 @@ h2 {
   }
 
   .hero-subtitle {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   h2 {
@@ -1241,7 +1254,7 @@ h2 {
   }
 
   .hero-subtitle {
-    font-size: 14px;
+    font-size: 15px;
     margin-top: 8px;
   }
 
@@ -1336,7 +1349,7 @@ h2 {
   }
 
   .hero-subtitle {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .main-nav {

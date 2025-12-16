@@ -35,6 +35,18 @@
     {
       "source": "/blog.js",
       "destination": "/home page/blog.js"
+    },
+    {
+      "source": "/admin/admin.css",
+      "destination": "/admin/admin.css"
+    },
+    {
+      "source": "/admin/admin.js",
+      "destination": "/admin/admin.js"
+    },
+    {
+      "source": "/admin/config.js",
+      "destination": "/admin/config.js"
     }
   ],
   "headers": [

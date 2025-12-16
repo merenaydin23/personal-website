@@ -4,7 +4,7 @@
 
 const EMAIL_CONFIG = {
   // EmailJS Public Key
-  publicKey: "", // EmailJS hesabınızdan alın (Public Key) - Account > API Keys
+  publicKey: "OuZgLsn6Uj_OYNfld", // EmailJS hesabınızdan alın (Public Key) - Account > API Keys
 
   // EmailJS Service ID
   serviceId: "service_nx0lu7k", // EmailJS servis ID'niz
@@ -26,4 +26,3 @@ const EMAIL_CONFIG = {
 if (typeof emailjs === "undefined") {
   console.warn("⚠️ EmailJS yüklenmedi! Email gönderimi çalışmayacak.");
 }
-

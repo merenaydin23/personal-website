@@ -192,3 +192,4 @@ Artık her newsletter kaydında otomatik olarak hoş geldiniz maili gönderilece
 
 - EmailJS Dokümantasyon: https://www.emailjs.com/docs/
 - EmailJS Support: https://www.emailjs.com/support/
+

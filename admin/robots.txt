@@ -1,3 +1,4 @@
 # Admin klasörünü arama motorlarından gizle
 User-agent: *
 Disallow: /admin/
+

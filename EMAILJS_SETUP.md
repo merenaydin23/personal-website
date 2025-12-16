@@ -118,3 +118,4 @@ const EMAIL_CONFIG = {
 - EmailJS ücretsiz planında ayda 200 mail gönderebilirsiniz
 - Mail gönderimi asenkron çalışır, kayıt başarılı olsa bile mail gönderilemeyebilir
 - Mail gönderilemese bile kullanıcıya hata gösterilmez (kayıt başarılı sayılır)
+

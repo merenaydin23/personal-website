@@ -13,3 +13,4 @@ Güzel şeyler öğreneceğimiz ve üreteceğimiz bir yolculuk bizi bekliyor �
 Saygılarımla,
 {{from_name}}
 {{site_url}}
+

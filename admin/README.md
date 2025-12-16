@@ -138,3 +138,4 @@ Sorun yaşarsanız:
 - Admin paneli artık `admin/` klasöründe
 - Config dosyası ile yapılandırma yönetimi
 - Production/Development ortam desteği
+

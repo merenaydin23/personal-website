@@ -4,20 +4,20 @@
 
 const EMAIL_CONFIG = {
   // EmailJS Public Key
-  publicKey: "", // EmailJS hesabınızdan alın (Public Key)
+  publicKey: "", // EmailJS hesabınızdan alın (Public Key) - Account > API Keys
 
   // EmailJS Service ID
-  serviceId: "", // EmailJS servis ID'niz
+  serviceId: "service_nx0lu7k", // EmailJS servis ID'niz
 
   // EmailJS Template ID
-  templateId: "", // Hoş geldiniz maili için template ID
+  templateId: "template_btcxmxs", // Hoş geldiniz maili için template ID
 
   // Gönderen email (EmailJS'te ayarladığınız email)
   fromEmail: "muhammederenaydin7@gmail.com", // EmailJS'te bağladığınız email
-  
+
   // Gönderen isim
   fromName: "Muhammed Eren Aydın",
-  
+
   // Site URL
   siteUrl: "https://muhammederenaydin.com", // Canlı domain
 };
@@ -26,3 +26,4 @@ const EMAIL_CONFIG = {
 if (typeof emailjs === "undefined") {
   console.warn("⚠️ EmailJS yüklenmedi! Email gönderimi çalışmayacak.");
 }
+

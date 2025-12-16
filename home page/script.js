@@ -153,31 +153,51 @@ async function sendWelcomeEmail(userEmail) {
     return;
   }
 
-  // EmailJS'i başlat
-  if (typeof emailjs !== "undefined") {
+  // EmailJS'in yüklenmesini bekle
+  let retries = 0;
+  while (typeof emailjs === "undefined" && retries < 10) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    retries++;
+  }
+
+  if (typeof emailjs === "undefined") {
+    console.error("❌ EmailJS yüklenemedi! Sayfayı yenileyin.");
+    return;
+  }
+
+  try {
+    // EmailJS'i başlat
     emailjs.init(EMAIL_CONFIG.publicKey);
 
     // Mail içeriği (Template'te kullanılacak değişkenler)
+    // EmailJS template'inde kullanılan değişken isimleri:
     const templateParams = {
-      to_email: userEmail,
+      email: userEmail, // EmailJS genelde {{email}} kullanır
+      to_email: userEmail, // Alternatif olarak {{to_email}} de ekle
       to_name: userEmail.split("@")[0], // Email'den isim çıkar
+      name: userEmail.split("@")[0], // Alternatif olarak {{name}} de ekle
       from_name: EMAIL_CONFIG.fromName,
       site_url: EMAIL_CONFIG.siteUrl,
     };
 
-    try {
-      const response = await emailjs.send(
-        EMAIL_CONFIG.serviceId,
-        EMAIL_CONFIG.templateId,
-        templateParams
-      );
-      console.log("✅ Hoş geldiniz maili gönderildi:", response);
-    } catch (error) {
-      console.error("❌ Mail gönderme hatası:", error);
-      // Mail gönderilemese bile kayıt başarılı, kullanıcıya hata gösterme
-    }
-  } else {
-    console.warn("⚠️ EmailJS yüklenmedi!");
+    console.log("📧 Mail gönderiliyor...", templateParams);
+
+    const response = await emailjs.send(
+      EMAIL_CONFIG.serviceId,
+      EMAIL_CONFIG.templateId,
+      templateParams
+    );
+
+    console.log("✅ Hoş geldiniz maili gönderildi:", response);
+    console.log("📬 Mail durumu:", response.status, response.text);
+  } catch (error) {
+    console.error("❌ Mail gönderme hatası:", error);
+    console.error("Hata detayları:", {
+      status: error.status,
+      text: error.text,
+      message: error.message,
+    });
+    // Mail gönderilemese bile kayıt başarılı, kullanıcıya hata gösterme
   }
 }
 

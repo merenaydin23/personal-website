@@ -33,6 +33,7 @@ Newsletter formundan gelen email kayıtlarını Google Sheets'te saklayacağız.
 ### 1.3. Başlıkları Nasıl Eklerim?
 
 **A1 Hücresine "Email" Yazmak:**
+
 1. Tablonun en üstünde, sol tarafta **"A"** yazan sütuna bakın
 2. En üstte, sol tarafta **"1"** yazan satıra bakın
 3. **A sütunu** ile **1. satırın** kesiştiği yere tıklayın (bu A1 hücresidir)
@@ -40,16 +41,19 @@ Newsletter formundan gelen email kayıtlarını Google Sheets'te saklayacağız.
 5. **Enter** tuşuna basın
 
 **B1 Hücresine "Tarih" Yazmak:**
+
 1. A1'in hemen sağındaki hücreye tıklayın (bu B1 hücresidir)
 2. Klavyenizden şunu yazın: `Tarih`
 3. **Enter** tuşuna basın
 
 **C1 Hücresine "Saat" Yazmak:**
+
 1. B1'in hemen sağındaki hücreye tıklayın (bu C1 hücresidir)
 2. Klavyenizden şunu yazın: `Saat`
 3. **Enter** tuşuna basın
 
 **Şimdi tablonuz şöyle görünmeli:**
+
 ```
 A1: Email    B1: Tarih    C1: Saat
 ```
@@ -82,17 +86,20 @@ Apps Script, Google Sheets'e özel kodlar yazmanızı sağlayan bir araçtır. B
 ### 2.3. Kodu Nasıl Yapıştırırım?
 
 **Önce Kodu Kopyalayın:**
+
 1. Projenizde `google-apps-script-code.js` dosyasını açın
 2. **Ctrl+A** tuşlarına basın (tüm kodu seçer)
 3. **Ctrl+C** tuşlarına basın (kodu kopyalar)
 
 **Sonra Apps Script'e Yapıştırın:**
+
 1. Apps Script editörüne geri dönün
 2. Editörde varsayılan kod varsa (örneğin: `function myFunction() {}`), **tümünü seçin** (Ctrl+A)
 3. **Delete** tuşuna basın (siler)
 4. **Ctrl+V** tuşlarına basın (kodu yapıştırır)
 
 **Kod şu şekilde görünmeli:**
+
 ```javascript
 function doPost(e) {
   try {
@@ -140,16 +147,19 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 ### 3.4. Ayarları Nasıl Yaparım?
 
 **Açıklama (Description):**
+
 1. **"Açıklama"** (Description) kutusuna tıklayın
 2. Şunu yazın: `Newsletter Form API`
 3. **Enter** tuşuna basın
 
 **Yürütme kimliği (Execute as):**
+
 1. **"Yürütme kimliği"** (Execute as) açılır menüsüne tıklayın
 2. **"Benim olarak yürüt"** (Me) seçeneğini seçin
    - ⚠️ ÖNEMLİ: "Kullanıcı olarak yürüt" seçeneğini seçmeyin!
 
 **Erişebilenler (Who has access):**
+
 1. **"Erişebilenler"** (Who has access) açılır menüsüne tıklayın
 2. **"Herkes"** (Anyone) seçeneğini seçin
    - ⚠️ ÇOK ÖNEMLİ: Anonim erişim için mutlaka "Herkes" seçilmeli!
@@ -160,6 +170,7 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 2. İlk kez yapıyorsanız, Google'dan izin isteyecek
 
 **İzin Verme Adımları:**
+
 1. **"Yetkilendirme gerekli"** (Authorization required) yazısı görünecek
 2. **"Yetkilendir"** (Authorize) butonuna tıklayın
 3. Google hesabınızı seçin
@@ -190,10 +201,12 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 ### 4.1. Ana Sayfa İçin (email-config.js)
 
 **Dosyayı Nasıl Açarım?**
+
 1. Projenizde `home page` klasörüne gidin
 2. `email-config.js` dosyasını açın (çift tıklayın veya sağ tıklayıp "Aç" seçin)
 
 **URL'i Nasıl Eklerim?**
+
 1. Dosyada `googleSheetsWebAppUrl` satırını bulun (26. satır civarı)
 2. Bu satır şöyle görünür:
    ```javascript
@@ -209,10 +222,12 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 ### 4.2. Admin Panel İçin (config.js)
 
 **Dosyayı Nasıl Açarım?**
+
 1. Projenizde `admin` klasörüne gidin
 2. `config.js` dosyasını açın
 
 **URL'i Nasıl Eklerim?**
+
 1. Dosyada `googleSheetsWebAppUrl` satırını bulun (9. satır civarı)
 2. Bu satır şöyle görünür:
    ```javascript
@@ -251,6 +266,7 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
    - **C2:** Saat görünmeli (örneğin: `14:30:25`)
 
 **Eğer görünmüyorsa:**
+
 - Birkaç saniye bekleyin ve tekrar yenileyin
 - Browser console'u açın (F12 > Console) ve hata var mı kontrol edin
 
@@ -271,6 +287,7 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 ### Soru: Google Sheets'te başlıklar görünmüyor?
 
 **Çözüm:**
+
 1. Hücreleri seçin (A1, B1, C1)
 2. Sağ tıklayın > **"Formatı temizle"** (Clear formatting)
 3. Metin rengini kontrol edin (üst menüden A harfi simgesi)
@@ -280,6 +297,7 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 ### Soru: Apps Script editörü açılmıyor?
 
 **Çözüm:**
+
 1. Google Sheets'te **"Uzantılar"** > **"Apps Script"** seçeneğine tekrar tıklayın
 2. Yeni bir sekme açılmazsa, tarayıcı ayarlarınızı kontrol edin (pop-up engelleyici)
 3. Alternatif: `script.google.com` adresine gidin ve projenizi oradan açın
@@ -287,6 +305,7 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 ### Soru: "Yetkilendirme gerekli" hatası alıyorum?
 
 **Çözüm:**
+
 1. Apps Script'te **"Dağıt"** > **"Dağıtımı yönet"** (Manage deployments) seçin
 2. Mevcut dağıtımın yanındaki **⚙️ (dişli çark) ikonuna** tıklayın
 3. **"Sil"** (Delete) butonuna tıklayın
@@ -296,6 +315,7 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 ### Soru: Web App URL'i çalışmıyor?
 
 **Çözüm:**
+
 1. URL'in doğru kopyalandığından emin olun
 2. URL'in sonunda `/exec` olduğundan emin olun
 3. Config dosyalarında tırnak işaretlerinin doğru olduğundan emin olun
@@ -304,6 +324,7 @@ Web App, kodunuzun internet üzerinden erişilebilir hale gelmesidir. Böylece w
 ### Soru: Veriler Google Sheets'e kaydedilmiyor?
 
 **Çözüm:**
+
 1. Browser console'u açın (F12 > Console)
 2. Hata mesajlarını kontrol edin
 3. Web App URL'inin doğru olduğundan emin olun

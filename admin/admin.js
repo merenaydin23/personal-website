@@ -327,8 +327,36 @@ function setupEventListeners() {
   }
 }
 
-// Veri yükleme
-function loadData() {
+// Google Sheets'ten veri yükle
+async function loadDataFromGoogleSheets() {
+  if (!CONFIG || !CONFIG.googleSheetsWebAppUrl) {
+    return null; // Google Sheets URL yoksa null döndür
+  }
+
+  try {
+    const url = `${CONFIG.googleSheetsWebAppUrl}?action=getData`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    debugLog("📊 Google Sheets'ten veri yüklendi:", data.length, "kayıt");
+    return data;
+  } catch (error) {
+    console.error("❌ Google Sheets veri yükleme hatası:", error);
+    return null; // Hata durumunda null döndür, localStorage'a fallback yapılır
+  }
+}
+
+// Veri yükleme (önce Google Sheets, yoksa localStorage)
+async function loadData() {
   initDOM();
 
   if (!dataTableBody) {
@@ -345,25 +373,38 @@ function loadData() {
     '<tr><td colspan="4" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Veriler yükleniyor...</td></tr>';
 
   try {
-    const rawData = localStorage.getItem(STORAGE_KEY);
-    debugLog("📦 Admin Panel - Veri yükleme:", {
-      STORAGE_KEY,
-      rawData: rawData ? "Veri var" : "Veri yok",
-      rawDataLength: rawData ? rawData.length : 0,
-    });
+    let data = null;
 
-    if (
-      !rawData ||
-      rawData === "null" ||
-      rawData === "undefined" ||
-      rawData === ""
-    ) {
-      debugLog("⚠️ Admin Panel - localStorage'da veri yok");
-      displayData([]);
-      return;
+    // Önce Google Sheets'ten veri yüklemeyi dene
+    if (CONFIG && CONFIG.googleSheetsWebAppUrl) {
+      debugLog("📦 Google Sheets'ten veri yükleniyor...");
+      data = await loadDataFromGoogleSheets();
     }
 
-    const data = JSON.parse(rawData);
+    // Google Sheets'ten veri gelmediyse localStorage'dan yükle
+    if (!data || data.length === 0) {
+      debugLog("📦 localStorage'dan veri yükleniyor...");
+      const rawData = localStorage.getItem(STORAGE_KEY);
+      debugLog("📦 Admin Panel - Veri yükleme:", {
+        STORAGE_KEY,
+        rawData: rawData ? "Veri var" : "Veri yok",
+        rawDataLength: rawData ? rawData.length : 0,
+      });
+
+      if (
+        !rawData ||
+        rawData === "null" ||
+        rawData === "undefined" ||
+        rawData === ""
+      ) {
+        debugLog("⚠️ Admin Panel - localStorage'da veri yok");
+        displayData([]);
+        return;
+      }
+
+      data = JSON.parse(rawData);
+    }
+
     debugLog("📊 Admin Panel - Parse edilen veri:", {
       isArray: Array.isArray(data),
       length: data ? data.length : 0,

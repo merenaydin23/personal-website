@@ -82,6 +82,14 @@ function safeWarn(...args) {
 // Newsletter kayıtlarını localStorage'da sakla
 const STORAGE_KEY = "newsletter_subscribers";
 
+// Google Sheets Web App URL (email-config.js'den alınacak, yoksa localStorage kullanılır)
+let GOOGLE_SHEETS_URL = "";
+
+// Email config yüklendiğinde Google Sheets URL'ini al
+if (typeof EMAIL_CONFIG !== "undefined" && EMAIL_CONFIG.googleSheetsWebAppUrl) {
+  GOOGLE_SHEETS_URL = EMAIL_CONFIG.googleSheetsWebAppUrl;
+}
+
 // Rate limiting - Spam koruması
 const RATE_LIMIT_KEY = "newsletter_rate_limit";
 const RATE_LIMIT_TIME = 60000; // 1 dakika
@@ -241,9 +249,19 @@ if (newsletterForm) {
         timestamp: now.toISOString(),
       };
 
-      // Kayıtları localStorage'a ekle (sadece mail başarılı gönderildiyse)
+      // Kayıtları hem localStorage'a hem Google Sheets'e kaydet
       existingData.push(newRecord);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
+
+      // Google Sheets'e kaydet (varsa)
+      if (GOOGLE_SHEETS_URL) {
+        try {
+          await saveToGoogleSheets(email, newRecord.timestamp);
+        } catch (error) {
+          safeError("Google Sheets'e kayıt hatası (localStorage'a kaydedildi):", error);
+          // Google Sheets hatası olsa bile localStorage'a kaydedildi, devam et
+        }
+      }
 
       // Rate limit'i sıfırla (başarılı kayıt)
       localStorage.removeItem(RATE_LIMIT_KEY);
@@ -354,10 +372,15 @@ async function sendWelcomeEmail(userEmail) {
     return true;
   } catch (error) {
     safeError("❌ Mail gönderme hatası:", error.message || error);
-    
+
     // Gmail API bağlantı hatası kontrolü
-    if (error.status === 412 || (error.text && error.text.includes("Invalid grant"))) {
-      safeError("⚠️ Gmail hesabı bağlantısı kopmuş! EmailJS dashboard'da Gmail servisini yeniden bağlayın.");
+    if (
+      error.status === 412 ||
+      (error.text && error.text.includes("Invalid grant"))
+    ) {
+      safeError(
+        "⚠️ Gmail hesabı bağlantısı kopmuş! EmailJS dashboard'da Gmail servisini yeniden bağlayın."
+      );
       if (!IS_PRODUCTION) {
         safeError("Hata detayları:", {
           status: error.status,
@@ -365,7 +388,9 @@ async function sendWelcomeEmail(userEmail) {
           message: error.message,
           code: error.code,
         });
-        safeError("Çözüm: https://dashboard.emailjs.com/ adresine gidin > Email Services > Gmail servisinizi yeniden bağlayın");
+        safeError(
+          "Çözüm: https://dashboard.emailjs.com/ adresine gidin > Email Services > Gmail servisinizi yeniden bağlayın"
+        );
       }
     } else if (!IS_PRODUCTION) {
       safeError("Hata detayları:", {
@@ -377,6 +402,36 @@ async function sendWelcomeEmail(userEmail) {
     }
     // Mail gönderimi başarısız
     return false;
+  }
+}
+
+// Google Sheets'e kayıt ekle
+async function saveToGoogleSheets(email, timestamp) {
+  if (!GOOGLE_SHEETS_URL) {
+    return; // Google Sheets URL yoksa atla
+  }
+
+  try {
+    const response = await fetch(GOOGLE_SHEETS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        timestamp: timestamp,
+      }),
+    });
+
+    const result = await response.json();
+    if (!result.success) {
+      throw new Error(result.message || "Google Sheets kayıt hatası");
+    }
+
+    safeLog("✅ Google Sheets'e kaydedildi");
+  } catch (error) {
+    safeError("❌ Google Sheets kayıt hatası:", error);
+    throw error; // Hata yukarı fırlatılır, ama localStorage'a kaydedildi
   }
 }
 

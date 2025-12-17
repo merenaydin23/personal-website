@@ -20,6 +20,10 @@ const EMAIL_CONFIG = {
 
   // Site URL
   siteUrl: "https://muhammederenaydin.com", // Canlı domain
+
+  // Google Sheets Web App URL (opsiyonel - boş bırakılırsa sadece localStorage kullanılır)
+  // Google Sheets kullanmak için: GOOGLE_SHEETS_SETUP.md dosyasına bakın
+  googleSheetsWebAppUrl: "", // Örnek: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
 };
 
 // EmailJS yüklendi mi kontrol et (sadece development'ta uyarı göster)

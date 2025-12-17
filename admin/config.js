@@ -14,8 +14,8 @@ const CONFIG = {
   // localStorage key
   storageKey: "newsletter_subscribers",
 
-  // Debug mode (Production'da false yapın)
-  debug: true,
+  // Debug mode (Production'da false yapın - Admin panel için true bırakabilirsiniz)
+  debug: true, // Admin panel debug için true bırakıldı
 
   // API timeout (ms)
   apiTimeout: 10000,
@@ -32,12 +32,13 @@ if (CONFIG.environment === "production") {
     );
   }
 
-  // Production'da Web App URL kontrolü
-  if (!CONFIG.googleSheetsWebAppUrl) {
-    console.error(
-      "❌ HATA: Production ortamında Google Sheets Web App URL tanımlanmamış!"
-    );
-  }
+  // Production'da Web App URL kontrolü (opsiyonel - sadece kullanılıyorsa)
+  // Google Sheets kullanmıyorsanız bu kontrolü görmezden gelebilirsiniz
+  // if (!CONFIG.googleSheetsWebAppUrl) {
+  //   console.warn(
+  //     "⚠️ NOT: Google Sheets Web App URL tanımlanmamış. Newsletter kayıtları localStorage'da saklanıyor."
+  //   );
+  // }
 }
 
 // Export config

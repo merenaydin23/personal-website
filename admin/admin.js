@@ -199,7 +199,11 @@ function loadData() {
 
   try {
     const rawData = localStorage.getItem(STORAGE_KEY);
-    debugLog("📦 Veri yükleniyor...", rawData ? "Veri bulundu" : "Veri yok");
+    console.log("📦 Admin Panel - Veri yükleme:", {
+      STORAGE_KEY,
+      rawData: rawData ? "Veri var" : "Veri yok",
+      rawDataLength: rawData ? rawData.length : 0,
+    });
 
     if (
       !rawData ||
@@ -207,14 +211,22 @@ function loadData() {
       rawData === "undefined" ||
       rawData === ""
     ) {
+      console.log("⚠️ Admin Panel - localStorage'da veri yok");
       displayData([]);
       return;
     }
 
     const data = JSON.parse(rawData);
+    console.log("📊 Admin Panel - Parse edilen veri:", {
+      isArray: Array.isArray(data),
+      length: data ? data.length : 0,
+      data: data,
+    });
+
     if (data && Array.isArray(data) && data.length > 0) {
       displayData(data);
     } else {
+      console.log("⚠️ Admin Panel - Veri boş veya geçersiz");
       displayData([]);
     }
   } catch (error) {

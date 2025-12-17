@@ -55,6 +55,14 @@
     {
       "source": "/robots.txt",
       "destination": "/robots.txt"
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "/home page/favicon.svg"
+    },
+    {
+      "source": "/favicon.svg",
+      "destination": "/home page/favicon.svg"
     }
   ],
   "headers": [

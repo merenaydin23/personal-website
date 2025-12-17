@@ -244,6 +244,9 @@ if (newsletterForm) {
   });
 }
 
+// EmailJS init durumu
+let emailjsInitialized = false;
+
 // Hoş geldiniz maili gönder
 // Başarılı olursa true, başarısız olursa false döndürür
 async function sendWelcomeEmail(userEmail) {
@@ -259,21 +262,47 @@ async function sendWelcomeEmail(userEmail) {
     return false;
   }
 
-  // EmailJS'in yüklenmesini bekle
+  // EmailJS'in yüklenmesini bekle (hem emailjs hem window.emailjs kontrol et)
   let retries = 0;
-  while (typeof emailjs === "undefined" && retries < 10) {
+  const maxRetries = 20; // 2 saniye bekle
+  while (
+    typeof emailjs === "undefined" &&
+    (typeof window === "undefined" || typeof window.emailjs === "undefined") &&
+    retries < maxRetries
+  ) {
     await new Promise((resolve) => setTimeout(resolve, 100));
     retries++;
   }
 
-  if (typeof emailjs === "undefined") {
+  // EmailJS objesini bul
+  const emailjsLib =
+    typeof emailjs !== "undefined"
+      ? emailjs
+      : typeof window !== "undefined" && typeof window.emailjs !== "undefined"
+      ? window.emailjs
+      : null;
+
+  if (!emailjsLib) {
     console.error("❌ EmailJS yüklenemedi! Sayfayı yenileyin.");
+    console.error("EmailJS kontrol:", {
+      emailjs: typeof emailjs,
+      windowEmailjs:
+        typeof window !== "undefined"
+          ? typeof window.emailjs
+          : "window undefined",
+    });
     return false;
   }
 
   try {
-    // EmailJS'i başlat
-    emailjs.init(EMAIL_CONFIG.publicKey);
+    // EmailJS'i sadece bir kez başlat (v4 API - obje olarak publicKey gönder)
+    if (!emailjsInitialized) {
+      emailjsLib.init({
+        publicKey: EMAIL_CONFIG.publicKey,
+      });
+      emailjsInitialized = true;
+      console.log("✅ EmailJS başlatıldı");
+    }
 
     // Mail içeriği (Template'te kullanılacak değişkenler)
     // EmailJS template'inde kullanılan değişken isimleri:
@@ -286,7 +315,13 @@ async function sendWelcomeEmail(userEmail) {
       site_url: EMAIL_CONFIG.siteUrl,
     };
 
-    const response = await emailjs.send(
+    console.log("📧 Mail gönderiliyor...", {
+      serviceId: EMAIL_CONFIG.serviceId,
+      templateId: EMAIL_CONFIG.templateId,
+      to: userEmail,
+    });
+
+    const response = await emailjsLib.send(
       EMAIL_CONFIG.serviceId,
       EMAIL_CONFIG.templateId,
       templateParams
@@ -301,6 +336,7 @@ async function sendWelcomeEmail(userEmail) {
       status: error.status,
       text: error.text,
       message: error.message,
+      code: error.code,
     });
     // Mail gönderimi başarısız
     return false;

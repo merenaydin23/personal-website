@@ -28,26 +28,28 @@ function debugLog(...args) {
 function checkBruteForce() {
   const bruteForceData = localStorage.getItem(BRUTE_FORCE_KEY);
   if (!bruteForceData) return true;
-  
+
   try {
     const data = JSON.parse(bruteForceData);
     const now = Date.now();
-    
+
     // Süre dolmuşsa sıfırla
     if (now - data.timestamp > BRUTE_FORCE_LOCK_TIME) {
       localStorage.removeItem(BRUTE_FORCE_KEY);
       return true;
     }
-    
+
     // Maksimum deneme sayısını kontrol et
     if (data.attempts >= MAX_FAILED_ATTEMPTS) {
-      const remainingMinutes = Math.ceil((BRUTE_FORCE_LOCK_TIME - (now - data.timestamp)) / 60000);
+      const remainingMinutes = Math.ceil(
+        (BRUTE_FORCE_LOCK_TIME - (now - data.timestamp)) / 60000
+      );
       showErrorMessage(
         `🔒 Çok fazla başarısız deneme! Lütfen ${remainingMinutes} dakika sonra tekrar deneyin.`
       );
       return false;
     }
-    
+
     return true;
   } catch (error) {
     localStorage.removeItem(BRUTE_FORCE_KEY);
@@ -59,12 +61,12 @@ function checkBruteForce() {
 function recordFailedAttempt() {
   const bruteForceData = localStorage.getItem(BRUTE_FORCE_KEY);
   let data;
-  
+
   if (bruteForceData) {
     try {
       data = JSON.parse(bruteForceData);
       const now = Date.now();
-      
+
       // Süre dolmuşsa sıfırla
       if (now - data.timestamp > BRUTE_FORCE_LOCK_TIME) {
         data = { attempts: 1, timestamp: now };
@@ -77,7 +79,7 @@ function recordFailedAttempt() {
   } else {
     data = { attempts: 1, timestamp: Date.now() };
   }
-  
+
   localStorage.setItem(BRUTE_FORCE_KEY, JSON.stringify(data));
 }
 
@@ -114,13 +116,16 @@ function processLogin(password) {
   if (!checkBruteForce()) {
     return false;
   }
-  
+
   // XSS koruması - şifrede HTML tag kontrolü
-  if (password && (password.includes("<") || password.includes(">") || password.includes("&"))) {
+  if (
+    password &&
+    (password.includes("<") || password.includes(">") || password.includes("&"))
+  ) {
     showErrorMessage("❌ Geçersiz karakter! Lütfen tekrar deneyin.");
     return false;
   }
-  
+
   if (password === ADMIN_PASSWORD) {
     debugLog("✅ Şifre doğru, giriş yapılıyor");
     clearBruteForce(); // Başarılı giriş - brute force kaydını sıfırla
@@ -140,11 +145,15 @@ function processLogin(password) {
         attempts = data.attempts || 0;
       } catch (e) {}
     }
-    
+
     if (attempts >= MAX_FAILED_ATTEMPTS) {
-      showErrorMessage("🔒 Çok fazla başarısız deneme! Hesap geçici olarak kilitlendi.");
+      showErrorMessage(
+        "🔒 Çok fazla başarısız deneme! Hesap geçici olarak kilitlendi."
+      );
     } else {
-      showErrorMessage(`❌ Yanlış şifre! Kalan deneme hakkı: ${MAX_FAILED_ATTEMPTS - attempts}`);
+      showErrorMessage(
+        `❌ Yanlış şifre! Kalan deneme hakkı: ${MAX_FAILED_ATTEMPTS - attempts}`
+      );
     }
     return false;
   }
@@ -209,10 +218,10 @@ function checkSessionTimeout() {
     showLoginScreen();
     return false;
   }
-  
+
   const now = Date.now();
   const sessionAge = now - parseInt(loginTime, 10);
-  
+
   if (sessionAge > SESSION_TIMEOUT) {
     localStorage.removeItem("adminLoggedIn");
     localStorage.removeItem("adminLoginTime");
@@ -220,7 +229,7 @@ function checkSessionTimeout() {
     showErrorMessage("⏰ Oturum süresi doldu. Lütfen tekrar giriş yapın.");
     return false;
   }
-  
+
   return true;
 }
 
@@ -228,7 +237,7 @@ function checkSessionTimeout() {
 function showAdminPanel() {
   if (loginScreen) loginScreen.style.display = "none";
   if (adminPanel) adminPanel.style.display = "block";
-  
+
   // Session timeout kontrolünü başlat
   setInterval(() => {
     if (!checkSessionTimeout()) {
@@ -474,7 +483,7 @@ function initAdmin() {
     if (checkSessionTimeout()) {
       showAdminPanel();
       setTimeout(() => loadData(), 300);
-      
+
       // Session timeout kontrolünü başlat
       setInterval(() => {
         if (!checkSessionTimeout()) {

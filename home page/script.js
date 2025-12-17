@@ -59,16 +59,109 @@ const formMessage = document.getElementById("form-message");
 // Newsletter kayıtlarını localStorage'da sakla
 const STORAGE_KEY = "newsletter_subscribers";
 
+// Rate limiting - Spam koruması
+const RATE_LIMIT_KEY = "newsletter_rate_limit";
+const RATE_LIMIT_TIME = 60000; // 1 dakika
+const MAX_ATTEMPTS = 3;
+
+// Email validation ve sanitization
+function validateAndSanitizeEmail(email) {
+  if (!email || typeof email !== "string") return null;
+  
+  // XSS koruması - HTML tag'lerini temizle
+  email = email.trim().replace(/[<>]/g, "");
+  
+  // Email regex validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) return null;
+  
+  // Email uzunluk kontrolü
+  if (email.length > 254) return null;
+  
+  // Domain kontrolü
+  const parts = email.split("@");
+  if (parts.length !== 2) return null;
+  if (parts[0].length > 64) return null;
+  
+  return email.toLowerCase();
+}
+
+// Rate limiting kontrolü
+function checkRateLimit() {
+  const rateLimitData = localStorage.getItem(RATE_LIMIT_KEY);
+  if (!rateLimitData) return true;
+  
+  try {
+    const data = JSON.parse(rateLimitData);
+    const now = Date.now();
+    
+    // Süre dolmuşsa sıfırla
+    if (now - data.timestamp > RATE_LIMIT_TIME) {
+      localStorage.removeItem(RATE_LIMIT_KEY);
+      return true;
+    }
+    
+    // Maksimum deneme sayısını kontrol et
+    if (data.attempts >= MAX_ATTEMPTS) {
+      const remainingTime = Math.ceil((RATE_LIMIT_TIME - (now - data.timestamp)) / 1000);
+      showMessage(
+        `⏳ Çok fazla deneme yapıldı. Lütfen ${remainingTime} saniye sonra tekrar deneyin.`,
+        "error"
+      );
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    localStorage.removeItem(RATE_LIMIT_KEY);
+    return true;
+  }
+}
+
+// Rate limit kaydı
+function recordRateLimit() {
+  const rateLimitData = localStorage.getItem(RATE_LIMIT_KEY);
+  let data;
+  
+  if (rateLimitData) {
+    try {
+      data = JSON.parse(rateLimitData);
+      const now = Date.now();
+      
+      // Süre dolmuşsa sıfırla
+      if (now - data.timestamp > RATE_LIMIT_TIME) {
+        data = { attempts: 1, timestamp: now };
+      } else {
+        data.attempts = (data.attempts || 0) + 1;
+      }
+    } catch (error) {
+      data = { attempts: 1, timestamp: Date.now() };
+    }
+  } else {
+    data = { attempts: 1, timestamp: Date.now() };
+  }
+  
+  localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(data));
+}
+
 if (newsletterForm) {
   newsletterForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const email = emailInput.value.trim();
+    // Rate limiting kontrolü
+    if (!checkRateLimit()) {
+      return;
+    }
+
+    const rawEmail = emailInput.value;
     const submitBtn = newsletterForm.querySelector(".submit-btn");
 
-    // Validation
-    if (!email || !email.includes("@")) {
+    // Email validation ve sanitization
+    const email = validateAndSanitizeEmail(rawEmail);
+    if (!email) {
+      recordRateLimit();
       showMessage("Lütfen geçerli bir e-posta adresi girin!", "error");
+      emailInput.value = "";
       return;
     }
 
@@ -113,6 +206,9 @@ if (newsletterForm) {
       existingData.push(newRecord);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
 
+      // Rate limit'i sıfırla (başarılı kayıt)
+      localStorage.removeItem(RATE_LIMIT_KEY);
+
       // Hoş geldiniz maili gönder
       sendWelcomeEmail(email);
 
@@ -124,6 +220,7 @@ if (newsletterForm) {
       emailInput.value = "";
     } catch (error) {
       console.error("Error:", error);
+      recordRateLimit();
       showMessage(
         "❌ Bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
         "error"

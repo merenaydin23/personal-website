@@ -14,9 +14,76 @@ const ADMIN_PASSWORD = CONFIG ? CONFIG.adminPassword : "admin123";
 const STORAGE_KEY = CONFIG ? CONFIG.storageKey : "newsletter_subscribers";
 const DEBUG_MODE = CONFIG ? CONFIG.debug : true;
 
+// Brute force koruması
+const BRUTE_FORCE_KEY = "admin_brute_force";
+const BRUTE_FORCE_LOCK_TIME = 15 * 60 * 1000; // 15 dakika
+const MAX_FAILED_ATTEMPTS = 5;
+
 // Debug log fonksiyonu
 function debugLog(...args) {
   if (DEBUG_MODE) console.log(...args);
+}
+
+// Brute force kontrolü
+function checkBruteForce() {
+  const bruteForceData = localStorage.getItem(BRUTE_FORCE_KEY);
+  if (!bruteForceData) return true;
+  
+  try {
+    const data = JSON.parse(bruteForceData);
+    const now = Date.now();
+    
+    // Süre dolmuşsa sıfırla
+    if (now - data.timestamp > BRUTE_FORCE_LOCK_TIME) {
+      localStorage.removeItem(BRUTE_FORCE_KEY);
+      return true;
+    }
+    
+    // Maksimum deneme sayısını kontrol et
+    if (data.attempts >= MAX_FAILED_ATTEMPTS) {
+      const remainingMinutes = Math.ceil((BRUTE_FORCE_LOCK_TIME - (now - data.timestamp)) / 60000);
+      showErrorMessage(
+        `🔒 Çok fazla başarısız deneme! Lütfen ${remainingMinutes} dakika sonra tekrar deneyin.`
+      );
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    localStorage.removeItem(BRUTE_FORCE_KEY);
+    return true;
+  }
+}
+
+// Başarısız deneme kaydı
+function recordFailedAttempt() {
+  const bruteForceData = localStorage.getItem(BRUTE_FORCE_KEY);
+  let data;
+  
+  if (bruteForceData) {
+    try {
+      data = JSON.parse(bruteForceData);
+      const now = Date.now();
+      
+      // Süre dolmuşsa sıfırla
+      if (now - data.timestamp > BRUTE_FORCE_LOCK_TIME) {
+        data = { attempts: 1, timestamp: now };
+      } else {
+        data.attempts = (data.attempts || 0) + 1;
+      }
+    } catch (error) {
+      data = { attempts: 1, timestamp: Date.now() };
+    }
+  } else {
+    data = { attempts: 1, timestamp: Date.now() };
+  }
+  
+  localStorage.setItem(BRUTE_FORCE_KEY, JSON.stringify(data));
+}
+
+// Başarılı giriş - brute force kaydını sıfırla
+function clearBruteForce() {
+  localStorage.removeItem(BRUTE_FORCE_KEY);
 }
 
 // DOM Elements cache
@@ -43,15 +110,42 @@ function initDOM() {
 
 // Şifre kontrolü ve giriş işlemi
 function processLogin(password) {
+  // Brute force kontrolü
+  if (!checkBruteForce()) {
+    return false;
+  }
+  
+  // XSS koruması - şifrede HTML tag kontrolü
+  if (password && (password.includes("<") || password.includes(">") || password.includes("&"))) {
+    showErrorMessage("❌ Geçersiz karakter! Lütfen tekrar deneyin.");
+    return false;
+  }
+  
   if (password === ADMIN_PASSWORD) {
     debugLog("✅ Şifre doğru, giriş yapılıyor");
+    clearBruteForce(); // Başarılı giriş - brute force kaydını sıfırla
     localStorage.setItem("adminLoggedIn", "true");
+    localStorage.setItem("adminLoginTime", Date.now().toString());
     showAdminPanel();
     setTimeout(() => loadData(), 300);
     return true;
   } else {
     debugLog("❌ Yanlış şifre!");
-    showErrorMessage("❌ Yanlış şifre! Lütfen tekrar deneyin.");
+    recordFailedAttempt(); // Başarısız deneme kaydı
+    const bruteForceData = localStorage.getItem(BRUTE_FORCE_KEY);
+    let attempts = 0;
+    if (bruteForceData) {
+      try {
+        const data = JSON.parse(bruteForceData);
+        attempts = data.attempts || 0;
+      } catch (e) {}
+    }
+    
+    if (attempts >= MAX_FAILED_ATTEMPTS) {
+      showErrorMessage("🔒 Çok fazla başarısız deneme! Hesap geçici olarak kilitlendi.");
+    } else {
+      showErrorMessage(`❌ Yanlış şifre! Kalan deneme hakkı: ${MAX_FAILED_ATTEMPTS - attempts}`);
+    }
     return false;
   }
 }
@@ -93,10 +187,54 @@ function handleLogin(e) {
   return false;
 }
 
+// XSS koruması - HTML escape
+function escapeHtml(text) {
+  if (!text) return "";
+  const map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  };
+  return String(text).replace(/[&<>"']/g, (m) => map[m]);
+}
+
+// Session timeout kontrolü (30 dakika)
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 dakika
+
+function checkSessionTimeout() {
+  const loginTime = localStorage.getItem("adminLoginTime");
+  if (!loginTime) {
+    showLoginScreen();
+    return false;
+  }
+  
+  const now = Date.now();
+  const sessionAge = now - parseInt(loginTime, 10);
+  
+  if (sessionAge > SESSION_TIMEOUT) {
+    localStorage.removeItem("adminLoggedIn");
+    localStorage.removeItem("adminLoginTime");
+    showLoginScreen();
+    showErrorMessage("⏰ Oturum süresi doldu. Lütfen tekrar giriş yapın.");
+    return false;
+  }
+  
+  return true;
+}
+
 // Admin paneli göster
 function showAdminPanel() {
   if (loginScreen) loginScreen.style.display = "none";
   if (adminPanel) adminPanel.style.display = "block";
+  
+  // Session timeout kontrolünü başlat
+  setInterval(() => {
+    if (!checkSessionTimeout()) {
+      return;
+    }
+  }, 60000); // Her 1 dakikada bir kontrol et
 }
 
 // Login ekranı göster
@@ -135,6 +273,7 @@ function setupEventListeners() {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("adminLoggedIn");
+      localStorage.removeItem("adminLoginTime");
       showLoginScreen();
     });
   }
@@ -272,12 +411,13 @@ function displayData(data) {
 
   reversedData.forEach((row, index) => {
     const rowNumber = reversedData.length - index;
+    // XSS koruması - Tüm verileri escape et
     html += `
       <tr>
-        <td>${rowNumber}</td>
-        <td>${row.email || ""}</td>
-        <td>${row.date || ""}</td>
-        <td>${row.time || ""}</td>
+        <td>${escapeHtml(rowNumber)}</td>
+        <td>${escapeHtml(row.email || "")}</td>
+        <td>${escapeHtml(row.date || "")}</td>
+        <td>${escapeHtml(row.time || "")}</td>
       </tr>
     `;
   });
@@ -329,9 +469,24 @@ function exportToCSV() {
 function initAdmin() {
   initDOM();
 
+  // Session timeout kontrolü
   if (localStorage.getItem("adminLoggedIn") === "true") {
-    showAdminPanel();
-    setTimeout(() => loadData(), 300);
+    if (checkSessionTimeout()) {
+      showAdminPanel();
+      setTimeout(() => loadData(), 300);
+      
+      // Session timeout kontrolünü başlat
+      setInterval(() => {
+        if (!checkSessionTimeout()) {
+          return;
+        }
+      }, 60000); // Her 1 dakikada bir kontrol et
+    } else {
+      // Session süresi dolmuş
+      localStorage.removeItem("adminLoggedIn");
+      localStorage.removeItem("adminLoginTime");
+      showLoginScreen();
+    }
   }
 
   setupEventListeners();
@@ -342,7 +497,12 @@ document.addEventListener("DOMContentLoaded", initAdmin);
 window.addEventListener("load", () => {
   initDOM();
   if (localStorage.getItem("adminLoggedIn") === "true") {
-    setTimeout(() => loadData(), 100);
+    if (checkSessionTimeout()) {
+      setTimeout(() => loadData(), 100);
+    } else {
+      localStorage.removeItem("adminLoggedIn");
+      localStorage.removeItem("adminLoginTime");
+      showLoginScreen();
+    }
   }
 });
-

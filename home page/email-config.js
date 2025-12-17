@@ -23,6 +23,10 @@ const EMAIL_CONFIG = {
 };
 
 // EmailJS yüklendi mi kontrol et (sadece development'ta uyarı göster)
-if (typeof emailjs === "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+if (
+  typeof emailjs === "undefined" &&
+  (window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1")
+) {
   console.warn("⚠️ EmailJS yüklenmedi! Email gönderimi çalışmayacak.");
 }

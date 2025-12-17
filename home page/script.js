@@ -57,7 +57,9 @@ const emailInput = document.getElementById("email-input");
 const formMessage = document.getElementById("form-message");
 
 // Production ortamı kontrolü (güvenlik için)
-const IS_PRODUCTION = window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
+const IS_PRODUCTION =
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1";
 
 // Güvenli console log fonksiyonu (production'da gizler)
 function safeLog(...args) {
@@ -210,6 +212,7 @@ if (newsletterForm) {
       // Mail gönderimi başarısız olursa kayıt yapma
       if (!emailSent) {
         recordRateLimit();
+        // Gmail bağlantı hatası için özel mesaj (kullanıcıya gösterilmez, sadece log)
         showMessage(
           "❌ Mail gönderilemedi. Lütfen daha sonra tekrar deneyin.",
           "error"
@@ -351,7 +354,20 @@ async function sendWelcomeEmail(userEmail) {
     return true;
   } catch (error) {
     safeError("❌ Mail gönderme hatası:", error.message || error);
-    if (!IS_PRODUCTION) {
+    
+    // Gmail API bağlantı hatası kontrolü
+    if (error.status === 412 || (error.text && error.text.includes("Invalid grant"))) {
+      safeError("⚠️ Gmail hesabı bağlantısı kopmuş! EmailJS dashboard'da Gmail servisini yeniden bağlayın.");
+      if (!IS_PRODUCTION) {
+        safeError("Hata detayları:", {
+          status: error.status,
+          text: error.text,
+          message: error.message,
+          code: error.code,
+        });
+        safeError("Çözüm: https://dashboard.emailjs.com/ adresine gidin > Email Services > Gmail servisinizi yeniden bağlayın");
+      }
+    } else if (!IS_PRODUCTION) {
       safeError("Hata detayları:", {
         status: error.status,
         text: error.text,

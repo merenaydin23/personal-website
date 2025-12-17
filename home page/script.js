@@ -56,6 +56,27 @@ const newsletterForm = document.getElementById("newsletter-form");
 const emailInput = document.getElementById("email-input");
 const formMessage = document.getElementById("form-message");
 
+// Production ortamı kontrolü (güvenlik için)
+const IS_PRODUCTION = window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
+
+// Güvenli console log fonksiyonu (production'da gizler)
+function safeLog(...args) {
+  if (!IS_PRODUCTION) {
+    console.log(...args);
+  }
+}
+
+function safeError(...args) {
+  // Kritik hatalar her zaman gösterilir
+  console.error(...args);
+}
+
+function safeWarn(...args) {
+  if (!IS_PRODUCTION) {
+    console.warn(...args);
+  }
+}
+
 // Newsletter kayıtlarını localStorage'da sakla
 const STORAGE_KEY = "newsletter_subscribers";
 
@@ -256,7 +277,7 @@ async function sendWelcomeEmail(userEmail) {
     !EMAIL_CONFIG.serviceId ||
     !EMAIL_CONFIG.templateId
   ) {
-    console.warn(
+    safeWarn(
       "⚠️ EmailJS yapılandırması eksik! email-config.js dosyasını kontrol edin."
     );
     return false;
@@ -283,14 +304,16 @@ async function sendWelcomeEmail(userEmail) {
       : null;
 
   if (!emailjsLib) {
-    console.error("❌ EmailJS yüklenemedi! Sayfayı yenileyin.");
-    console.error("EmailJS kontrol:", {
-      emailjs: typeof emailjs,
-      windowEmailjs:
-        typeof window !== "undefined"
-          ? typeof window.emailjs
-          : "window undefined",
-    });
+    safeError("❌ EmailJS yüklenemedi! Sayfayı yenileyin.");
+    if (!IS_PRODUCTION) {
+      safeError("EmailJS kontrol:", {
+        emailjs: typeof emailjs,
+        windowEmailjs:
+          typeof window !== "undefined"
+            ? typeof window.emailjs
+            : "window undefined",
+      });
+    }
     return false;
   }
 
@@ -301,7 +324,7 @@ async function sendWelcomeEmail(userEmail) {
         publicKey: EMAIL_CONFIG.publicKey,
       });
       emailjsInitialized = true;
-      console.log("✅ EmailJS başlatıldı");
+      safeLog("✅ EmailJS başlatıldı");
     }
 
     // Mail içeriği (Template'te kullanılacak değişkenler)
@@ -315,11 +338,7 @@ async function sendWelcomeEmail(userEmail) {
       site_url: EMAIL_CONFIG.siteUrl,
     };
 
-    console.log("📧 Mail gönderiliyor...", {
-      serviceId: EMAIL_CONFIG.serviceId,
-      templateId: EMAIL_CONFIG.templateId,
-      to: userEmail,
-    });
+    safeLog("📧 Mail gönderiliyor...");
 
     const response = await emailjsLib.send(
       EMAIL_CONFIG.serviceId,
@@ -328,16 +347,18 @@ async function sendWelcomeEmail(userEmail) {
     );
 
     // Mail gönderimi başarılı
-    console.log("✅ Mail başarıyla gönderildi:", response);
+    safeLog("✅ Mail başarıyla gönderildi");
     return true;
   } catch (error) {
-    console.error("❌ Mail gönderme hatası:", error);
-    console.error("Hata detayları:", {
-      status: error.status,
-      text: error.text,
-      message: error.message,
-      code: error.code,
-    });
+    safeError("❌ Mail gönderme hatası:", error.message || error);
+    if (!IS_PRODUCTION) {
+      safeError("Hata detayları:", {
+        status: error.status,
+        text: error.text,
+        message: error.message,
+        code: error.code,
+      });
+    }
     // Mail gönderimi başarısız
     return false;
   }

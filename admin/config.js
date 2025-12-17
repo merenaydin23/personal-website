@@ -14,8 +14,8 @@ const CONFIG = {
   // localStorage key
   storageKey: "newsletter_subscribers",
 
-  // Debug mode (Production'da false yapın - Admin panel için true bırakabilirsiniz)
-  debug: true, // Admin panel debug için true bırakıldı
+  // Debug mode (Production'da false yapın)
+  debug: false, // Production'da false - sadece development'ta true yapın
 
   // API timeout (ms)
   apiTimeout: 10000,
@@ -25,12 +25,13 @@ const CONFIG = {
 if (CONFIG.environment === "production") {
   CONFIG.debug = false;
 
-  // Production'da şifre kontrolü
-  if (CONFIG.adminPassword === "admin123") {
-    console.warn(
-      "⚠️ UYARI: Production ortamında varsayılan şifre kullanılıyor! Güvenlik riski!"
-    );
-  }
+  // Production'da şifre kontrolü (sadece development'ta uyarı göster)
+  // Production'da console.warn güvenlik riski oluşturabilir
+  // if (CONFIG.adminPassword === "admin123") {
+  //   console.warn(
+  //     "⚠️ UYARI: Production ortamında varsayılan şifre kullanılıyor! Güvenlik riski!"
+  //   );
+  // }
 
   // Production'da Web App URL kontrolü (opsiyonel - sadece kullanılıyorsa)
   // Google Sheets kullanmıyorsanız bu kontrolü görmezden gelebilirsiniz

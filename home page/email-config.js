@@ -22,7 +22,7 @@ const EMAIL_CONFIG = {
   siteUrl: "https://muhammederenaydin.com", // Canlı domain
 };
 
-// EmailJS yüklendi mi kontrol et
-if (typeof emailjs === "undefined") {
+// EmailJS yüklendi mi kontrol et (sadece development'ta uyarı göster)
+if (typeof emailjs === "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
   console.warn("⚠️ EmailJS yüklenmedi! Email gönderimi çalışmayacak.");
 }

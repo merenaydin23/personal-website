@@ -317,10 +317,9 @@ function setupEventListeners() {
       testBtn.style.display = "none";
     } else {
       testBtn.addEventListener("click", () => {
-        console.log("🧪 TEST:", {
+        debugLog("🧪 TEST:", {
           STORAGE_KEY,
-          data: localStorage.getItem(STORAGE_KEY),
-          allStorage: { ...localStorage },
+          hasData: !!localStorage.getItem(STORAGE_KEY),
         });
         loadData();
       });
@@ -347,7 +346,7 @@ function loadData() {
 
   try {
     const rawData = localStorage.getItem(STORAGE_KEY);
-    console.log("📦 Admin Panel - Veri yükleme:", {
+    debugLog("📦 Admin Panel - Veri yükleme:", {
       STORAGE_KEY,
       rawData: rawData ? "Veri var" : "Veri yok",
       rawDataLength: rawData ? rawData.length : 0,
@@ -359,22 +358,21 @@ function loadData() {
       rawData === "undefined" ||
       rawData === ""
     ) {
-      console.log("⚠️ Admin Panel - localStorage'da veri yok");
+      debugLog("⚠️ Admin Panel - localStorage'da veri yok");
       displayData([]);
       return;
     }
 
     const data = JSON.parse(rawData);
-    console.log("📊 Admin Panel - Parse edilen veri:", {
+    debugLog("📊 Admin Panel - Parse edilen veri:", {
       isArray: Array.isArray(data),
       length: data ? data.length : 0,
-      data: data,
     });
 
     if (data && Array.isArray(data) && data.length > 0) {
       displayData(data);
     } else {
-      console.log("⚠️ Admin Panel - Veri boş veya geçersiz");
+      debugLog("⚠️ Admin Panel - Veri boş veya geçersiz");
       displayData([]);
     }
   } catch (error) {

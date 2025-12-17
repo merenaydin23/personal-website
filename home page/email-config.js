@@ -23,7 +23,8 @@ const EMAIL_CONFIG = {
 
   // Google Sheets Web App URL (opsiyonel - boş bırakılırsa sadece localStorage kullanılır)
   // Google Sheets kullanmak için: GOOGLE_SHEETS_SETUP.md dosyasına bakın
-  googleSheetsWebAppUrl: "", // Örnek: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+  googleSheetsWebAppUrl:
+    "https://script.google.com/macros/s/AKfycby08b6w6Ajpfhv-qf8qoYJsRI70dP1gOBEAw7cLT7_y0GrJ4ROqMD-pKg2EWCT1tM-4Wg/exec",
 };
 
 // EmailJS yüklendi mi kontrol et (sadece development'ta uyarı göster)

@@ -6,7 +6,8 @@ const CONFIG = {
   environment: "production", // Canlıya alırken 'production' yapın
 
   // Google Sheets Web App URL (Production'da değiştirin)
-  googleSheetsWebAppUrl: "", // Production'da buraya Web App URL'inizi yazın
+  googleSheetsWebAppUrl:
+    "https://script.google.com/macros/s/AKfycby08b6w6Ajpfhv-qf8qoYJsRI70dP1gOBEAw7cLT7_y0GrJ4ROqMD-pKg2EWCT1tM-4Wg/exec",
 
   // Admin şifresi (Production'da mutlaka değiştirin!)
   adminPassword: "2386387.gS", // ⚠️ CANLIYA ALMADAN ÖNCE DEĞİŞTİRİN!

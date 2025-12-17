@@ -41,3 +41,4 @@ Deploy sonrası şu URL'leri test edin:
 - `https://yourdomain.com/projects` → Projects
 - `https://yourdomain.com/blog` → Blog
 - `https://yourdomain.com/admin` → Admin panel
+

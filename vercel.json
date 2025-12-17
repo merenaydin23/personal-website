@@ -47,6 +47,14 @@
     {
       "source": "/admin/config.js",
       "destination": "/admin/config.js"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/robots.txt"
     }
   ],
   "headers": [
@@ -63,3 +71,4 @@
   "cleanUrls": false,
   "trailingSlash": false
 }
+

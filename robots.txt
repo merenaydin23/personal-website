@@ -1,0 +1,8 @@
+# robots.txt for muhammederenaydin.com
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+# Sitemap
+Sitemap: https://muhammederenaydin.com/sitemap.xml

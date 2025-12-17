@@ -258,7 +258,10 @@ if (newsletterForm) {
         try {
           await saveToGoogleSheets(email, newRecord.timestamp);
         } catch (error) {
-          safeError("Google Sheets'e kayıt hatası (localStorage'a kaydedildi):", error);
+          safeError(
+            "Google Sheets'e kayıt hatası (localStorage'a kaydedildi):",
+            error
+          );
           // Google Sheets hatası olsa bile localStorage'a kaydedildi, devam et
         }
       }

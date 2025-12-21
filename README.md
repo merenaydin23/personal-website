@@ -64,10 +64,10 @@ cd personal-website
 
 ```javascript
 const EMAIL_CONFIG = {
-  serviceID: 'YOUR_SERVICE_ID',
-  templateID: 'YOUR_TEMPLATE_ID',
-  publicKey: 'YOUR_PUBLIC_KEY',
-  googleSheetsWebAppUrl: 'YOUR_GOOGLE_SHEETS_WEB_APP_URL'
+  serviceID: "YOUR_SERVICE_ID",
+  templateID: "YOUR_TEMPLATE_ID",
+  publicKey: "YOUR_PUBLIC_KEY",
+  googleSheetsWebAppUrl: "YOUR_GOOGLE_SHEETS_WEB_APP_URL",
 };
 ```
 
@@ -77,21 +77,27 @@ const EMAIL_CONFIG = {
 
 ```javascript
 const CONFIG = {
-  adminPassword: 'GÜÇLÜ_ŞİFRENİZ', // ⚠️ MUTLAKA DEĞİŞTİRİN!
-  storageKey: 'newsletter_subscribers',
+  adminPassword: "GÜÇLÜ_ŞİFRENİZ", // ⚠️ MUTLAKA DEĞİŞTİRİN!
+  storageKey: "newsletter_subscribers",
   debug: false, // Production'da false
-  googleSheetsWebAppUrl: 'YOUR_GOOGLE_SHEETS_WEB_APP_URL'
+  googleSheetsWebAppUrl: "YOUR_GOOGLE_SHEETS_WEB_APP_URL",
 };
 ```
 
 ### 4. Google Sheets Entegrasyonu (Opsiyonel)
 
-1. Google Sheets'te yeni bir sayfa oluşturun
-2. `google-apps-script-code.js` dosyasındaki kodu Google Apps Script'e yapıştırın
-3. Web App olarak yayınlayın
-4. Web App URL'ini `email-config.js` ve `admin/config.js` dosyalarına ekleyin
+Google Sheets entegrasyonu için:
 
-Detaylı kurulum için `admin/README.md` dosyasına bakın.
+1. Google Sheets'te yeni bir sayfa oluşturun (A1: Email, B1: Tarih, C1: Saat)
+2. Google Sheets'te **Uzantılar > Apps Script** menüsüne gidin
+3. `google-apps-script-code.js` dosyasındaki kodu Apps Script editörüne yapıştırın
+4. **Kaydet** butonuna tıklayın
+5. **Dağıt > Yeni dağıtım > Web uygulaması** seçin
+6. **Erişebilenler**: "Herkes" seçin
+7. **Dağıt** butonuna tıklayın ve Web App URL'ini kopyalayın
+8. Web App URL'ini `email-config.js` ve `admin/config.js` dosyalarına ekleyin
+
+**Not:** Admin panel detayları için `admin/README.md` dosyasına bakın.
 
 ## 🌐 Deployment
 
@@ -191,12 +197,14 @@ Bu proje açık kaynaklıdır ve özgürce kullanılabilir.
 ## 🔄 Güncelleme Notları
 
 ### v2.0.0
+
 - Google Sheets entegrasyonu eklendi
 - Production güvenlik ayarları iyileştirildi
 - Admin panel geliştirildi
 - Newsletter sistemi optimize edildi
 
 ### v1.0.0
+
 - İlk sürüm
 - Temel sayfalar ve newsletter sistemi
 

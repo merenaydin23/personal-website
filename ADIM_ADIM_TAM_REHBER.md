@@ -499,3 +499,5 @@ Artık Google Sheets entegrasyonunuz hazır! Tüm bilgisayarlardan aynı kayıtl
 ---
 
 **Son Güncelleme:** En baştan tam rehber eklendi - Her adım çok detaylı anlatıldı.
+
+

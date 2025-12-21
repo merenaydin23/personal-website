@@ -243,3 +243,5 @@ Eğer Apps Script kodunda değişiklik yaptıysanız:
 ---
 
 **Son Güncelleme:** Detaylı adım adım kurulum rehberi eklendi.
+
+

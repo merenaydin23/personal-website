@@ -86,9 +86,29 @@ const STORAGE_KEY = "newsletter_subscribers";
 let GOOGLE_SHEETS_URL = "";
 
 // Email config yüklendiğinde Google Sheets URL'ini al
-if (typeof EMAIL_CONFIG !== "undefined" && EMAIL_CONFIG.googleSheetsWebAppUrl) {
-  GOOGLE_SHEETS_URL = EMAIL_CONFIG.googleSheetsWebAppUrl;
+function updateGoogleSheetsUrl() {
+  if (
+    typeof EMAIL_CONFIG !== "undefined" &&
+    EMAIL_CONFIG.googleSheetsWebAppUrl
+  ) {
+    GOOGLE_SHEETS_URL = EMAIL_CONFIG.googleSheetsWebAppUrl;
+    safeLog("✅ Google Sheets URL yüklendi:", GOOGLE_SHEETS_URL);
+  } else {
+    safeWarn("⚠️ Google Sheets URL bulunamadı! localStorage kullanılacak.");
+  }
 }
+
+// Sayfa yüklendiğinde URL'i kontrol et
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", updateGoogleSheetsUrl);
+} else {
+  updateGoogleSheetsUrl();
+}
+
+// Ayrıca window load'ta da kontrol et (email-config.js geç yüklenmiş olabilir)
+window.addEventListener("load", () => {
+  updateGoogleSheetsUrl();
+});
 
 // Rate limiting - Spam koruması
 const RATE_LIMIT_KEY = "newsletter_rate_limit";
@@ -214,18 +234,16 @@ if (newsletterForm) {
       '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
 
     try {
-      // Önce mail gönderimini dene
-      const emailSent = await sendWelcomeEmail(email);
-
-      // Mail gönderimi başarısız olursa kayıt yapma
-      if (!emailSent) {
-        recordRateLimit();
-        // Gmail bağlantı hatası için özel mesaj (kullanıcıya gösterilmez, sadece log)
-        showMessage(
-          "❌ Mail gönderilemedi. Lütfen daha sonra tekrar deneyin.",
-          "error"
+      // Mail gönderimini dene (başarısız olsa bile kayıt yapılacak)
+      let emailSent = false;
+      try {
+        emailSent = await sendWelcomeEmail(email);
+      } catch (emailError) {
+        safeError(
+          "Mail gönderme hatası (kayıt yine de yapılacak):",
+          emailError
         );
-        return;
+        // Mail hatası olsa bile devam et
       }
 
       // Mail gönderimi başarılı, şimdi kayıt oluştur
@@ -411,8 +429,14 @@ async function sendWelcomeEmail(userEmail) {
 // Google Sheets'e kayıt ekle
 async function saveToGoogleSheets(email, timestamp) {
   if (!GOOGLE_SHEETS_URL) {
+    safeError("⚠️ Google Sheets URL tanımlı değil!");
     return; // Google Sheets URL yoksa atla
   }
+
+  safeLog("📤 Google Sheets'e kayıt gönderiliyor...", {
+    url: GOOGLE_SHEETS_URL,
+    email: email,
+  });
 
   try {
     const response = await fetch(GOOGLE_SHEETS_URL, {
@@ -426,15 +450,43 @@ async function saveToGoogleSheets(email, timestamp) {
       }),
     });
 
-    const result = await response.json();
-    if (!result.success) {
-      throw new Error(result.message || "Google Sheets kayıt hatası");
-    }
+    safeLog("📥 Google Sheets yanıtı:", {
+      ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+    });
 
-    safeLog("✅ Google Sheets'e kaydedildi");
+    // Response'u text olarak oku (JSON parse hatası olabilir)
+    const responseText = await response.text();
+    safeLog("📥 Google Sheets yanıt içeriği:", responseText);
+
+    // JSON parse etmeyi dene
+    try {
+      const result = JSON.parse(responseText);
+      if (result.success) {
+        safeLog("✅ Google Sheets'e başarıyla kaydedildi");
+      } else {
+        throw new Error(result.message || "Google Sheets kayıt hatası");
+      }
+    } catch (parseError) {
+      // JSON parse hatası - ama response geldi, muhtemelen başarılı
+      if (response.ok) {
+        safeLog(
+          "✅ Google Sheets'e kayıt gönderildi (yanıt JSON değil ama OK)"
+        );
+      } else {
+        throw new Error(
+          `Google Sheets hatası: ${response.status} ${responseText}`
+        );
+      }
+    }
   } catch (error) {
     safeError("❌ Google Sheets kayıt hatası:", error);
-    throw error; // Hata yukarı fırlatılır, ama localStorage'a kaydedildi
+    safeError("Hata detayları:", {
+      message: error.message,
+      name: error.name,
+    });
+    // Hata olsa bile localStorage'a kaydedildi, devam et
   }
 }
 

@@ -91,3 +91,5 @@ googleSheetsWebAppUrl: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec",
 ---
 
 **Son Güncelleme:** Google Sheets entegrasyonu eklendi, tüm bilgisayarlardan aynı veriler görünüyor.
+
+

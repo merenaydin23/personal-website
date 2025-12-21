@@ -63,3 +63,5 @@ Eğer hata devam ederse:
 ---
 
 **Son Güncelleme:** Gmail bağlantı hatası için otomatik tespit ve loglama eklendi.
+
+

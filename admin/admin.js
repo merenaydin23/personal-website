@@ -330,7 +330,8 @@ function setupEventListeners() {
 // Google Sheets'ten veri yükle
 async function loadDataFromGoogleSheets() {
   if (!CONFIG || !CONFIG.googleSheetsWebAppUrl) {
-    const warnMsg = "⚠️ Google Sheets URL tanımlı değil! localStorage kullanılacak.";
+    const warnMsg =
+      "⚠️ Google Sheets URL tanımlı değil! localStorage kullanılacak.";
     console.warn(warnMsg);
     return null; // Google Sheets URL yoksa null döndür
   }
@@ -378,7 +379,7 @@ async function loadDataFromGoogleSheets() {
       } catch (e) {
         errorText = "Yanıt okunamadı";
       }
-      
+
       const errorMsg = `HTTP error! status: ${response.status}, message: ${errorText}`;
       console.error("❌ Google Sheets HTTP hatası:", errorMsg);
       throw new Error(errorMsg);
@@ -389,7 +390,7 @@ async function loadDataFromGoogleSheets() {
     try {
       const responseText = await response.text();
       console.log("📥 Google Sheets yanıt içeriği:", responseText);
-      
+
       if (!responseText || responseText.trim() === "") {
         console.warn("⚠️ Google Sheets'ten boş yanıt geldi");
         return [];
@@ -405,7 +406,12 @@ async function loadDataFromGoogleSheets() {
     if (!Array.isArray(data)) {
       console.warn("⚠️ Google Sheets'ten gelen veri array değil:", data);
       // Eğer obje ise ve içinde data varsa onu kullan
-      if (data && typeof data === "object" && data.data && Array.isArray(data.data)) {
+      if (
+        data &&
+        typeof data === "object" &&
+        data.data &&
+        Array.isArray(data.data)
+      ) {
         data = data.data;
       } else {
         return null;
@@ -443,15 +449,21 @@ async function loadDataFromGoogleSheets() {
       url: fullUrl,
       stack: error.stack,
     };
-    
+
     console.error("❌ Google Sheets veri yükleme hatası:", error);
     console.error("❌ Hata detayları:", errorDetails);
-    
+
     // CORS hatası kontrolü
-    if (error.message.includes("CORS") || error.message.includes("Failed to fetch") || error.name === "TypeError") {
-      console.error("❌ CORS veya Network hatası! Google Apps Script Web App'in 'Herkes' olarak yayınlandığından emin olun.");
+    if (
+      error.message.includes("CORS") ||
+      error.message.includes("Failed to fetch") ||
+      error.name === "TypeError"
+    ) {
+      console.error(
+        "❌ CORS veya Network hatası! Google Apps Script Web App'in 'Herkes' olarak yayınlandığından emin olun."
+      );
     }
-    
+
     // Hata durumunda null döndür, localStorage'a fallback yapılır
     return null;
   }
@@ -479,10 +491,14 @@ async function loadData() {
 
     // Önce Google Sheets'ten veri yüklemeyi dene
     let googleSheetsError = null;
-    if (CONFIG && CONFIG.googleSheetsWebAppUrl && CONFIG.googleSheetsWebAppUrl.trim() !== "") {
+    if (
+      CONFIG &&
+      CONFIG.googleSheetsWebAppUrl &&
+      CONFIG.googleSheetsWebAppUrl.trim() !== ""
+    ) {
       console.log("📦 Google Sheets'ten veri yükleniyor...");
       debugLog("📦 Google Sheets'ten veri yükleniyor...");
-      
+
       try {
         data = await loadDataFromGoogleSheets();
 
@@ -490,7 +506,8 @@ async function loadData() {
           console.log("✅ Google Sheets'ten", data.length, "kayıt yüklendi");
           debugLog("✅ Google Sheets'ten", data.length, "kayıt yüklendi");
         } else {
-          const warnMsg = "⚠️ Google Sheets'ten veri gelmedi veya boş, localStorage'a geçiliyor...";
+          const warnMsg =
+            "⚠️ Google Sheets'ten veri gelmedi veya boş, localStorage'a geçiliyor...";
           console.warn(warnMsg);
           debugLog(warnMsg);
         }
@@ -500,7 +517,8 @@ async function loadData() {
         data = null;
       }
     } else {
-      const warnMsg = "⚠️ Google Sheets URL tanımlı değil, localStorage kullanılıyor...";
+      const warnMsg =
+        "⚠️ Google Sheets URL tanımlı değil, localStorage kullanılıyor...";
       console.warn(warnMsg);
       debugLog(warnMsg);
     }
@@ -509,7 +527,7 @@ async function loadData() {
     if (!data || data.length === 0) {
       console.log("📦 localStorage'dan veri yükleniyor...");
       debugLog("📦 localStorage'dan veri yükleniyor...");
-      
+
       const rawData = localStorage.getItem(STORAGE_KEY);
       console.log("📦 Admin Panel - Veri yükleme:", {
         STORAGE_KEY,
@@ -531,10 +549,13 @@ async function loadData() {
         const warnMsg = "⚠️ Admin Panel - localStorage'da veri yok";
         console.warn(warnMsg);
         debugLog(warnMsg);
-        
+
         // Eğer Google Sheets hatası varsa kullanıcıya göster
         if (googleSheetsError) {
-          displayData([], `⚠️ Google Sheets'ten veri yüklenemedi: ${googleSheetsError.message}. localStorage'da da veri yok.`);
+          displayData(
+            [],
+            `⚠️ Google Sheets'ten veri yüklenemedi: ${googleSheetsError.message}. localStorage'da da veri yok.`
+          );
         } else {
           displayData([]);
         }

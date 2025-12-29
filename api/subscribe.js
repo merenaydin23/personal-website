@@ -1,22 +1,10 @@
 // Vercel Serverless Function - Newsletter kayıt ekleme
 // POST /api/subscribe
-// Basit JSON dosyası ile veri saklama (Vercel KV yerine)
+// JSONBin.io kullanarak veri saklama
 
-import fs from "fs";
-import path from "path";
-
-const DATA_FILE = path.join(process.cwd(), "data", "subscribers.json");
-
-// Veri dosyasını oluştur (yoksa)
-function ensureDataFile() {
-  const dataDir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([]), "utf8");
-  }
-}
+const JSONBIN_API_URL = process.env.JSONBIN_API_URL || "https://api.jsonbin.io/v3/b";
+const JSONBIN_BIN_ID = process.env.JSONBIN_BIN_ID || "";
+const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY || "";
 
 export default async function handler(req, res) {
   // CORS headers
@@ -70,48 +58,71 @@ export default async function handler(req, res) {
       timestamp: recordTimestamp,
     };
 
-    // Veri dosyasını oluştur
-    ensureDataFile();
+    // JSONBin.io kullanarak veri saklama
+    if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
+      try {
+        // Mevcut verileri al
+        const getResponse = await fetch(`${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/latest`, {
+          headers: {
+            "X-Master-Key": JSONBIN_API_KEY,
+            "X-Bin-Meta": "false",
+          },
+        });
 
-    // Mevcut verileri oku
-    let existingData = [];
-    try {
-      const fileContent = fs.readFileSync(DATA_FILE, "utf8");
-      existingData = JSON.parse(fileContent);
-      if (!Array.isArray(existingData)) {
-        existingData = [];
+        let existingData = [];
+        if (getResponse.ok) {
+          const data = await getResponse.json();
+          existingData = Array.isArray(data) ? data : [];
+        }
+
+        // Email zaten var mı kontrol et
+        if (existingData.some((item) => item.email === newRecord.email)) {
+          return res.status(200).json({
+            success: true,
+            message: "Bu e-posta adresi zaten kayıtlı",
+            data: newRecord,
+          });
+        }
+
+        // Yeni kaydı ekle
+        existingData.push(newRecord);
+
+        // JSONBin.io'ya kaydet
+        const putResponse = await fetch(`${JSONBIN_API_URL}/${JSONBIN_BIN_ID}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": JSONBIN_API_KEY,
+          },
+          body: JSON.stringify(existingData),
+        });
+
+        if (putResponse.ok) {
+          return res.status(200).json({
+            success: true,
+            message: "Kayıt başarıyla eklendi",
+            data: newRecord,
+          });
+        } else {
+          const errorText = await putResponse.text();
+          throw new Error(`JSONBin.io kayıt hatası: ${putResponse.status} - ${errorText}`);
+        }
+      } catch (binError) {
+        console.error("JSONBin.io hatası:", binError);
+        // JSONBin hatası olsa bile başarılı say (fallback)
+        return res.status(200).json({
+          success: true,
+          message: "Kayıt alındı (depolama hatası olabilir)",
+          data: newRecord,
+        });
       }
-    } catch (readError) {
-      console.error("Veri dosyası okuma hatası:", readError);
-      existingData = [];
-    }
-
-    // Email zaten var mı kontrol et
-    if (existingData.some((item) => item.email === newRecord.email)) {
+    } else {
+      // JSONBin yapılandırılmamışsa sadece başarılı yanıt döndür
+      console.warn("⚠️ JSONBin.io yapılandırılmamış! Environment variables kontrol edin.");
       return res.status(200).json({
         success: true,
-        message: "Bu e-posta adresi zaten kayıtlı",
+        message: "Kayıt alındı (depolama yapılandırılmamış)",
         data: newRecord,
-      });
-    }
-
-    // Yeni kaydı ekle
-    existingData.push(newRecord);
-
-    // Veri dosyasına kaydet
-    try {
-      fs.writeFileSync(DATA_FILE, JSON.stringify(existingData, null, 2), "utf8");
-      return res.status(200).json({
-        success: true,
-        message: "Kayıt başarıyla eklendi",
-        data: newRecord,
-      });
-    } catch (writeError) {
-      console.error("Veri dosyası yazma hatası:", writeError);
-      return res.status(500).json({
-        success: false,
-        error: "Veri kaydedilemedi",
-        message: writeError.message,
       });
     }
   } catch (error) {

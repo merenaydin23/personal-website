@@ -82,61 +82,32 @@ function safeWarn(...args) {
 // Newsletter kayıtlarını localStorage'da sakla
 const STORAGE_KEY = "newsletter_subscribers";
 
-// Google Sheets Web App URL (email-config.js'den alınacak, yoksa localStorage kullanılır)
-let GOOGLE_SHEETS_URL = "";
+// API URL (Vercel Serverless Functions)
+const API_BASE_URL = "/api";
+let USE_API = true; // API kullanımını aktif et
 
-// Email config yüklendiğinde Google Sheets URL'ini al
-function updateGoogleSheetsUrl() {
-  if (
-    typeof EMAIL_CONFIG !== "undefined" &&
-    EMAIL_CONFIG.googleSheetsWebAppUrl &&
-    EMAIL_CONFIG.googleSheetsWebAppUrl.trim() !== ""
-  ) {
-    GOOGLE_SHEETS_URL = EMAIL_CONFIG.googleSheetsWebAppUrl.trim();
-    safeLog("✅ Google Sheets URL yüklendi:", GOOGLE_SHEETS_URL);
-    console.log("✅ Google Sheets URL yüklendi:", GOOGLE_SHEETS_URL);
+// API kullanımını kontrol et
+function checkAPIStatus() {
+  if (USE_API) {
+    safeLog("✅ API kullanımı aktif:", API_BASE_URL);
+    console.log("✅ API kullanımı aktif:", API_BASE_URL);
   } else {
-    const warnMsg =
-      "⚠️ Google Sheets URL bulunamadı! localStorage kullanılacak.";
+    const warnMsg = "⚠️ API kullanımı devre dışı! localStorage kullanılacak.";
     safeWarn(warnMsg);
-    console.warn(warnMsg, {
-      EMAIL_CONFIG_defined: typeof EMAIL_CONFIG !== "undefined",
-      googleSheetsWebAppUrl:
-        typeof EMAIL_CONFIG !== "undefined"
-          ? EMAIL_CONFIG.googleSheetsWebAppUrl
-          : "undefined",
-    });
+    console.warn(warnMsg);
   }
 }
 
-// Sayfa yüklendiğinde URL'i kontrol et
+// Sayfa yüklendiğinde API durumunu kontrol et
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", updateGoogleSheetsUrl);
+  document.addEventListener("DOMContentLoaded", checkAPIStatus);
 } else {
-  updateGoogleSheetsUrl();
+  checkAPIStatus();
 }
 
-// Ayrıca window load'ta da kontrol et (email-config.js geç yüklenmiş olabilir)
 window.addEventListener("load", () => {
-  updateGoogleSheetsUrl();
+  checkAPIStatus();
 });
-
-// Her 2 saniyede bir kontrol et (email-config.js çok geç yüklenmiş olabilir)
-let urlCheckInterval = setInterval(() => {
-  if (GOOGLE_SHEETS_URL) {
-    clearInterval(urlCheckInterval); // URL yüklendi, kontrol etmeyi durdur
-  } else {
-    updateGoogleSheetsUrl();
-  }
-}, 2000);
-
-// 10 saniye sonra kontrol etmeyi durdur
-setTimeout(() => {
-  clearInterval(urlCheckInterval);
-  if (!GOOGLE_SHEETS_URL) {
-    console.error("❌ Google Sheets URL 10 saniye içinde yüklenemedi!");
-  }
-}, 10000);
 
 // Rate limiting - Spam koruması
 const RATE_LIMIT_KEY = "newsletter_rate_limit";
@@ -299,31 +270,40 @@ if (newsletterForm) {
       existingData.push(newRecord);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
 
-      // Google Sheets'e kaydet (varsa) - ÖNEMLİ: Bu merkezi depolama için kritik!
-      // Google Sheets'e kayıt YAPILMALI - farklı cihazlardan görünebilmesi için!
-      if (GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL.trim() !== "") {
+      // API'ye kaydet - ÖNEMLİ: Bu merkezi depolama için kritik!
+      // API'ye kayıt YAPILMALI - farklı cihazlardan görünebilmesi için!
+      if (USE_API) {
         try {
-          const sheetsResult = await saveToGoogleSheets(email, newRecord.timestamp);
-          if (sheetsResult) {
-            safeLog("✅ Google Sheets'e kayıt başarılı");
-            console.log("✅ Google Sheets'e kayıt başarılı - Admin panelde görünecek");
+          const apiResult = await saveToAPI(email, newRecord.timestamp);
+          if (apiResult) {
+            safeLog("✅ API'ye kayıt başarılı");
+            console.log(
+              "✅ API'ye kayıt başarılı - Admin panelde görünecek"
+            );
           } else {
-            throw new Error("Google Sheets kayıt başarısız - yanıt alınamadı");
+            throw new Error("API kayıt başarısız - yanıt alınamadı");
           }
         } catch (error) {
-          // Google Sheets hatası - KRİTİK HATA!
-          const errorMsg = `❌ Google Sheets'e kayıt YAPILAMADI! Admin panelde görünmeyecek. Hata: ${error.message}`;
+          // API hatası - KRİTİK HATA!
+          const errorMsg = `❌ API'ye kayıt YAPILAMADI! Admin panelde görünmeyecek. Hata: ${error.message}`;
           safeError(errorMsg);
-          console.error("❌ KRİTİK HATA - Google Sheets kayıt hatası:", error);
-          console.error("❌ Bu kayıt sadece bu cihazın localStorage'ında! Admin panelde görünmeyecek!");
+          console.error("❌ KRİTİK HATA - API kayıt hatası:", error);
+          console.error(
+            "❌ Bu kayıt sadece bu cihazın localStorage'ında! Admin panelde görünmeyecek!"
+          );
           // Hata olsa bile localStorage'a kaydedildi, devam et
         }
       } else {
-        // Google Sheets URL yok - KRİTİK UYARI!
-        const warnMsg = "⚠️ Google Sheets URL tanımlı değil! Kayıt sadece bu cihazın localStorage'ında. Admin panelde görünmeyecek!";
+        // API kullanımı kapalı - KRİTİK UYARI!
+        const warnMsg =
+          "⚠️ API kullanımı devre dışı! Kayıt sadece bu cihazın localStorage'ında. Admin panelde görünmeyecek!";
         safeWarn(warnMsg);
-        console.error("❌ KRİTİK: Google Sheets URL tanımlı değil! Merkezi depolama çalışmıyor!");
-        console.error("❌ Bu kayıt sadece bu cihazda görünecek, admin panelde görünmeyecek!");
+        console.error(
+          "❌ KRİTİK: API kullanımı devre dışı! Merkezi depolama çalışmıyor!"
+        );
+        console.error(
+          "❌ Bu kayıt sadece bu cihazda görünecek, admin panelde görünmeyecek!"
+        );
       }
 
       // Rate limit'i sıfırla (başarılı kayıt)
@@ -468,22 +448,22 @@ async function sendWelcomeEmail(userEmail) {
   }
 }
 
-// Google Sheets'e kayıt ekle - KRİTİK FONKSİYON!
-async function saveToGoogleSheets(email, timestamp) {
-  if (!GOOGLE_SHEETS_URL || GOOGLE_SHEETS_URL.trim() === "") {
-    const errorMsg = "⚠️ Google Sheets URL tanımlı değil!";
+// API'ye kayıt ekle - KRİTİK FONKSİYON!
+async function saveToAPI(email, timestamp) {
+  if (!USE_API) {
+    const errorMsg = "⚠️ API kullanımı devre dışı!";
     safeError(errorMsg);
     console.error("❌", errorMsg);
     throw new Error(errorMsg);
   }
 
-  const url = GOOGLE_SHEETS_URL.trim();
-  console.log("📤 Google Sheets'e kayıt gönderiliyor...", {
+  const url = `${API_BASE_URL}/subscribe`;
+  console.log("📤 API'ye kayıt gönderiliyor...", {
     url: url,
     email: email,
     timestamp: timestamp,
   });
-  safeLog("📤 Google Sheets'e kayıt gönderiliyor...", {
+  safeLog("📤 API'ye kayıt gönderiliyor...", {
     url: url,
     email: email,
     timestamp: timestamp,
@@ -493,8 +473,6 @@ async function saveToGoogleSheets(email, timestamp) {
     // Fetch ile POST isteği gönder
     const response = await fetch(url, {
       method: "POST",
-      mode: "cors", // CORS desteği
-      cache: "no-cache", // Cache'i devre dışı bırak
       headers: {
         "Content-Type": "application/json",
       },
@@ -504,82 +482,63 @@ async function saveToGoogleSheets(email, timestamp) {
       }),
     });
 
-    console.log("📥 Google Sheets yanıtı:", {
+    console.log("📥 API yanıtı:", {
       ok: response.ok,
       status: response.status,
       statusText: response.statusText,
-      type: response.type,
     });
-    safeLog("📥 Google Sheets yanıtı:", {
+    safeLog("📥 API yanıtı:", {
       ok: response.ok,
       status: response.status,
       statusText: response.statusText,
-      type: response.type,
     });
 
-    // Response'u text olarak oku
-    const responseText = await response.text();
-    console.log("📥 Google Sheets yanıt içeriği:", responseText);
-    safeLog("📥 Google Sheets yanıt içeriği:", responseText);
+    // Response'u JSON olarak parse et
+    const result = await response.json();
+    console.log("📥 API yanıt içeriği:", result);
+    safeLog("📥 API yanıt içeriği:", result);
 
     // HTTP hatası kontrolü
     if (!response.ok) {
-      const errorMsg = `Google Sheets HTTP hatası: ${response.status} ${response.statusText} - ${responseText}`;
+      const errorMsg = `API HTTP hatası: ${response.status} ${response.statusText} - ${result.message || JSON.stringify(result)}`;
       safeError(errorMsg);
       console.error("❌", errorMsg);
       throw new Error(errorMsg);
     }
 
-    // JSON parse etmeyi dene
-    try {
-      if (!responseText || responseText.trim() === "") {
-        // Boş yanıt ama OK ise başarılı say
-        console.log("✅ Google Sheets'e kayıt gönderildi (boş yanıt ama OK)");
-        safeLog("✅ Google Sheets'e kayıt gönderildi (boş yanıt ama OK)");
-        return true;
-      }
-
-      const result = JSON.parse(responseText);
-      if (result.success === true || result.success === "true") {
-        console.log("✅ Google Sheets'e başarıyla kaydedildi:", result);
-        safeLog("✅ Google Sheets'e başarıyla kaydedildi:", result);
-        return true; // Başarılı
-      } else {
-        const errorMsg = result.message || "Google Sheets kayıt hatası - success: false";
-        safeError("❌ Google Sheets kayıt başarısız:", errorMsg);
-        console.error("❌ Google Sheets kayıt hatası:", result);
-        throw new Error(errorMsg);
-      }
-    } catch (parseError) {
-      // JSON parse hatası - ama response.ok = true ise muhtemelen başarılı
-      if (response.ok) {
-        console.log("✅ Google Sheets'e kayıt gönderildi (yanıt parse edilemedi ama OK)");
-        safeLog("✅ Google Sheets'e kayıt gönderildi (yanıt parse edilemedi ama OK)");
-        return true;
-      } else {
-        const errorMsg = `Google Sheets yanıt parse hatası: ${parseError.message} - Yanıt: ${responseText}`;
-        safeError(errorMsg);
-        console.error("❌", errorMsg);
-        throw new Error(errorMsg);
-      }
+    // Başarı kontrolü
+    if (result.success === true) {
+      console.log("✅ API'ye başarıyla kaydedildi:", result);
+      safeLog("✅ API'ye başarıyla kaydedildi:", result);
+      return true; // Başarılı
+    } else {
+      const errorMsg = result.message || result.error || "API kayıt hatası";
+      safeError("❌ API kayıt başarısız:", errorMsg);
+      console.error("❌ API kayıt hatası:", result);
+      throw new Error(errorMsg);
     }
   } catch (error) {
     // Network hatası veya diğer hatalar
-    const errorMsg = `Google Sheets kayıt hatası: ${error.message}`;
-    safeError("❌ Google Sheets kayıt hatası:", error);
-    console.error("❌ Google Sheets kayıt hatası (detaylı):", {
+    const errorMsg = `API kayıt hatası: ${error.message}`;
+    safeError("❌ API kayıt hatası:", error);
+    console.error("❌ API kayıt hatası (detaylı):", {
       error: error,
       url: url,
       email: email,
       message: error.message,
       name: error.name,
     });
-    
-    // CORS hatası kontrolü
-    if (error.message.includes("CORS") || error.message.includes("Failed to fetch") || error.name === "TypeError") {
-      console.error("❌ CORS veya Network hatası! Google Apps Script Web App'in 'Herkes' olarak yayınlandığından emin olun.");
+
+    // Network hatası kontrolü
+    if (
+      error.message.includes("Failed to fetch") ||
+      error.name === "TypeError"
+    ) {
+      console.error(
+        "❌ Network hatası! API endpoint'inin doğru çalıştığından emin olun."
+      );
     }
-    
+
     throw error; // Hata fırlat ki üstteki catch yakalasın
   }
 }

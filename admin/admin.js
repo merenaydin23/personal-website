@@ -327,48 +327,31 @@ function setupEventListeners() {
   }
 }
 
-// Google Sheets'ten veri yükle
-async function loadDataFromGoogleSheets() {
-  if (!CONFIG || !CONFIG.googleSheetsWebAppUrl) {
-    const warnMsg =
-      "⚠️ Google Sheets URL tanımlı değil! localStorage kullanılacak.";
-    console.warn(warnMsg);
-    return null; // Google Sheets URL yoksa null döndür
-  }
-
-  // URL kontrolü
-  const url = CONFIG.googleSheetsWebAppUrl.trim();
-  if (!url || url === "") {
-    console.error("❌ Google Sheets URL boş!");
-    return null;
-  }
-
-  const fullUrl = `${url}?action=getData`;
-  console.log("📦 Google Sheets'ten veri yükleniyor...", fullUrl);
-  debugLog("📦 Google Sheets'ten veri yükleniyor...", fullUrl);
+// API'den veri yükle
+async function loadDataFromAPI() {
+  const API_URL = "/api/subscribers";
+  console.log("📦 API'den veri yükleniyor...", API_URL);
+  debugLog("📦 API'den veri yükleniyor...", API_URL);
 
   try {
-    // Fetch ile veri çek (CORS desteği için mode: 'cors' ekle)
-    const response = await fetch(fullUrl, {
+    // Fetch ile veri çek
+    const response = await fetch(API_URL, {
       method: "GET",
-      mode: "cors", // CORS desteği
       cache: "no-cache", // Cache'i devre dışı bırak
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    console.log("📥 Google Sheets yanıtı:", {
+    console.log("📥 API yanıtı:", {
       ok: response.ok,
       status: response.status,
       statusText: response.statusText,
-      type: response.type,
     });
-    debugLog("📥 Google Sheets yanıtı:", {
+    debugLog("📥 API yanıtı:", {
       ok: response.ok,
       status: response.status,
       statusText: response.statusText,
-      type: response.type,
     });
 
     // HTTP hatası kontrolü
@@ -381,57 +364,36 @@ async function loadDataFromGoogleSheets() {
       }
 
       const errorMsg = `HTTP error! status: ${response.status}, message: ${errorText}`;
-      console.error("❌ Google Sheets HTTP hatası:", errorMsg);
+      console.error("❌ API HTTP hatası:", errorMsg);
       throw new Error(errorMsg);
     }
 
     // Response'u JSON olarak parse et
     let data;
     try {
-      const responseText = await response.text();
-      console.log("📥 Google Sheets yanıt içeriği:", responseText);
+      data = await response.json();
+      console.log("📥 API yanıt içeriği:", data);
 
-      if (!responseText || responseText.trim() === "") {
-        console.warn("⚠️ Google Sheets'ten boş yanıt geldi");
+      if (!data) {
+        console.warn("⚠️ API'den boş yanıt geldi");
         return [];
       }
-
-      data = JSON.parse(responseText);
     } catch (parseError) {
-      console.error("❌ Google Sheets JSON parse hatası:", parseError);
+      console.error("❌ API JSON parse hatası:", parseError);
       throw new Error(`JSON parse hatası: ${parseError.message}`);
     }
 
     // Veri kontrolü
     if (!Array.isArray(data)) {
-      console.warn("⚠️ Google Sheets'ten gelen veri array değil:", data);
-      // Eğer obje ise ve içinde data varsa onu kullan
-      if (
-        data &&
-        typeof data === "object" &&
-        data.data &&
-        Array.isArray(data.data)
-      ) {
-        data = data.data;
-      } else {
-        return null;
-      }
+      console.warn("⚠️ API'den gelen veri array değil:", data);
+      return [];
     }
 
-    console.log("📊 Google Sheets'ten veri yüklendi:", data.length, "kayıt");
-    debugLog("📊 Google Sheets'ten veri yüklendi:", data.length, "kayıt");
+    console.log("📊 API'den veri yüklendi:", data.length, "kayıt");
+    debugLog("📊 API'den veri yüklendi:", data.length, "kayıt");
 
     // Veri formatını kontrol et ve düzelt
     const formattedData = data.map((item, index) => {
-      // Eğer veri doğru formatta değilse düzelt
-      if (!item.email && Array.isArray(item)) {
-        return {
-          id: index + 1,
-          email: item[0] || "",
-          date: item[1] || "",
-          time: item[2] || "",
-        };
-      }
       return {
         id: item.id || index + 1,
         email: item.email || "",
@@ -446,21 +408,19 @@ async function loadDataFromGoogleSheets() {
     const errorDetails = {
       message: error.message,
       name: error.name,
-      url: fullUrl,
-      stack: error.stack,
+      url: API_URL,
     };
 
-    console.error("❌ Google Sheets veri yükleme hatası:", error);
+    console.error("❌ API veri yükleme hatası:", error);
     console.error("❌ Hata detayları:", errorDetails);
 
-    // CORS hatası kontrolü
+    // Network hatası kontrolü
     if (
-      error.message.includes("CORS") ||
       error.message.includes("Failed to fetch") ||
       error.name === "TypeError"
     ) {
       console.error(
-        "❌ CORS veya Network hatası! Google Apps Script Web App'in 'Herkes' olarak yayınlandığından emin olun."
+        "❌ Network hatası! API endpoint'inin doğru çalıştığından emin olun."
       );
     }
 
@@ -489,38 +449,34 @@ async function loadData() {
   try {
     let data = null;
 
-    // Önce Google Sheets'ten veri yüklemeyi dene
-    let googleSheetsError = null;
-    if (
-      CONFIG &&
-      CONFIG.googleSheetsWebAppUrl &&
-      CONFIG.googleSheetsWebAppUrl.trim() !== ""
-    ) {
-      console.log("📦 Google Sheets'ten veri yükleniyor...");
-      debugLog("📦 Google Sheets'ten veri yükleniyor...");
+    // Önce API'den veri yüklemeyi dene - ÖNEMLİ: Merkezi depolama!
+    let apiError = null;
+    console.log("📦 API'den veri yükleniyor...");
+    debugLog("📦 API'den veri yükleniyor...");
 
-      try {
-        data = await loadDataFromGoogleSheets();
+    try {
+      data = await loadDataFromAPI();
 
-        if (data && data.length > 0) {
-          console.log("✅ Google Sheets'ten", data.length, "kayıt yüklendi");
-          debugLog("✅ Google Sheets'ten", data.length, "kayıt yüklendi");
-        } else {
-          const warnMsg =
-            "⚠️ Google Sheets'ten veri gelmedi veya boş, localStorage'a geçiliyor...";
-          console.warn(warnMsg);
-          debugLog(warnMsg);
-        }
-      } catch (error) {
-        googleSheetsError = error;
-        console.error("❌ Google Sheets yükleme hatası:", error);
-        data = null;
+      if (data && Array.isArray(data) && data.length > 0) {
+        console.log("✅ API'den", data.length, "kayıt yüklendi");
+        console.log("✅ İlk kayıt:", data[0]);
+        debugLog("✅ API'den", data.length, "kayıt yüklendi");
+      } else {
+        const warnMsg =
+          "⚠️ API'den veri gelmedi veya boş, localStorage'a geçiliyor...";
+        console.warn(warnMsg);
+        console.warn("⚠️ API'den gelen data:", data);
+        debugLog(warnMsg);
+        data = null; // null yap ki localStorage'a geçsin
       }
-    } else {
-      const warnMsg =
-        "⚠️ Google Sheets URL tanımlı değil, localStorage kullanılıyor...";
-      console.warn(warnMsg);
-      debugLog(warnMsg);
+    } catch (error) {
+      apiError = error;
+      console.error("❌ API yükleme hatası:", error);
+      console.error("❌ Hata detayları:", {
+        message: error.message,
+        name: error.name,
+      });
+      data = null;
     }
 
     // Google Sheets'ten veri gelmediyse localStorage'dan yükle
@@ -550,11 +506,11 @@ async function loadData() {
         console.warn(warnMsg);
         debugLog(warnMsg);
 
-        // Eğer Google Sheets hatası varsa kullanıcıya göster
-        if (googleSheetsError) {
+        // Eğer API hatası varsa kullanıcıya göster
+        if (apiError) {
           displayData(
             [],
-            `⚠️ Google Sheets'ten veri yüklenemedi: ${googleSheetsError.message}. localStorage'da da veri yok.`
+            `⚠️ API'den veri yüklenemedi: ${apiError.message}. localStorage'da da veri yok.`
           );
         } else {
           displayData([]);

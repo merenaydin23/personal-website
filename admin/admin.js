@@ -330,44 +330,91 @@ function setupEventListeners() {
 // Google Sheets'ten veri yükle
 async function loadDataFromGoogleSheets() {
   if (!CONFIG || !CONFIG.googleSheetsWebAppUrl) {
-    console.warn("⚠️ Google Sheets URL tanımlı değil! localStorage kullanılacak.");
+    const warnMsg = "⚠️ Google Sheets URL tanımlı değil! localStorage kullanılacak.";
+    console.warn(warnMsg);
     return null; // Google Sheets URL yoksa null döndür
   }
 
-  try {
-    const url = `${CONFIG.googleSheetsWebAppUrl}?action=getData`;
-    debugLog("📦 Google Sheets'ten veri yükleniyor...", url);
+  // URL kontrolü
+  const url = CONFIG.googleSheetsWebAppUrl.trim();
+  if (!url || url === "") {
+    console.error("❌ Google Sheets URL boş!");
+    return null;
+  }
 
-    const response = await fetch(url, {
+  const fullUrl = `${url}?action=getData`;
+  console.log("📦 Google Sheets'ten veri yükleniyor...", fullUrl);
+  debugLog("📦 Google Sheets'ten veri yükleniyor...", fullUrl);
+
+  try {
+    // Fetch ile veri çek (CORS desteği için mode: 'cors' ekle)
+    const response = await fetch(fullUrl, {
       method: "GET",
+      mode: "cors", // CORS desteği
+      cache: "no-cache", // Cache'i devre dışı bırak
       headers: {
         "Content-Type": "application/json",
       },
     });
 
+    console.log("📥 Google Sheets yanıtı:", {
+      ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+      type: response.type,
+    });
     debugLog("📥 Google Sheets yanıtı:", {
       ok: response.ok,
       status: response.status,
       statusText: response.statusText,
+      type: response.type,
     });
 
+    // HTTP hatası kontrolü
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `HTTP error! status: ${response.status}, message: ${errorText}`
-      );
+      let errorText = "";
+      try {
+        errorText = await response.text();
+      } catch (e) {
+        errorText = "Yanıt okunamadı";
+      }
+      
+      const errorMsg = `HTTP error! status: ${response.status}, message: ${errorText}`;
+      console.error("❌ Google Sheets HTTP hatası:", errorMsg);
+      throw new Error(errorMsg);
     }
 
-    const data = await response.json();
-    
+    // Response'u JSON olarak parse et
+    let data;
+    try {
+      const responseText = await response.text();
+      console.log("📥 Google Sheets yanıt içeriği:", responseText);
+      
+      if (!responseText || responseText.trim() === "") {
+        console.warn("⚠️ Google Sheets'ten boş yanıt geldi");
+        return [];
+      }
+
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("❌ Google Sheets JSON parse hatası:", parseError);
+      throw new Error(`JSON parse hatası: ${parseError.message}`);
+    }
+
     // Veri kontrolü
     if (!Array.isArray(data)) {
       console.warn("⚠️ Google Sheets'ten gelen veri array değil:", data);
-      return null;
+      // Eğer obje ise ve içinde data varsa onu kullan
+      if (data && typeof data === "object" && data.data && Array.isArray(data.data)) {
+        data = data.data;
+      } else {
+        return null;
+      }
     }
 
+    console.log("📊 Google Sheets'ten veri yüklendi:", data.length, "kayıt");
     debugLog("📊 Google Sheets'ten veri yüklendi:", data.length, "kayıt");
-    
+
     // Veri formatını kontrol et ve düzelt
     const formattedData = data.map((item, index) => {
       // Eğer veri doğru formatta değilse düzelt
@@ -389,13 +436,24 @@ async function loadDataFromGoogleSheets() {
 
     return formattedData;
   } catch (error) {
-    console.error("❌ Google Sheets veri yükleme hatası:", error);
-    console.error("Hata detayları:", {
+    // Detaylı hata loglama
+    const errorDetails = {
       message: error.message,
       name: error.name,
-      url: CONFIG?.googleSheetsWebAppUrl,
-    });
-    return null; // Hata durumunda null döndür, localStorage'a fallback yapılır
+      url: fullUrl,
+      stack: error.stack,
+    };
+    
+    console.error("❌ Google Sheets veri yükleme hatası:", error);
+    console.error("❌ Hata detayları:", errorDetails);
+    
+    // CORS hatası kontrolü
+    if (error.message.includes("CORS") || error.message.includes("Failed to fetch") || error.name === "TypeError") {
+      console.error("❌ CORS veya Network hatası! Google Apps Script Web App'in 'Herkes' olarak yayınlandığından emin olun.");
+    }
+    
+    // Hata durumunda null döndür, localStorage'a fallback yapılır
+    return null;
   }
 }
 
@@ -420,23 +478,44 @@ async function loadData() {
     let data = null;
 
     // Önce Google Sheets'ten veri yüklemeyi dene
-    if (CONFIG && CONFIG.googleSheetsWebAppUrl) {
+    let googleSheetsError = null;
+    if (CONFIG && CONFIG.googleSheetsWebAppUrl && CONFIG.googleSheetsWebAppUrl.trim() !== "") {
+      console.log("📦 Google Sheets'ten veri yükleniyor...");
       debugLog("📦 Google Sheets'ten veri yükleniyor...");
-      data = await loadDataFromGoogleSheets();
       
-      if (data && data.length > 0) {
-        debugLog("✅ Google Sheets'ten", data.length, "kayıt yüklendi");
-      } else {
-        debugLog("⚠️ Google Sheets'ten veri gelmedi veya boş, localStorage'a geçiliyor...");
+      try {
+        data = await loadDataFromGoogleSheets();
+
+        if (data && data.length > 0) {
+          console.log("✅ Google Sheets'ten", data.length, "kayıt yüklendi");
+          debugLog("✅ Google Sheets'ten", data.length, "kayıt yüklendi");
+        } else {
+          const warnMsg = "⚠️ Google Sheets'ten veri gelmedi veya boş, localStorage'a geçiliyor...";
+          console.warn(warnMsg);
+          debugLog(warnMsg);
+        }
+      } catch (error) {
+        googleSheetsError = error;
+        console.error("❌ Google Sheets yükleme hatası:", error);
+        data = null;
       }
     } else {
-      debugLog("⚠️ Google Sheets URL tanımlı değil, localStorage kullanılıyor...");
+      const warnMsg = "⚠️ Google Sheets URL tanımlı değil, localStorage kullanılıyor...";
+      console.warn(warnMsg);
+      debugLog(warnMsg);
     }
 
     // Google Sheets'ten veri gelmediyse localStorage'dan yükle
     if (!data || data.length === 0) {
+      console.log("📦 localStorage'dan veri yükleniyor...");
       debugLog("📦 localStorage'dan veri yükleniyor...");
+      
       const rawData = localStorage.getItem(STORAGE_KEY);
+      console.log("📦 Admin Panel - Veri yükleme:", {
+        STORAGE_KEY,
+        rawData: rawData ? "Veri var" : "Veri yok",
+        rawDataLength: rawData ? rawData.length : 0,
+      });
       debugLog("📦 Admin Panel - Veri yükleme:", {
         STORAGE_KEY,
         rawData: rawData ? "Veri var" : "Veri yok",
@@ -449,12 +528,27 @@ async function loadData() {
         rawData === "undefined" ||
         rawData === ""
       ) {
-        debugLog("⚠️ Admin Panel - localStorage'da veri yok");
-        displayData([]);
+        const warnMsg = "⚠️ Admin Panel - localStorage'da veri yok";
+        console.warn(warnMsg);
+        debugLog(warnMsg);
+        
+        // Eğer Google Sheets hatası varsa kullanıcıya göster
+        if (googleSheetsError) {
+          displayData([], `⚠️ Google Sheets'ten veri yüklenemedi: ${googleSheetsError.message}. localStorage'da da veri yok.`);
+        } else {
+          displayData([]);
+        }
         return;
       }
 
-      data = JSON.parse(rawData);
+      try {
+        data = JSON.parse(rawData);
+        console.log("✅ localStorage'dan", data.length, "kayıt yüklendi");
+      } catch (parseError) {
+        console.error("❌ localStorage parse hatası:", parseError);
+        displayData([], "❌ Veri parse hatası!");
+        return;
+      }
     }
 
     debugLog("📊 Admin Panel - Parse edilen veri:", {
@@ -484,11 +578,25 @@ async function loadData() {
 }
 
 // Verileri tabloda göster
-function displayData(data) {
+function displayData(data, errorMessage = null) {
   initDOM();
 
   if (!dataTableBody) {
     console.error("❌ dataTableBody bulunamadı!");
+    return;
+  }
+
+  // Hata mesajı varsa göster
+  if (errorMessage) {
+    dataTableBody.innerHTML = `
+      <tr>
+        <td colspan="4" class="error-row">
+          <i class="fas fa-exclamation-triangle"></i> ${errorMessage}
+        </td>
+      </tr>
+    `;
+    if (totalCount) totalCount.textContent = "0";
+    if (todayCount) todayCount.textContent = "0";
     return;
   }
 

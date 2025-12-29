@@ -330,11 +330,14 @@ function setupEventListeners() {
 // Google Sheets'ten veri yükle
 async function loadDataFromGoogleSheets() {
   if (!CONFIG || !CONFIG.googleSheetsWebAppUrl) {
+    console.warn("⚠️ Google Sheets URL tanımlı değil! localStorage kullanılacak.");
     return null; // Google Sheets URL yoksa null döndür
   }
 
   try {
     const url = `${CONFIG.googleSheetsWebAppUrl}?action=getData`;
+    debugLog("📦 Google Sheets'ten veri yükleniyor...", url);
+
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -342,15 +345,56 @@ async function loadDataFromGoogleSheets() {
       },
     });
 
+    debugLog("📥 Google Sheets yanıtı:", {
+      ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+    });
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorText}`
+      );
     }
 
     const data = await response.json();
+    
+    // Veri kontrolü
+    if (!Array.isArray(data)) {
+      console.warn("⚠️ Google Sheets'ten gelen veri array değil:", data);
+      return null;
+    }
+
     debugLog("📊 Google Sheets'ten veri yüklendi:", data.length, "kayıt");
-    return data;
+    
+    // Veri formatını kontrol et ve düzelt
+    const formattedData = data.map((item, index) => {
+      // Eğer veri doğru formatta değilse düzelt
+      if (!item.email && Array.isArray(item)) {
+        return {
+          id: index + 1,
+          email: item[0] || "",
+          date: item[1] || "",
+          time: item[2] || "",
+        };
+      }
+      return {
+        id: item.id || index + 1,
+        email: item.email || "",
+        date: item.date || "",
+        time: item.time || "",
+      };
+    });
+
+    return formattedData;
   } catch (error) {
     console.error("❌ Google Sheets veri yükleme hatası:", error);
+    console.error("Hata detayları:", {
+      message: error.message,
+      name: error.name,
+      url: CONFIG?.googleSheetsWebAppUrl,
+    });
     return null; // Hata durumunda null döndür, localStorage'a fallback yapılır
   }
 }
@@ -379,6 +423,14 @@ async function loadData() {
     if (CONFIG && CONFIG.googleSheetsWebAppUrl) {
       debugLog("📦 Google Sheets'ten veri yükleniyor...");
       data = await loadDataFromGoogleSheets();
+      
+      if (data && data.length > 0) {
+        debugLog("✅ Google Sheets'ten", data.length, "kayıt yüklendi");
+      } else {
+        debugLog("⚠️ Google Sheets'ten veri gelmedi veya boş, localStorage'a geçiliyor...");
+      }
+    } else {
+      debugLog("⚠️ Google Sheets URL tanımlı değil, localStorage kullanılıyor...");
     }
 
     // Google Sheets'ten veri gelmediyse localStorage'dan yükle

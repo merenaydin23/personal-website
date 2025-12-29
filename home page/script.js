@@ -89,12 +89,19 @@ let GOOGLE_SHEETS_URL = "";
 function updateGoogleSheetsUrl() {
   if (
     typeof EMAIL_CONFIG !== "undefined" &&
-    EMAIL_CONFIG.googleSheetsWebAppUrl
+    EMAIL_CONFIG.googleSheetsWebAppUrl &&
+    EMAIL_CONFIG.googleSheetsWebAppUrl.trim() !== ""
   ) {
-    GOOGLE_SHEETS_URL = EMAIL_CONFIG.googleSheetsWebAppUrl;
+    GOOGLE_SHEETS_URL = EMAIL_CONFIG.googleSheetsWebAppUrl.trim();
     safeLog("✅ Google Sheets URL yüklendi:", GOOGLE_SHEETS_URL);
+    console.log("✅ Google Sheets URL yüklendi:", GOOGLE_SHEETS_URL);
   } else {
-    safeWarn("⚠️ Google Sheets URL bulunamadı! localStorage kullanılacak.");
+    const warnMsg = "⚠️ Google Sheets URL bulunamadı! localStorage kullanılacak.";
+    safeWarn(warnMsg);
+    console.warn(warnMsg, {
+      EMAIL_CONFIG_defined: typeof EMAIL_CONFIG !== "undefined",
+      googleSheetsWebAppUrl: typeof EMAIL_CONFIG !== "undefined" ? EMAIL_CONFIG.googleSheetsWebAppUrl : "undefined",
+    });
   }
 }
 
@@ -109,6 +116,23 @@ if (document.readyState === "loading") {
 window.addEventListener("load", () => {
   updateGoogleSheetsUrl();
 });
+
+// Her 2 saniyede bir kontrol et (email-config.js çok geç yüklenmiş olabilir)
+let urlCheckInterval = setInterval(() => {
+  if (GOOGLE_SHEETS_URL) {
+    clearInterval(urlCheckInterval); // URL yüklendi, kontrol etmeyi durdur
+  } else {
+    updateGoogleSheetsUrl();
+  }
+}, 2000);
+
+// 10 saniye sonra kontrol etmeyi durdur
+setTimeout(() => {
+  clearInterval(urlCheckInterval);
+  if (!GOOGLE_SHEETS_URL) {
+    console.error("❌ Google Sheets URL 10 saniye içinde yüklenemedi!");
+  }
+}, 10000);
 
 // Rate limiting - Spam koruması
 const RATE_LIMIT_KEY = "newsletter_rate_limit";
@@ -271,17 +295,25 @@ if (newsletterForm) {
       existingData.push(newRecord);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
 
-      // Google Sheets'e kaydet (varsa)
+      // Google Sheets'e kaydet (varsa) - ÖNEMLİ: Bu merkezi depolama için kritik!
       if (GOOGLE_SHEETS_URL) {
         try {
           await saveToGoogleSheets(email, newRecord.timestamp);
+          safeLog("✅ Google Sheets'e kayıt başarılı");
         } catch (error) {
+          // Google Sheets hatası - KULLANICIYA BİLDİR!
           safeError(
-            "Google Sheets'e kayıt hatası (localStorage'a kaydedildi):",
+            "❌ Google Sheets'e kayıt hatası (localStorage'a kaydedildi):",
             error
           );
+          // Production'da bile hata göster (kritik sorun)
+          console.error("Google Sheets kayıt hatası:", error);
           // Google Sheets hatası olsa bile localStorage'a kaydedildi, devam et
         }
+      } else {
+        // Google Sheets URL yok - UYARI VER!
+        safeWarn("⚠️ Google Sheets URL tanımlı değil! Kayıt sadece localStorage'da.");
+        console.warn("⚠️ Google Sheets URL tanımlı değil! Merkezi depolama çalışmıyor.");
       }
 
       // Rate limit'i sıfırla (başarılı kayıt)
@@ -429,13 +461,16 @@ async function sendWelcomeEmail(userEmail) {
 // Google Sheets'e kayıt ekle
 async function saveToGoogleSheets(email, timestamp) {
   if (!GOOGLE_SHEETS_URL) {
-    safeError("⚠️ Google Sheets URL tanımlı değil!");
-    return; // Google Sheets URL yoksa atla
+    const errorMsg = "⚠️ Google Sheets URL tanımlı değil!";
+    safeError(errorMsg);
+    console.error(errorMsg);
+    throw new Error(errorMsg); // Hata fırlat ki üstteki catch yakalasın
   }
 
   safeLog("📤 Google Sheets'e kayıt gönderiliyor...", {
     url: GOOGLE_SHEETS_URL,
     email: email,
+    timestamp: timestamp,
   });
 
   try {
@@ -454,39 +489,60 @@ async function saveToGoogleSheets(email, timestamp) {
       ok: response.ok,
       status: response.status,
       statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries()),
     });
 
     // Response'u text olarak oku (JSON parse hatası olabilir)
     const responseText = await response.text();
     safeLog("📥 Google Sheets yanıt içeriği:", responseText);
 
+    // HTTP hatası kontrolü
+    if (!response.ok) {
+      const errorMsg = `Google Sheets HTTP hatası: ${response.status} ${response.statusText} - ${responseText}`;
+      safeError(errorMsg);
+      console.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+
     // JSON parse etmeyi dene
     try {
       const result = JSON.parse(responseText);
       if (result.success) {
-        safeLog("✅ Google Sheets'e başarıyla kaydedildi");
+        safeLog("✅ Google Sheets'e başarıyla kaydedildi:", result);
+        return true; // Başarılı
       } else {
-        throw new Error(result.message || "Google Sheets kayıt hatası");
+        const errorMsg = result.message || "Google Sheets kayıt hatası";
+        safeError("❌ Google Sheets kayıt başarısız:", errorMsg);
+        console.error("Google Sheets kayıt hatası:", result);
+        throw new Error(errorMsg);
       }
     } catch (parseError) {
-      // JSON parse hatası - ama response geldi, muhtemelen başarılı
-      if (response.ok) {
-        safeLog(
-          "✅ Google Sheets'e kayıt gönderildi (yanıt JSON değil ama OK)"
-        );
+      // JSON parse hatası - ama response.ok = true ise muhtemelen başarılı
+      if (response.ok && responseText.trim() === "") {
+        safeLog("✅ Google Sheets'e kayıt gönderildi (boş yanıt ama OK)");
+        return true;
       } else {
-        throw new Error(
-          `Google Sheets hatası: ${response.status} ${responseText}`
-        );
+        const errorMsg = `Google Sheets yanıt parse hatası: ${parseError.message} - Yanıt: ${responseText}`;
+        safeError(errorMsg);
+        console.error(errorMsg);
+        throw new Error(errorMsg);
       }
     }
   } catch (error) {
+    // Network hatası veya diğer hatalar
+    const errorMsg = `Google Sheets kayıt hatası: ${error.message}`;
     safeError("❌ Google Sheets kayıt hatası:", error);
     safeError("Hata detayları:", {
       message: error.message,
       name: error.name,
+      stack: error.stack,
     });
-    // Hata olsa bile localStorage'a kaydedildi, devam et
+    console.error("❌ Google Sheets kayıt hatası (detaylı):", {
+      error: error,
+      url: GOOGLE_SHEETS_URL,
+      email: email,
+    });
+    throw error; // Hata fırlat ki üstteki catch yakalasın
   }
 }
 

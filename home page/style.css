@@ -1148,7 +1148,7 @@ h2 {
     gap: 4px;
     justify-content: center;
     border-radius: 50px;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(20px);
   }
 
@@ -1182,8 +1182,8 @@ h2 {
 
   .project-card {
     padding: 24px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .project-title {
@@ -1205,8 +1205,8 @@ h2 {
   .blog-card,
   .app-card {
     padding: 24px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .blog-title {
@@ -1305,8 +1305,8 @@ h2 {
 
   /* Card renk tutarlılığı */
   .card {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   /* Newsletter form mobilde */
@@ -1384,7 +1384,7 @@ h2 {
     left: 8px;
     padding: 6px;
     gap: 3px;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.5);
   }
 
   .nav-link {
@@ -1417,8 +1417,8 @@ h2 {
   .blog-card,
   .app-card {
     padding: 20px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .project-title,
@@ -1447,7 +1447,7 @@ h2 {
 
   .working-on-card {
     padding: 24px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
   }
 
   .working-on-card h2 {
@@ -1515,7 +1515,7 @@ h2 {
     right: 5px;
     left: 5px;
     padding: 4px;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.5);
   }
 
   .nav-link {

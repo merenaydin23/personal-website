@@ -2,7 +2,8 @@
 // GET /api/subscribers
 // JSONBin.io kullanarak veri okuma
 
-const JSONBIN_API_URL = process.env.JSONBIN_API_URL || "https://api.jsonbin.io/v3/b";
+const JSONBIN_API_URL =
+  process.env.JSONBIN_API_URL || "https://api.jsonbin.io/v3/b";
 const JSONBIN_BIN_ID = process.env.JSONBIN_BIN_ID || "";
 const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY || "";
 
@@ -26,12 +27,15 @@ export default async function handler(req, res) {
     // JSONBin.io'dan veri çek
     if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
       try {
-        const response = await fetch(`${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/latest`, {
-          headers: {
-            "X-Master-Key": JSONBIN_API_KEY,
-            "X-Bin-Meta": "false",
-          },
-        });
+        const response = await fetch(
+          `${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/latest`,
+          {
+            headers: {
+              "X-Master-Key": JSONBIN_API_KEY,
+              "X-Bin-Meta": "false",
+            },
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -48,7 +52,9 @@ export default async function handler(req, res) {
           return res.status(200).json(formattedData);
         } else {
           const errorText = await response.text();
-          console.error(`JSONBin.io HTTP hatası: ${response.status} - ${errorText}`);
+          console.error(
+            `JSONBin.io HTTP hatası: ${response.status} - ${errorText}`
+          );
           return res.status(200).json([]);
         }
       } catch (binError) {
@@ -57,7 +63,9 @@ export default async function handler(req, res) {
       }
     } else {
       // JSONBin yapılandırılmamışsa boş array döndür
-      console.warn("⚠️ JSONBin.io yapılandırılmamış! Environment variables kontrol edin.");
+      console.warn(
+        "⚠️ JSONBin.io yapılandırılmamış! Environment variables kontrol edin."
+      );
       return res.status(200).json([]);
     }
   } catch (error) {
@@ -69,3 +77,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
+

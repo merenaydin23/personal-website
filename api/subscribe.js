@@ -2,7 +2,8 @@
 // POST /api/subscribe
 // JSONBin.io kullanarak veri saklama
 
-const JSONBIN_API_URL = process.env.JSONBIN_API_URL || "https://api.jsonbin.io/v3/b";
+const JSONBIN_API_URL =
+  process.env.JSONBIN_API_URL || "https://api.jsonbin.io/v3/b";
 const JSONBIN_BIN_ID = process.env.JSONBIN_BIN_ID || "";
 const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY || "";
 
@@ -25,16 +26,63 @@ export default async function handler(req, res) {
   try {
     const { email, timestamp } = req.body;
 
-    // Email validasyonu
-    if (!email || typeof email !== "string" || !email.includes("@")) {
+    // Email validasyonu ve sanitization
+    if (!email || typeof email !== "string") {
       return res.status(400).json({
         success: false,
         error: "Geçersiz e-posta adresi",
       });
     }
 
-    // Timestamp kontrolü
-    const recordTimestamp = timestamp || new Date().toISOString();
+    // XSS koruması - HTML tag'lerini temizle
+    const sanitizedEmail = email.trim().replace(/[<>]/g, "").toLowerCase();
+
+    // Email format kontrolü
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(sanitizedEmail)) {
+      return res.status(400).json({
+        success: false,
+        error: "Geçersiz e-posta formatı",
+      });
+    }
+
+    // Email uzunluk kontrolü (RFC 5321 - max 254 karakter)
+    if (sanitizedEmail.length > 254) {
+      return res.status(400).json({
+        success: false,
+        error: "E-posta adresi çok uzun",
+      });
+    }
+
+    // Domain kontrolü
+    const parts = sanitizedEmail.split("@");
+    if (parts.length !== 2 || parts[0].length > 64) {
+      return res.status(400).json({
+        success: false,
+        error: "Geçersiz e-posta formatı",
+      });
+    }
+
+    // Timestamp kontrolü ve validasyonu
+    let recordTimestamp;
+    if (timestamp && typeof timestamp === "string") {
+      const timestampDate = new Date(timestamp);
+      // Geçerli bir tarih mi kontrol et
+      if (isNaN(timestampDate.getTime())) {
+        recordTimestamp = new Date().toISOString();
+      } else {
+        // Gelecek tarih kontrolü (spam koruması)
+        const now = new Date();
+        const maxFutureTime = new Date(now.getTime() + 5 * 60 * 1000); // 5 dakika tolerans
+        if (timestampDate > maxFutureTime) {
+          recordTimestamp = new Date().toISOString();
+        } else {
+          recordTimestamp = timestamp;
+        }
+      }
+    } else {
+      recordTimestamp = new Date().toISOString();
+    }
 
     // Tarih ve saat formatla
     const dateObj = new Date(recordTimestamp);
@@ -52,7 +100,7 @@ export default async function handler(req, res) {
     // Yeni kayıt oluştur
     const newRecord = {
       id: Date.now(),
-      email: email.trim().toLowerCase(),
+      email: sanitizedEmail,
       date: date,
       time: time,
       timestamp: recordTimestamp,
@@ -62,12 +110,15 @@ export default async function handler(req, res) {
     if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
       try {
         // Mevcut verileri al
-        const getResponse = await fetch(`${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/latest`, {
-          headers: {
-            "X-Master-Key": JSONBIN_API_KEY,
-            "X-Bin-Meta": "false",
-          },
-        });
+        const getResponse = await fetch(
+          `${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/latest`,
+          {
+            headers: {
+              "X-Master-Key": JSONBIN_API_KEY,
+              "X-Bin-Meta": "false",
+            },
+          }
+        );
 
         let existingData = [];
         if (getResponse.ok) {
@@ -88,14 +139,17 @@ export default async function handler(req, res) {
         existingData.push(newRecord);
 
         // JSONBin.io'ya kaydet
-        const putResponse = await fetch(`${JSONBIN_API_URL}/${JSONBIN_BIN_ID}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Master-Key": JSONBIN_API_KEY,
-          },
-          body: JSON.stringify(existingData),
-        });
+        const putResponse = await fetch(
+          `${JSONBIN_API_URL}/${JSONBIN_BIN_ID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Master-Key": JSONBIN_API_KEY,
+            },
+            body: JSON.stringify(existingData),
+          }
+        );
 
         if (putResponse.ok) {
           return res.status(200).json({
@@ -105,7 +159,9 @@ export default async function handler(req, res) {
           });
         } else {
           const errorText = await putResponse.text();
-          throw new Error(`JSONBin.io kayıt hatası: ${putResponse.status} - ${errorText}`);
+          throw new Error(
+            `JSONBin.io kayıt hatası: ${putResponse.status} - ${errorText}`
+          );
         }
       } catch (binError) {
         console.error("JSONBin.io hatası:", binError);
@@ -118,7 +174,9 @@ export default async function handler(req, res) {
       }
     } else {
       // JSONBin yapılandırılmamışsa sadece başarılı yanıt döndür
-      console.warn("⚠️ JSONBin.io yapılandırılmamış! Environment variables kontrol edin.");
+      console.warn(
+        "⚠️ JSONBin.io yapılandırılmamış! Environment variables kontrol edin."
+      );
       return res.status(200).json({
         success: true,
         message: "Kayıt alındı (depolama yapılandırılmamış)",
@@ -134,3 +192,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
+

@@ -114,24 +114,28 @@ const RATE_LIMIT_KEY = "newsletter_rate_limit";
 const RATE_LIMIT_TIME = 60000; // 1 dakika
 const MAX_ATTEMPTS = 3;
 
-// Email validation ve sanitization
+// Email validation ve sanitization - Güçlendirilmiş güvenlik
 function validateAndSanitizeEmail(email) {
   if (!email || typeof email !== "string") return null;
 
-  // XSS koruması - HTML tag'lerini temizle
-  email = email.trim().replace(/[<>]/g, "");
+  // XSS koruması - HTML tag'lerini ve özel karakterleri temizle
+  email = email.trim().replace(/[<>\"'&]/g, "");
 
-  // Email regex validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Email regex validation (daha sıkı)
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   if (!emailRegex.test(email)) return null;
 
-  // Email uzunluk kontrolü
+  // Email uzunluk kontrolü (RFC 5321)
   if (email.length > 254) return null;
 
   // Domain kontrolü
   const parts = email.split("@");
   if (parts.length !== 2) return null;
-  if (parts[0].length > 64) return null;
+  if (parts[0].length > 64 || parts[0].length === 0) return null;
+  if (parts[1].length > 253 || parts[1].length === 0) return null;
+
+  // Domain'de geçersiz karakter kontrolü
+  if (!/^[a-zA-Z0-9.-]+$/.test(parts[1])) return null;
 
   return email.toLowerCase();
 }

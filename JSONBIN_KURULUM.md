@@ -1,86 +1,53 @@
-# 📦 JSONBin.io Kurulum Rehberi
+# 📦 JSONBin.io Kurulum - Basit Rehber
 
-JSONBin.io, newsletter kayıtlarını saklamak için kullanılan ücretsiz JSON storage servisidir.
+## 🚀 Adım 1: Hesap Oluştur
 
-## 🚀 Adım 1: JSONBin.io Hesabı Oluşturun
+1. https://jsonbin.io/ → "Sign Up" → Email ile kayıt ol
 
-1. [JSONBin.io](https://jsonbin.io/) adresine gidin
-2. "Sign Up" butonuna tıklayın
-3. Ücretsiz hesap oluşturun (email ile kayıt olun)
+## 🔑 Adım 2: API Key Al
 
-## 🔑 Adım 2: API Key Alın
+1. Dashboard → "API Keys" → "Create API Key"
+2. API Key'i kopyala (uzun bir kod olacak)
 
-1. JSONBin.io'ya giriş yapın
-2. Dashboard'a gidin
-3. **"API Keys"** bölümüne gidin
-4. **"Create API Key"** butonuna tıklayın
-5. API Key'i kopyalayın (örnek: `$2b$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`)
+## 📝 Adım 3: Bin Oluştur
 
-## 📝 Adım 3: Bin Oluşturun
+1. JSONBin.io dashboard'unda (giriş yaptıktan sonra ana sayfa)
+2. Sol tarafta veya üstte **"Create Bin"** veya **"New Bin"** butonuna tıkla
+3. Açılan editörde içine şunu yaz: `[]` (boş array - köşeli parantezler)
+4. Sağ üstte **"Create"** veya **"Save"** butonuna tıkla
+5. Bin oluşturulduktan sonra URL'de veya bin detay sayfasında **Bin ID** görünecek (uzun bir kod, örnek: `507f1f77bcf86cd799439011`)
+6. Bu **Bin ID**'yi kopyala
 
-1. JSONBin.io dashboard'da **"Create Bin"** butonuna tıklayın
-2. İçeriğe boş bir array yazın: `[]`
-3. **"Create"** butonuna tıklayın
-4. Oluşturulan bin'in **ID'sini** kopyalayın (örnek: `507f1f77bcf86cd799439011`)
+## ⚙️ Adım 4: Vercel'e Ekle
 
-## ⚙️ Adım 4: Vercel Environment Variables Ekleyin
+1. https://vercel.com/dashboard → Projeni seç
+2. Settings → Environment Variables
+3. Şu 3 değişkeni ekle:
 
-1. [Vercel Dashboard](https://vercel.com/dashboard) adresine gidin
-2. Projenizi seçin
-3. **Settings** > **Environment Variables** bölümüne gidin
-4. Şu 3 environment variable'ı ekleyin:
+**1. Değişken:**
 
-### Variable 1:
-- **Name**: `JSONBIN_API_URL`
-- **Value**: `https://api.jsonbin.io/v3/b`
-- **Environment**: Production, Preview, Development (hepsini seçin)
+- Name: `JSONBIN_API_URL`
+- Value: `https://api.jsonbin.io/v3/b`
 
-### Variable 2:
-- **Name**: `JSONBIN_BIN_ID`
-- **Value**: `507f1f77bcf86cd799439011` (kendi bin ID'nizi yapıştırın)
-- **Environment**: Production, Preview, Development (hepsini seçin)
+**2. Değişken:**
 
-### Variable 3:
-- **Name**: `JSONBIN_API_KEY`
-- **Value**: `$2b$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` (kendi API key'inizi yapıştırın)
-- **Environment**: Production, Preview, Development (hepsini seçin)
+- Name: `JSONBIN_BIN_ID`
+- Value: (Adım 3'te kopyaladığın Bin ID)
 
-## ✅ Adım 5: Deploy Edin
+**3. Değişken:**
 
-1. Environment variables'ı ekledikten sonra
-2. Vercel'de **"Redeploy"** yapın (veya yeni bir commit push edin)
-3. Deploy tamamlandıktan sonra test edin
+- Name: `JSONBIN_API_KEY`
+- Value: (Adım 2'de kopyaladığın API Key)
 
-## 🧪 Test
+**ÖNEMLİ:** Her değişkeni eklerken "Production, Preview, Development" hepsini seç!
 
-1. Ana sayfadan bir e-posta adresi ile kayıt olun
-2. Admin panelden kontrol edin
-3. Farklı bir cihazdan da test edin
+## ✅ Adım 5: Redeploy
 
-## 📊 JSONBin.io Limitleri (Ücretsiz Plan)
-
-- ✅ Sınırsız bin
-- ✅ Sınırsız request (makul kullanım)
-- ✅ 32KB veri limiti (bin başına)
-- ✅ Public/Private bin desteği
-
-## 🔒 Güvenlik
-
-- API Key'inizi asla GitHub'a commit etmeyin
-- Environment variables kullanın
-- API Key'i sadece Vercel dashboard'da saklayın
-
-## 🐛 Sorun Giderme
-
-### "JSONBin.io yapılandırılmamış" hatası
-- Environment variables'ın doğru eklendiğinden emin olun
-- Redeploy yaptığınızdan emin olun
-
-### "JSONBin.io kayıt hatası" hatası
-- API Key'in doğru olduğundan emin olun
-- Bin ID'sinin doğru olduğundan emin olun
-- JSONBin.io dashboard'da bin'in mevcut olduğunu kontrol edin
+1. Vercel'de "Redeploy" butonuna tıkla
+2. Bitti! Artık çalışıyor.
 
 ---
 
-**Not:** Bu sistem Google Sheets'ten daha güvenilir ve kolay kurulumlu bir alternatiftir.
+**Sorun mu var?** Environment variables'ı ekledikten sonra mutlaka redeploy yap!
+
+

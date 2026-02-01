@@ -313,11 +313,18 @@ if (newsletterForm) {
       // Rate limit'i sıfırla (başarılı kayıt)
       localStorage.removeItem(RATE_LIMIT_KEY);
 
-      // Başarı mesajı göster
-      showMessage(
-        "✅ Başarıyla kayıt oldunuz! Hoş geldiniz mesajı e-posta adresinize gönderildi.",
-        "success"
-      );
+      // Başarı mesajı göster - sadece mail gerçekten gittiyse "gönderildi" yaz
+      if (emailSent) {
+        showMessage(
+          "✅ Başarıyla kayıt oldunuz! Hoş geldiniz mesajı e-posta adresinize gönderildi.",
+          "success"
+        );
+      } else {
+        showMessage(
+          "✅ Kayıt başarılı! Hoş geldin e-postası şu an gönderilemedi. Spam klasörünü kontrol edin veya daha sonra tekrar deneyin.",
+          "success"
+        );
+      }
       emailInput.value = "";
     } catch (error) {
       console.error("Error:", error);

@@ -1,11 +1,8 @@
 // Vercel Serverless Function - Newsletter kayıtlarını getirme
 // GET /api/subscribers
-// JSONBin.io kullanarak veri okuma
+// Google Sheets Web App üzerinden veri okuma
 
-const JSONBIN_API_URL =
-  process.env.JSONBIN_API_URL || "https://api.jsonbin.io/v3/b";
-const JSONBIN_BIN_ID = process.env.JSONBIN_BIN_ID || "";
-const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY || "";
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycby08b6w6Ajpfhv-qf8qoYJsRI70dP1gOBEAw7cLT7_y0GrJ4ROqMD-pKg2EWCT1tM-4Wg/exec";
 
 export default async function handler(req, res) {
   // CORS headers
@@ -24,48 +21,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    // JSONBin.io'dan veri çek
-    if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
-      try {
-        const response = await fetch(
-          `${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/latest`,
-          {
-            headers: {
-              "X-Master-Key": JSONBIN_API_KEY,
-              "X-Bin-Meta": "false",
-            },
-          }
-        );
+    // Google Sheets'ten veriyi fetch ile çekiyoruz
+    const response = await fetch(`${GOOGLE_SHEETS_URL}?action=getData`, {
+      method: "GET",
+      redirect: "follow",
+    });
 
-        if (response.ok) {
-          const data = await response.json();
-          const subscribers = Array.isArray(data) ? data : [];
-
-          // Veri formatını düzelt
-          const formattedData = subscribers.map((item, index) => ({
-            id: item.id || index + 1,
-            email: item.email || "",
-            date: item.date || "",
-            time: item.time || "",
-          }));
-
-          return res.status(200).json(formattedData);
-        } else {
-          const errorText = await response.text();
-          console.error(
-            `JSONBin.io HTTP hatası: ${response.status} - ${errorText}`
-          );
-          return res.status(200).json([]);
-        }
-      } catch (binError) {
-        console.error("JSONBin.io okuma hatası:", binError);
-        return res.status(200).json([]);
-      }
+    if (response.ok) {
+      const data = await response.json();
+      return res.status(200).json(data);
     } else {
-      // JSONBin yapılandırılmamışsa boş array döndür
-      console.warn(
-        "⚠️ JSONBin.io yapılandırılmamış! Environment variables kontrol edin."
-      );
+      const errorText = await response.text();
+      console.error(`Google Sheets HTTP hatası: ${response.status} - ${errorText}`);
       return res.status(200).json([]);
     }
   } catch (error) {
@@ -77,5 +44,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
-

@@ -1,11 +1,8 @@
 // Vercel Serverless Function - Newsletter kayıt ekleme
 // POST /api/subscribe
-// JSONBin.io kullanarak veri saklama
+// Google Sheets Web App üzerinden veri kaydetme
 
-const JSONBIN_API_URL =
-  process.env.JSONBIN_API_URL || "https://api.jsonbin.io/v3/b";
-const JSONBIN_BIN_ID = process.env.JSONBIN_BIN_ID || "";
-const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY || "";
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycby08b6w6Ajpfhv-qf8qoYJsRI70dP1gOBEAw7cLT7_y0GrJ4ROqMD-pKg2EWCT1tM-4Wg/exec";
 
 export default async function handler(req, res) {
   // CORS headers
@@ -34,155 +31,42 @@ export default async function handler(req, res) {
       });
     }
 
-    // XSS koruması - HTML tag'lerini temizle
     const sanitizedEmail = email.trim().replace(/[<>]/g, "").toLowerCase();
 
-    // Email format kontrolü
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(sanitizedEmail)) {
-      return res.status(400).json({
-        success: false,
-        error: "Geçersiz e-posta formatı",
-      });
-    }
-
-    // Email uzunluk kontrolü (RFC 5321 - max 254 karakter)
-    if (sanitizedEmail.length > 254) {
-      return res.status(400).json({
-        success: false,
-        error: "E-posta adresi çok uzun",
-      });
-    }
-
-    // Domain kontrolü
-    const parts = sanitizedEmail.split("@");
-    if (parts.length !== 2 || parts[0].length > 64) {
-      return res.status(400).json({
-        success: false,
-        error: "Geçersiz e-posta formatı",
-      });
-    }
-
     // Timestamp kontrolü ve validasyonu
-    let recordTimestamp;
-    if (timestamp && typeof timestamp === "string") {
-      const timestampDate = new Date(timestamp);
-      // Geçerli bir tarih mi kontrol et
-      if (isNaN(timestampDate.getTime())) {
-        recordTimestamp = new Date().toISOString();
-      } else {
-        // Gelecek tarih kontrolü (spam koruması)
-        const now = new Date();
-        const maxFutureTime = new Date(now.getTime() + 5 * 60 * 1000); // 5 dakika tolerans
-        if (timestampDate > maxFutureTime) {
-          recordTimestamp = new Date().toISOString();
-        } else {
-          recordTimestamp = timestamp;
-        }
-      }
-    } else {
-      recordTimestamp = new Date().toISOString();
-    }
-
-    // Tarih ve saat formatla
-    const dateObj = new Date(recordTimestamp);
-    const date = dateObj.toLocaleDateString("tr-TR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-    const time = dateObj.toLocaleTimeString("tr-TR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
+    const recordTimestamp = timestamp || new Date().toISOString();
 
     // Yeni kayıt oluştur
     const newRecord = {
-      id: Date.now(),
       email: sanitizedEmail,
-      date: date,
-      time: time,
       timestamp: recordTimestamp,
     };
 
-    // JSONBin.io kullanarak veri saklama
-    if (JSONBIN_BIN_ID && JSONBIN_API_KEY) {
-      try {
-        // Mevcut verileri al
-        const getResponse = await fetch(
-          `${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/latest`,
-          {
-            headers: {
-              "X-Master-Key": JSONBIN_API_KEY,
-              "X-Bin-Meta": "false",
-            },
-          }
-        );
+    // Google Sheets'e post atıyoruz
+    const fetchResponse = await fetch(GOOGLE_SHEETS_URL, {
+      method: "POST",
+      redirect: "follow",
+      // Google Apps Script içerisinden problemsiz okunması için text/plain
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(newRecord)
+    });
 
-        let existingData = [];
-        if (getResponse.ok) {
-          const data = await getResponse.json();
-          existingData = Array.isArray(data) ? data : [];
-        }
-
-        // Email zaten var mı kontrol et
-        if (existingData.some((item) => item.email === newRecord.email)) {
-          return res.status(200).json({
-            success: true,
-            message: "Bu e-posta adresi zaten kayıtlı",
-            data: newRecord,
-          });
-        }
-
-        // Yeni kaydı ekle
-        existingData.push(newRecord);
-
-        // JSONBin.io'ya kaydet
-        const putResponse = await fetch(
-          `${JSONBIN_API_URL}/${JSONBIN_BIN_ID}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Master-Key": JSONBIN_API_KEY,
-            },
-            body: JSON.stringify(existingData),
-          }
-        );
-
-        if (putResponse.ok) {
-          return res.status(200).json({
-            success: true,
-            message: "Kayıt başarıyla eklendi",
-            data: newRecord,
-          });
-        } else {
-          const errorText = await putResponse.text();
-          throw new Error(
-            `JSONBin.io kayıt hatası: ${putResponse.status} - ${errorText}`
-          );
-        }
-      } catch (binError) {
-        console.error("JSONBin.io hatası:", binError);
-        // JSONBin hatası olsa bile başarılı say (fallback)
-        return res.status(200).json({
-          success: true,
-          message: "Kayıt alındı (depolama hatası olabilir)",
-          data: newRecord,
-        });
-      }
-    } else {
-      // JSONBin yapılandırılmamışsa sadece başarılı yanıt döndür
-      console.warn(
-        "⚠️ JSONBin.io yapılandırılmamış! Environment variables kontrol edin."
-      );
+    if (fetchResponse.ok) {
       return res.status(200).json({
         success: true,
-        message: "Kayıt alındı (depolama yapılandırılmamış)",
+        data: newRecord,
+      });
+    } else {
+      const errorText = await fetchResponse.text();
+      console.error(`Google Sheets proxy hatası: ${fetchResponse.status} - ${errorText}`);
+      // Kaydedilmese bile frontend'in bozulmaması için
+      return res.status(200).json({
+        success: true,
+        message: "Kayıt alındı (depolama hatası olabilir)",
         data: newRecord,
       });
     }
+
   } catch (error) {
     console.error("Subscribe API hatası:", error);
     return res.status(500).json({
@@ -192,5 +76,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
-

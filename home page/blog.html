@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#050508" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Blog & Uygulamalar | Muhammed Eren Aydın - Teknoloji Yazıları</title>
+
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="Yazılım geliştirme, yapay zeka, teknoloji trendleri ve uygulamalar hakkında blog yazıları. Teknoloji dünyasındaki güncel gelişmeler ve öğrenme süreçleri."
+    />
+    <meta
+      name="keywords"
+      content="teknoloji blog, yazılım blog, AI blog, yapay zeka, web development blog, teknoloji yazıları, uygulamalar"
+    />
+    <meta name="author" content="Muhammed Eren Aydın" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://muhammederenaydin.com/blog" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://muhammederenaydin.com/blog" />
+    <meta
+      property="og:title"
+      content="Blog & Uygulamalar | Muhammed Eren Aydın"
+    />
+    <meta
+      property="og:description"
+      content="Yazılım geliştirme, yapay zeka ve teknoloji trendleri hakkında blog yazıları."
+    />
+    <meta
+      property="og:image"
+      content="https://muhammederenaydin.com/home page/profile.jpg"
+    />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="Blog & Uygulamalar | Muhammed Eren Aydın"
+    />
+    <meta
+      name="twitter:description"
+      content="Yazılım geliştirme, yapay zeka ve teknoloji trendleri hakkında blog yazıları."
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="/home page/style.css" />
+  </head>
+  <body>
+    <!-- ================= NAVIGATION ================= -->
+    <nav class="main-nav">
+      <a href="/" class="nav-link">
+        <i class="fas fa-home"></i> <span>Home</span>
+      </a>
+      <a href="/projects" class="nav-link">
+        <i class="fas fa-code"></i> <span>Projects</span>
+      </a>
+      <a href="/blog" class="nav-link active">
+        <i class="fas fa-blog"></i> <span>Blog & Apps</span>
+      </a>
+    </nav>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero blog-hero">
+      <h1 class="hero-name">📝 Blog & Uygulamalar</h1>
+      <p class="hero-subtitle">
+        Güncel teknolojileri deneyip öğrendiklerimi paylaştığım yazılar ve
+        fikirlerimi ürüne dönüştürdüğüm pratik uygulamalar.
+      </p>
+      <div class="hero-buttons">
+        <button class="hero-btn blog-btn" onclick="switchTab('blog')">
+          <i class="fas fa-newspaper"></i> Blog Yazılarını Gör
+        </button>
+        <button class="hero-btn apps-btn" onclick="switchTab('apps')">
+          <i class="fas fa-rocket"></i> Uygulamaları Keşfet
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= TABS ================= -->
+    <section class="tabs-section">
+      <div class="tabs-container">
+        <button
+          class="tab-btn active"
+          data-tab="blog"
+          onclick="switchTab('blog')"
+        >
+          <i class="fas fa-newspaper"></i> 📝 Blog
+        </button>
+        <button class="tab-btn" data-tab="apps" onclick="switchTab('apps')">
+          <i class="fas fa-rocket"></i> 🚀 Uygulamalar
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= BLOG TAB ================= -->
+    <section id="blog-tab" class="tab-content active">
+      <!-- Blog Filters -->
+      <div class="blog-filters">
+        <button class="filter-btn active" data-filter="all">Tümü</button>
+        <button class="filter-btn" data-filter="tech">
+          Güncel Teknolojiler
+        </button>
+        <button class="filter-btn" data-filter="learning">
+          Öğrenme Notları
+        </button>
+        <button class="filter-btn" data-filter="solution">
+          Problem → Çözüm
+        </button>
+        <button class="filter-btn" data-filter="radar">Tech Radar</button>
+      </div>
+
+      <!-- Blog Grid - Sadece 5 AI uygulaması -->
+      <div class="blog-grid">
+        <!-- 1 - AI ile Otomatik Etiketleme -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">🟢 1️⃣ AI ile Otomatik Etiketleme</h3>
+          </div>
+          <p class="blog-description">
+            Metin içeriğinden otomatik etiket çıkaran NLP ve LLM (Cohere / OpenAI) entegrasyonlu FastAPI uygulaması.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#Python</span>
+            <span class="tag">#FastAPI</span>
+            <span class="tag">#LLM</span>
+            <span class="tag">#NLP</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- 2 - Prompt Karşılaştırma -->
+        <article class="blog-card" data-category="learning">
+          <div class="blog-header">
+            <h3 class="blog-title">🟢 2️⃣ Prompt Karşılaştırma Deneyi</h3>
+          </div>
+          <p class="blog-description">
+            Farklı prompt tekniklerinin ve parametrelerin model çıktıları üzerindeki etkilerini inceleyen prompt engineering çalışması.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#AI</span>
+            <span class="tag">#Prompt Engineering</span>
+            <span class="tag">#Learning</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- 3 - Embedding ile Benzerlik (RAG değil) -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">🟢 3️⃣ Embedding ile Basit Benzerlik Bulma</h3>
+          </div>
+          <p class="blog-description">
+            Metinler arası anlamsal benzerliği embedding yöntemleriyle hesaplayarak semantic search yeteneklerini gösteren uygulama.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#AI</span>
+            <span class="tag">#Embedding</span>
+            <span class="tag">#Semantic Search</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- 4 - Metin Sınıflandırma -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">🟢 4️⃣ AI ile Metin Sınıflandırma</h3>
+          </div>
+          <p class="blog-description">
+            Metinleri içeriklerine göre belirlenen kategorilere ayıran ve değerlendirme süreçlerini içeren makine öğrenmesi çalışması.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#AI</span>
+            <span class="tag">#Classification</span>
+            <span class="tag">#NLP</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+
+        <!-- 5 - Sentetik Metin Üretimi -->
+        <article class="blog-card" data-category="tech">
+          <div class="blog-header">
+            <h3 class="blog-title">🟢 5️⃣ AI ile Sentetik Metin Üretimi</h3>
+          </div>
+          <p class="blog-description">
+            Model eğitiminde veri eksikliğini gidermek amacıyla yapay zekâ yeteneklerinden yararlanarak sentetik metin oluşturma çözümü.
+          </p>
+          <div class="blog-tags">
+            <span class="tag">#AI</span>
+            <span class="tag">#Data Generation</span>
+            <span class="tag">#Python</span>
+          </div>
+          <a href="#" class="blog-read-more">
+            Devamını Oku <i class="fas fa-arrow-right"></i>
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= APPS TAB ================= -->
+    <section id="apps-tab" class="tab-content">
+      <!-- App Categories -->
+      <div class="app-categories">
+        <button class="category-btn active" data-category="all">Tümü</button>
+        <button class="category-btn" data-category="stable">
+          🟢 Stable Apps
+        </button>
+        <button class="category-btn" data-category="experimental">
+          🔧 Experiments
+        </button>
+        <button class="category-btn" data-category="tools">
+          🛠️ Mini Tools
+        </button>
+      </div>
+
+      <!-- Apps Grid - Sadece 5 AI uygulaması (linkler ileride eklenecek) -->
+      <div class="apps-grid">
+        <!-- 1 - AI ile Otomatik Etiketleme -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🟢 1</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-tags"></i>
+          </div>
+          <h3 class="app-title">AI ile Otomatik Etiketleme</h3>
+          <p class="app-description">
+            Metin içeriğinden otomatik etiket (tag) çıkaran NLP ve LLM entegrasyonlu FastAPI uygulaması.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- 2 - Prompt Karşılaştırma -->
+        <div class="app-card" data-category="tools">
+          <div class="app-status">
+            <span class="status-badge experimental">🟢 2</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <h3 class="app-title">Prompt Karşılaştırma Deneyi</h3>
+          <p class="app-description">
+            Farklı prompt tekniklerinin etkilerini yan yana karşılaştıran interaktif mühendislik çalışması.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- 3 - Embedding Benzerlik (RAG değil) -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🟢 3</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          <h3 class="app-title">Embedding ile Benzerlik Bulma</h3>
+          <p class="app-description">
+            Metinler arası anlamsal benzerliği embedding yöntemiyle hesaplayan temel arama uygulaması.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- 4 - Metin Sınıflandırma -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🟢 4</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-sitemap"></i>
+          </div>
+          <h3 class="app-title">AI ile Metin Sınıflandırma</h3>
+          <p class="app-description">
+            Metinleri belirlenen kategorilere (Blog, Haber vb.) ayıran makine öğrenmesi uygulaması.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- 5 - Sentetik Metin Üretimi -->
+        <div class="app-card" data-category="experimental">
+          <div class="app-status">
+            <span class="status-badge experimental">🟢 5</span>
+          </div>
+          <div class="app-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <h3 class="app-title">AI ile Sentetik Metin Üretimi</h3>
+          <p class="app-description">
+            Model eğitimi için yapay zeka desteğiyle sentetik metin veri setleri oluşturma çözümü.
+          </p>
+          <div class="app-links">
+            <a href="#" class="app-link live-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fas fa-external-link-alt"></i> Canlı Gör
+            </a>
+            <a href="#" class="app-link github-link" target="_blank" title="Link ileride eklenecek">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WHAT I'M WORKING ON ================= -->
+    <section class="working-on">
+      <div class="working-on-card">
+        <h2><i class="fas fa-lightbulb"></i> Şu Anda Üzerinde Çalıştığım</h2>
+        <p>
+          <strong>🗺️ AI Proje Yol Haritası</strong> - Yapay zekâ teknolojileri
+          üzerinde çalışıyorum. Yeni LLM API'lerini deneyimliyor, 
+          uygulamalar geliştiriyor ve bu süreçleri blog yazılarımla 
+          belgeliyorum.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= SCRIPT ================= -->
+    <script src="/home page/script.js"></script>
+    <script src="/home page/blog.js"></script>
+  </body>
+</html>

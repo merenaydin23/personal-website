@@ -90,9 +90,11 @@ let USE_API = true; // API kullanımını aktif et
 function checkAPIStatus() {
   if (USE_API) {
     safeLog("✅ API kullanımı aktif:", API_BASE_URL);
+    console.log("✅ API kullanımı aktif:", API_BASE_URL);
   } else {
     const warnMsg = "⚠️ API kullanımı devre dışı! localStorage kullanılacak.";
     safeWarn(warnMsg);
+    console.warn(warnMsg);
   }
 }
 
@@ -278,7 +280,10 @@ if (newsletterForm) {
         try {
           const apiResult = await saveToAPI(email, newRecord.timestamp);
           if (apiResult) {
-            safeLog("✅ API'ye kayıt başarılı - Admin panelde görünecek");
+            safeLog("✅ API'ye kayıt başarılı");
+            console.log(
+              "✅ API'ye kayıt başarılı - Admin panelde görünecek"
+            );
           } else {
             throw new Error("API kayıt başarısız - yanıt alınamadı");
           }
@@ -297,6 +302,12 @@ if (newsletterForm) {
         const warnMsg =
           "⚠️ API kullanımı devre dışı! Kayıt sadece bu cihazın localStorage'ında. Admin panelde görünmeyecek!";
         safeWarn(warnMsg);
+        console.error(
+          "❌ KRİTİK: API kullanımı devre dışı! Merkezi depolama çalışmıyor!"
+        );
+        console.error(
+          "❌ Bu kayıt sadece bu cihazda görünecek, admin panelde görünmeyecek!"
+        );
       }
 
       // Rate limit'i sıfırla (başarılı kayıt)
@@ -458,6 +469,11 @@ async function saveToAPI(email, timestamp) {
   }
 
   const url = `${API_BASE_URL}/subscribe`;
+  console.log("📤 API'ye kayıt gönderiliyor...", {
+    url: url,
+    email: email,
+    timestamp: timestamp,
+  });
   safeLog("📤 API'ye kayıt gönderiliyor...", {
     url: url,
     email: email,
@@ -477,6 +493,11 @@ async function saveToAPI(email, timestamp) {
       }),
     });
 
+    console.log("📥 API yanıtı:", {
+      ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+    });
     safeLog("📥 API yanıtı:", {
       ok: response.ok,
       status: response.status,
@@ -485,6 +506,7 @@ async function saveToAPI(email, timestamp) {
 
     // Response'u JSON olarak parse et
     const result = await response.json();
+    console.log("📥 API yanıt içeriği:", result);
     safeLog("📥 API yanıt içeriği:", result);
 
     // HTTP hatası kontrolü

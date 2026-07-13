@@ -1307,11 +1307,6 @@ h2 {
     -webkit-text-fill-color: transparent;
   }
 
-  .project-title {
-    font-size: 20px;
-    line-height: 1.3;
-  }
-
   .project-description {
     font-size: 14px;
     line-height: 1.6;
@@ -1339,15 +1334,12 @@ h2 {
 
   .blog-title,
   .app-title {
+    font-size: 20px;
+    line-height: 1.3;
     background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-
-  .blog-title {
-    font-size: 20px;
-    line-height: 1.3;
   }
 
   .blog-description {
@@ -1613,22 +1605,12 @@ h2 {
   .project-title,
   .blog-title,
   .app-title {
+    font-size: 18px;
+    line-height: 1.3;
     background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-
-  .project-icon {
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-teal));
-    color: #1a1a1a;
-  }
-
-  .project-title,
-  .blog-title,
-  .app-title {
-    font-size: 18px;
-    line-height: 1.3;
   }
 
   .project-description,
@@ -1727,15 +1709,6 @@ h2 {
     border: 1px solid var(--card-border);
   }
 
-  .project-title,
-  .blog-title,
-  .app-title {
-    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
   .profile-wrapper {
     width: 160px;
     height: 160px;
@@ -1791,6 +1764,10 @@ h2 {
   .blog-title,
   .app-title {
     font-size: 16px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .project-description,
